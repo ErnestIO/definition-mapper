@@ -1,0 +1,7 @@
+gpb-service-creator-microservice
+bin
+pkg
+src
+.fuse*
+config.json
+config.test.json

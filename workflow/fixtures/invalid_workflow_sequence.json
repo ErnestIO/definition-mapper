@@ -1,0 +1,12 @@
+[
+    {
+        "from": "",
+        "to": "arc1",
+        "event": "arc.do"
+    },
+    {
+        "from": "badarc",
+        "to": "arc3",
+        "event": "arc.dont"
+    }
+]

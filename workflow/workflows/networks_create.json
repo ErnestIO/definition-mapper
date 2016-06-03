@@ -1,0 +1,12 @@
+[
+    {
+        "from": "",
+        "to": "creating_networks",
+        "event": "networks.create"
+    },
+    {
+        "from": "creating_networks",
+        "to": "networks_created",
+        "event": "networks.create.done"
+    }
+]

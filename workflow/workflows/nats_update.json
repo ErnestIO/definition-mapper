@@ -1,0 +1,12 @@
+[
+    {
+        "from": "",
+        "to": "updating_nats",
+        "event": "nats.update"
+    },
+    {
+        "from": "updating_nats",
+        "to": "nats_updated",
+        "event": "nats.update.done"
+    }
+]

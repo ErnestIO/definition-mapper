@@ -1,0 +1,17 @@
+[
+    {
+        "from": "",
+        "to": "done",
+        "event": "service.delete.done"
+    },
+    {
+        "from": "pre-failed",
+        "to": "failed",
+        "event": "to_error"
+    },
+    {
+        "from": "failed",
+        "to": "errored",
+        "event": "service.delete.error"
+    }
+]

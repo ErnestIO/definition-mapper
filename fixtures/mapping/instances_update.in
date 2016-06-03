@@ -1,0 +1,100 @@
+{
+  "id": "id",
+  "datacenter": {
+    "datacenter_id": "id",
+    "datacenter_name": "datacenter"
+  },
+  "client": {
+    "id": "client_id",
+    "name": "client"
+  },
+  "service": {
+    "name": "service",
+    "bootstrapping": "salt",
+    "networks": [
+      {
+        "name": "network-web",
+        "subnet": "10.2.0.0/24"
+      }
+    ],
+    "instances": [
+      {
+        "name": "instance-web",
+        "image": "r3/centos-6.7",
+        "count": 1,
+        "cpus": 2,
+        "memory": "4GB",
+        "disks": [
+          "40GB"
+        ],
+        "networks": {
+          "name": "network-web",
+          "start_ip": "10.2.0.100"
+        },
+        "provisioner": [
+          {
+            "exec": [
+              "uptime"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "previous": {
+    "id":"bla",
+    "name": "service",
+    "bootstrapping": "salt",
+    "networks": {
+      "items": [
+          {
+            "name": "datacenter-service-network-web",
+            "subnet": "10.2.0.0/24"
+          },
+          {
+            "name": "datacenter-service-salt",
+            "subnet": "10.254.254.0/24"
+          }
+        ]
+     },
+     "executions": {
+       "items": [
+         {
+           "name": "Execution instance-web 1",
+           "payload": "uptime",
+           "target": "list:datacenter-service-instance-web-1",
+           "type": "salt"
+         }
+       ]
+     },
+    "instances": {
+      "items": [
+        {
+          "name": "datacenter-service-instance-web-1",
+          "reference_catalog": "r3",
+          "reference_image": "centos-6.7",
+          "cpus": 1,
+          "disks": [
+            {
+              "id": 1,
+              "size": 40960
+            }
+          ],
+          "ram": 4096,
+          "network": "datacenter-service-network-web",
+          "ip": "10.2.0.100"
+        },
+        {
+          "name": "datacenter-service-salt-master",
+          "reference_catalog": "r3",
+          "reference_image": "r3-salt-master",
+          "cpus": 1,
+          "disks": null,
+          "ram": 2048,
+          "network": "datacenter-service-salt",
+          "ip": "10.254.254.100"
+        }
+      ]
+    }
+  }
+}

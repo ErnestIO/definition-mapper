@@ -1,0 +1,12 @@
+[
+    {
+        "from": "",
+        "to": "deleting_networks",
+        "event": "networks.delete"
+    },
+    {
+        "from": "deleting_networks",
+        "to": "networks_deleted",
+        "event": "networks.delete.done"
+    }
+]
