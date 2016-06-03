@@ -1,0 +1,12 @@
+[
+    {
+        "from": "",
+        "to": "updating_firewalls",
+        "event": "firewalls.update"
+    },
+    {
+        "from": "updating_firewalls",
+        "to": "firewalls_updated",
+        "event": "firewalls.update.done"
+    }
+]

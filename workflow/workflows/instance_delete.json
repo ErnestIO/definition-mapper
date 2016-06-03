@@ -1,0 +1,12 @@
+[
+    {
+        "from": "",
+        "to": "deleting_instances",
+        "event": "instances.delete"
+    },
+    {
+        "from": "deleting_instances",
+        "to": "instances_deleted",
+        "event": "instances.delete.done"
+    }
+]

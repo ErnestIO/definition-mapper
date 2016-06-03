@@ -1,0 +1,22 @@
+[
+    {
+        "from": "",
+        "to": "creating_instances",
+        "event": "instances.create"
+    },
+    {
+        "from": "creating_instances",
+        "to": "instances_created",
+        "event": "instances.create.done"
+    },
+    {
+        "from": "instances_created",
+        "to": "updating_instances",
+        "event": "instances.update"
+    },
+    {
+        "from": "updating_instances",
+        "to": "instances_updated",
+        "event": "instances.update.done"
+    }
+]

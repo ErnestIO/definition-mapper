@@ -1,0 +1,12 @@
+[
+    {
+        "from": "",
+        "to": "creating_routers",
+        "event": "routers.create"
+    },
+    {
+        "from": "creating_routers",
+        "to": "routers_created",
+        "event": "routers.create.done"
+    }
+]

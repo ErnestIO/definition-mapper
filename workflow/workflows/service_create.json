@@ -1,0 +1,7 @@
+[
+    {
+        "from": "created",
+        "to": "started",
+        "event": "service.create"
+    }
+]
