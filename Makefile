@@ -15,7 +15,6 @@ cover:
 
 deps: dev-deps
 	go get -u github.com/nats-io/nats
-	go get -u github.com/nsqio/go-nsq
 	go get -u github.com/julienschmidt/httprouter
 	go get -u github.com/lib/pq
 	go get -u github.com/r3labs/binary-prefix
@@ -26,7 +25,3 @@ dev-deps:
 
 clean:
 	go clean
-	rm -f gpb-service-creator-microservice
-
-dist-clean: clean
-	rm -rf pkg src bin
