@@ -7,8 +7,8 @@ package builder
 import (
 	"fmt"
 
-	"github.com/r3labs/definition-mapper/input"
-	"github.com/r3labs/definition-mapper/output"
+	"github.com/ernestio/definition-mapper/input"
+	"github.com/ernestio/definition-mapper/output"
 )
 
 // GenerateBootstraps : generates necessary bootstraps for instances

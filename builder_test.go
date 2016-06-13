@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/r3labs/definition-mapper/input"
-	"github.com/r3labs/definition-mapper/output"
+	"github.com/ernestio/definition-mapper/input"
+	"github.com/ernestio/definition-mapper/output"
 
 	. "github.com/smartystreets/goconvey/convey"
 )

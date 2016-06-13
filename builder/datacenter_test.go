@@ -7,7 +7,7 @@ package builder
 import (
 	"testing"
 
-	"github.com/r3labs/definition-mapper/input"
+	"github.com/ernestio/definition-mapper/input"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
