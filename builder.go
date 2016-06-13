@@ -7,10 +7,10 @@ package main
 import (
 	"errors"
 
-	"github.com/r3labs/definition-mapper/builder"
-	"github.com/r3labs/definition-mapper/input"
-	"github.com/r3labs/definition-mapper/output"
-	"github.com/r3labs/definition-mapper/workflow"
+	"github.com/ernestio/definition-mapper/builder"
+	"github.com/ernestio/definition-mapper/input"
+	"github.com/ernestio/definition-mapper/output"
+	"github.com/ernestio/definition-mapper/workflow"
 )
 
 // BuildFSMMessage : maps input message on a valid internal ernest message

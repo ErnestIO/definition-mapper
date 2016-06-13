@@ -10,8 +10,8 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 
-	"github.com/r3labs/definition-mapper/input"
-	"github.com/r3labs/definition-mapper/output"
+	"github.com/ernestio/definition-mapper/input"
+	"github.com/ernestio/definition-mapper/output"
 )
 
 func TestInstancesMapping(t *testing.T) {

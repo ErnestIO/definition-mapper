@@ -5,8 +5,8 @@
 package builder
 
 import (
-	"github.com/r3labs/definition-mapper/input"
-	"github.com/r3labs/definition-mapper/output"
+	"github.com/ernestio/definition-mapper/input"
+	"github.com/ernestio/definition-mapper/output"
 )
 
 // MapDatacenter : Maps input datacenters to ernest understandable datacanters
