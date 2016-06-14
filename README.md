@@ -5,8 +5,8 @@ This service will map a json service definition on a valid service with a valid 
 
 ## Build status
 
-* Master:  [![CircleCI Master](https://circleci.com/gh/r3labs/definition-mapper/tree/master.svg?style=svg&circle-token=627e89c447fe342aff9815ca146b081a37c075ad)](https://circleci.com/gh/r3labs/definition-mapper/tree/master)
-* Develop: [![CircleCI Develop](https://circleci.com/gh/r3labs/definition-mapper/tree/develop.svg?style=svg&circle-token=627e89c447fe342aff9815ca146b081a37c075ad)](https://circleci.com/gh/r3labs/definition-mapper/tree/develop)
+* Master: [![CircleCI](https://circleci.com/gh/ErnestIO/definition-mapper/tree/master.svg?style=svg)](https://circleci.com/gh/ErnestIO/definition-mapper/tree/master)
+* Develop: [![CircleCI](https://circleci.com/gh/ErnestIO/definition-mapper/tree/develop.svg?style=svg)](https://circleci.com/gh/ErnestIO/definition-mapper/tree/develop)
 
 ## Install
 
