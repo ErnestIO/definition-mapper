@@ -63,7 +63,7 @@ func CreateService(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 // PatchService will patch an errored service
 func PatchService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
-	msg, _ := Request("service.get", []byte(`{"service":"`+id+`"}`))
+	msg, _ := Request("service.get.mapping", []byte(`{"id":"`+id+`"}`))
 	b := strings.Replace(string(msg), "\"service.create\"", "\"service.patch\"", -1)
 
 	Publish("service.patch", []byte(b))
@@ -72,7 +72,7 @@ func PatchService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 // GetService will patch an errored service
 func GetService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
-	msg, err := Request("service.get", []byte(`{"service":"`+id+`"}`))
+	msg, err := Request("service.get.mapping", []byte(`{"id":"`+id+`"}`))
 	if err != nil {
 		log.Println(err)
 	}
@@ -113,7 +113,7 @@ func DeleteService(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 }
 
 func getPreviousService(id string) (*output.FSMMessage, error) {
-	body, err := Request("service.get", []byte(`{"service":"`+id+`"}`))
+	body, err := Request("service.get.mapping", []byte(`{"id":"`+id+`"}`))
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
