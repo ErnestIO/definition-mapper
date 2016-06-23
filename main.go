@@ -24,6 +24,7 @@ func MapCreateService(msg *nats.Msg) {
 	var payload input.Payload
 
 	if err := json.Unmarshal(msg.Data, &payload); err != nil {
+		log.Println(err.Error())
 		natsClient.Publish(msg.Reply, []byte(`{"error":"Failed to parse payload."}`))
 		return
 	}
@@ -110,10 +111,11 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+	Subscribe(natsClient)
 	runtime.Goexit()
 }
 
 func Subscribe(natsURI *nats.Conn) {
-	natsClient.Subscribe("description.map_create", MapCreateService)
-	natsClient.Subscribe("description.map_delete", MapDeleteService)
+	natsClient.Subscribe("definition.map.creation", MapCreateService)
+	natsClient.Subscribe("definition.map.deletion", MapDeleteService)
 }
