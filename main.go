@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/ernestio/definition-mapper/input"
@@ -109,6 +110,7 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+	runtime.Goexit()
 }
 
 func Subscribe(natsURI *nats.Conn) {
