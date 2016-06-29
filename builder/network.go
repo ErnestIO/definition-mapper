@@ -7,8 +7,8 @@ package builder
 import (
 	"errors"
 
-	"github.com/r3labs/definition-mapper/input"
-	"github.com/r3labs/definition-mapper/output"
+	"github.com/ernestio/definition-mapper/input"
+	"github.com/ernestio/definition-mapper/output"
 )
 
 // MapNetworks : Maps the networks from a given input payload. Additionally it will create an

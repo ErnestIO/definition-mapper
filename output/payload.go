@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/r3labs/definition-mapper/workflow"
+	"github.com/ernestio/definition-mapper/workflow"
 )
 
 // FSMMessage is the JSON payload that will be sent to the FSM to create a

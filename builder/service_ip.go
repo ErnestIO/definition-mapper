@@ -8,7 +8,7 @@ import (
 	"errors"
 	"net"
 
-	"github.com/r3labs/definition-mapper/input"
+	"github.com/ernestio/definition-mapper/input"
 )
 
 // MapServiceIP : validates and returns the ernest ip

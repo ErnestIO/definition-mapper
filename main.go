@@ -13,10 +13,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/ernestio/definition-mapper/input"
+	"github.com/ernestio/definition-mapper/output"
 	"github.com/julienschmidt/httprouter"
 	"github.com/nats-io/nats"
-	"github.com/r3labs/definition-mapper/input"
-	"github.com/r3labs/definition-mapper/output"
 )
 
 // Index is the root route for this miroservice
