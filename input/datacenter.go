@@ -11,11 +11,11 @@ import (
 
 // Datacenter ...
 type Datacenter struct {
-	Name            string `json:"datacenter_name"`
-	Username        string `json:"datacenter_username"`
-	Password        string `json:"datacenter_password"`
-	Type            string `json:"datacenter_type"`
-	Region          string `json:"datacenter_region"`
+	Name            string `json:"name"`
+	Username        string `json:"username"`
+	Password        string `json:"password"`
+	Type            string `json:"type"`
+	Region          string `json:"region"`
 	ExternalNetwork string `json:"external_network"`
 	VCloudURL       string `json:"vcloud_url"`
 	VseURL          string `json:"vse_url"`

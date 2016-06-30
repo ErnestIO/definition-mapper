@@ -96,7 +96,6 @@ func mapGenericMessage(payload input.Payload, prev *output.FSMMessage) (m output
 		ID:            payload.ServiceID,
 		Service:       payload.ServiceID,
 		ServiceName:   payload.Service.Name,
-		Client:        payload.Client.ID,
 		ClientName:    payload.Client.Name,
 		Type:          payload.Datacenter.Type,
 		Bootstrapping: builder.Bootstrapping(payload),
