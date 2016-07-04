@@ -6,6 +6,6 @@ package input
 
 // Client ...
 type Client struct {
-	ID   string `json:"client_id"`
-	Name string `json:"client_name"`
+	// ID   string `json:"id"`
+	Name string `json:"name"`
 }

@@ -10,8 +10,6 @@ import (
 	"log"
 	"os"
 	"time"
-
-	"github.com/nats-io/nats"
 )
 
 // Loads the configuration file config.json
@@ -29,13 +27,7 @@ func getDBURL() string {
 		return fmt.Sprintf("%s/%s?sslmode=disable", os.Getenv("DB_URI"), dbName)
 	}
 
-	// Get config from conf-store
-	nc, err := nats.Connect(natsURI)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	resp, err := nc.Request("config.get.postgres", nil, time.Second)
+	resp, err := natsClient.Request("config.get.postgres", nil, time.Second)
 	if err != nil {
 		log.Println("could not load config")
 		log.Panic(err)
