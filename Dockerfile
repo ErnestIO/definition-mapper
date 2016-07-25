@@ -7,4 +7,4 @@ WORKDIR /go/src/github.com/ernestio/definition-mapper
 
 RUN make deps && go install
 
-ENTRYPOINT /go/bin/definition-mapper
+ENTRYPOINT ./entrypoint.sh
