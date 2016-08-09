@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"time"
 
+	ecc "github.com/ernestio/ernest-config-client"
 	"github.com/nats-io/nats"
 )
 
@@ -65,14 +66,7 @@ func Subscribe() {
 }
 
 func setup() {
-	natsURI := os.Getenv("NATS_URI")
-	if natsURI == "" {
-		natsURI = nats.DefaultURL
-	}
-	n, err = nats.Connect(natsURI)
-	if err != nil {
-		log.Panic(err)
-	}
+	n = ecc.NewConfig(os.Getenv("NATS_URI")).Nats()
 }
 
 func main() {
