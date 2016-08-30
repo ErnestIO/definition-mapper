@@ -18,6 +18,7 @@ deps: dev-deps
 	go get -u github.com/julienschmidt/httprouter
 	go get -u github.com/lib/pq
 	go get -u github.com/r3labs/binary-prefix
+	go get -u github.com/ernestio/ernest-config-client
 
 dev-deps:
 	go get -u github.com/golang/lint/golint

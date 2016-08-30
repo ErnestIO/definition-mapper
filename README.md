@@ -1,6 +1,6 @@
 # Definition Mapper
 
-This service will map a json service definition on a valid service with a valid workflow
+This service works as a router to redirect all definition mapping requests to its specific definition mapper (aws or vcloud)
 
 
 ## Build status

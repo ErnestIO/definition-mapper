@@ -11,111 +11,66 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/ernestio/definition-mapper/input"
-	"github.com/ernestio/definition-mapper/output"
+	ecc "github.com/ernestio/ernest-config-client"
 	"github.com/nats-io/nats"
 )
 
-var natsClient *nats.Conn
+var n *nats.Conn
 var err error
 
-// MapCreateService builds a valid service from the input and replies with it
-func MapCreateService(msg *nats.Msg) {
-	var payload input.Payload
-
-	if err := json.Unmarshal(msg.Data, &payload); err != nil {
-		log.Println(err.Error())
-		natsClient.Publish(msg.Reply, []byte(`{"error":"Failed to parse payload."}`))
-		return
+func getType(body []byte) string {
+	var service struct {
+		Datacenter struct {
+			Type string `json:"type"`
+		} `json:"datacenter"`
 	}
-	prev, _ := getPreviousService(payload.PrevID)
+	json.Unmarshal(body, &service)
 
-	m, err := BuildFSMMessage(payload, prev)
-	if err != nil {
-		natsClient.Publish(msg.Reply, []byte(err.Error()))
-		return
-	}
-
-	body, err := json.Marshal(m)
-	if err != nil {
-		natsClient.Publish(msg.Reply, []byte(err.Error()))
-		return
-	}
-
-	natsClient.Publish(msg.Reply, body)
+	return service.Datacenter.Type
 }
 
-// MapDeleteService : builds and responds with a service based on input
-func MapDeleteService(msg *nats.Msg) {
-	var input input.Payload
-
-	if err := json.Unmarshal(msg.Data, &input); err != nil {
-		natsClient.Publish(msg.Reply, []byte(`{"error":"Failed to parse payload."}`))
-		return
+func route(msg *nats.Msg, action string) []byte {
+	mapper := ""
+	switch getType(msg.Data) {
+	case "vcloud", "fake", "vcloud-fake":
+		mapper = "vcloud"
+	case "aws", "aws-fake":
+		mapper = "aws"
+	default:
+		return []byte(`{"error":"Invalid type"}`)
 	}
-	payload, err := getPreviousService(input.PrevID)
 
+	subject := "definition.map." + action + "." + mapper
+	msg, err := n.Request(subject, msg.Data, time.Second)
 	if err != nil {
-		natsClient.Publish(msg.Reply, []byte(`{"error":"Failed to parse payload."}`))
-		return
+		log.Println("Error processing " + subject)
+		log.Println(err.Error())
 	}
 
-	if payload == nil {
-		natsClient.Publish(msg.Reply, []byte(`{"error":"Service not found."}`))
-		return
-	}
-
-	m, err := BuildDeleteMessage(*payload)
-	if err != nil {
-		log.Println(err)
-		natsClient.Publish(msg.Reply, []byte(`{"error":"Internal error."}`))
-		return
-	}
-
-	body, err := json.Marshal(m)
-	if err != nil {
-		natsClient.Publish(msg.Reply, []byte(`{"error":"Internal error."}`))
-		return
-	}
-
-	natsClient.Publish(msg.Reply, body)
+	return msg.Data
 }
 
-// Get the previous service based on an ID
-func getPreviousService(id string) (*output.FSMMessage, error) {
-	msg, err := natsClient.Request("service.get.mapping", []byte(`{"id":"`+id+`"}`), time.Second)
+func SubscribeCreateService(msg *nats.Msg) {
+	res := route(msg, "creation")
+	n.Publish(msg.Reply, res)
+}
 
-	if err != nil {
-		log.Println(err.Error())
-		return nil, err
-	}
+func SubscribeDeleteService(msg *nats.Msg) {
+	res := route(msg, "deletion")
+	n.Publish(msg.Reply, res)
+}
 
-	var payload output.FSMMessage
-	if err := json.Unmarshal(msg.Data, &payload); err != nil {
-		return nil, err
-	}
+func Subscribe() {
+	n.Subscribe("definition.map.creation", SubscribeCreateService)
+	n.Subscribe("definition.map.deletion", SubscribeDeleteService)
+}
 
-	if payload.ID == "" {
-		return nil, nil
-	}
-
-	return &payload, nil
+func setup() {
+	n = ecc.NewConfig(os.Getenv("NATS_URI")).Nats()
 }
 
 func main() {
-	natsURI := os.Getenv("NATS_URI")
-	if natsURI == "" {
-		natsURI = nats.DefaultURL
-	}
-	natsClient, err = nats.Connect(natsURI)
-	if err != nil {
-		log.Panic(err)
-	}
-	Subscribe(natsClient)
+	setup()
+	Subscribe()
 	runtime.Goexit()
-}
-
-func Subscribe(natsURI *nats.Conn) {
-	natsClient.Subscribe("definition.map.creation", MapCreateService)
-	natsClient.Subscribe("definition.map.deletion", MapDeleteService)
 }
