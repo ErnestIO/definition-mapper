@@ -5,8 +5,8 @@ This service works as a router to redirect all definition mapping requests to it
 
 ## Build status
 
-* Master: [![CircleCI](https://circleci.com/gh/ErnestIO/definition-mapper/tree/master.svg?style=svg)](https://circleci.com/gh/ErnestIO/definition-mapper/tree/master)
-* Develop: [![CircleCI](https://circleci.com/gh/ErnestIO/definition-mapper/tree/develop.svg?style=svg)](https://circleci.com/gh/ErnestIO/definition-mapper/tree/develop)
+* Master: [![CircleCI](https://circleci.com/gh/ernestio/definition-mapper/tree/master.svg?style=svg)](https://circleci.com/gh/ernestio/definition-mapper/tree/master)
+* Develop: [![CircleCI](https://circleci.com/gh/ernestio/definition-mapper/tree/develop.svg?style=svg)](https://circleci.com/gh/ernestio/definition-mapper/tree/develop)
 
 ## Install
 
