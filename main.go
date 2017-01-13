@@ -24,7 +24,10 @@ func getType(body []byte) string {
 			Type string `json:"type"`
 		} `json:"datacenter"`
 	}
-	json.Unmarshal(body, &service)
+
+	if err := json.Unmarshal(body, &service); err != nil {
+		log.Panic(err)
+	}
 
 	return service.Datacenter.Type
 }
@@ -50,19 +53,41 @@ func route(msg *nats.Msg, action string) []byte {
 	return msg.Data
 }
 
+// SubscribeCreateService : definition.map.creation subscriber
 func SubscribeCreateService(msg *nats.Msg) {
 	res := route(msg, "creation")
-	n.Publish(msg.Reply, res)
+	if err := n.Publish(msg.Reply, res); err != nil {
+		log.Panic(err)
+	}
 }
 
+// SubscribeImportService : definition.map.import subscriber
+func SubscribeImportService(msg *nats.Msg) {
+	res := route(msg, "import")
+	if err := n.Publish(msg.Reply, res); err != nil {
+		log.Panic(err)
+	}
+}
+
+// SubscribeDeleteService : definition.map.deletion subscriber
 func SubscribeDeleteService(msg *nats.Msg) {
 	res := route(msg, "deletion")
-	n.Publish(msg.Reply, res)
+	if err := n.Publish(msg.Reply, res); err != nil {
+		log.Panic(err)
+	}
 }
 
+// Subscribe : Manages all subscriptions
 func Subscribe() {
-	n.Subscribe("definition.map.creation", SubscribeCreateService)
-	n.Subscribe("definition.map.deletion", SubscribeDeleteService)
+	if _, err := n.Subscribe("definition.map.creation", SubscribeCreateService); err != nil {
+		log.Panic(err)
+	}
+	if _, err := n.Subscribe("definition.map.import", SubscribeImportService); err != nil {
+		log.Panic(err)
+	}
+	if _, err := n.Subscribe("definition.map.deletion", SubscribeDeleteService); err != nil {
+		log.Panic(err)
+	}
 }
 
 func setup() {
