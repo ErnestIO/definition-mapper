@@ -22,8 +22,8 @@ func waitMsg(ch chan *nats.Msg) (*nats.Msg, error) {
 	return nil, errors.New("timeout")
 }
 func dummySubscribe(subject string) {
-	n.Subscribe(subject, func(m *nats.Msg) {
-		n.Publish(m.Reply, []byte(subject))
+	_, _ = n.Subscribe(subject, func(m *nats.Msg) {
+		_ = n.Publish(m.Reply, []byte(subject))
 	})
 }
 
