@@ -6,20 +6,26 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"runtime"
 	"time"
 
 	ecc "github.com/ernestio/ernest-config-client"
+	"github.com/ernestio/libmapper"
+	"github.com/ernestio/libmapper/providers"
 	"github.com/nats-io/nats"
+	"gopkg.in/r3labs/graph.v2"
 )
 
 var n *nats.Conn
 var err error
 
-func getType(body []byte) string {
+func getInputDetails(body []byte) (string, string, string) {
 	var service struct {
+		Name       string `json:"name"`
+		Previous   string `json:"previous_id"`
 		Datacenter struct {
 			Type string `json:"type"`
 		} `json:"datacenter"`
@@ -29,63 +35,171 @@ func getType(body []byte) string {
 		log.Panic(err)
 	}
 
-	return service.Datacenter.Type
+	return service.Name, service.Datacenter.Type, service.Previous
 }
 
-func route(msg *nats.Msg, action string) []byte {
-	mapper := ""
-	switch getType(msg.Data) {
-	case "vcloud", "fake", "vcloud-fake":
-		mapper = "vcloud"
-	case "aws", "aws-fake":
-		mapper = "aws"
-	default:
-		return []byte(`{"error":"Invalid type"}`)
-	}
+func stringToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
+	var gd map[string]interface{}
+	err = json.Unmarshal(body, &gd)
 
-	subject := "definition.map." + action + "." + mapper
-	msg, err := n.Request(subject, msg.Data, time.Second)
+	d, err := m.LoadDefinition(gd)
 	if err != nil {
-		log.Println("Error processing " + subject)
-		log.Println(err.Error())
+		return nil, err
 	}
 
-	return msg.Data
+	return m.ConvertDefinition(d)
 }
 
 // SubscribeCreateService : definition.map.creation subscriber
-func SubscribeCreateService(msg *nats.Msg) {
-	res := route(msg, "creation")
-	if err := n.Publish(msg.Reply, res); err != nil {
-		log.Panic(err)
+// For a given definition, it will generate the valid service
+// and necessary workflow to create the environment on the
+// provider
+func SubscribeCreateService(body []byte) ([]byte, error) {
+	_, t, p := getInputDetails(body)
+
+	m := providers.NewMapper(t)
+	if m == nil {
+		return body, fmt.Errorf("Unconfigured provider type : '%s'", t)
 	}
+
+	g, err := stringToGraph(m, body)
+	if err != nil {
+		return body, err
+	}
+
+	// If there is a previous service
+	if p != "" {
+		oMsg, err := n.Request("service.get.definition", []byte(`{"service_id":"`+p+`"}`), time.Second)
+		if err != nil {
+			return body, err
+		}
+		og, err := stringToGraph(m, oMsg.Data)
+		if err != nil {
+			return body, err
+		}
+
+		g, err = g.Diff(og)
+		if err != nil {
+			return body, err
+		}
+	}
+
+	return json.Marshal(g)
 }
 
 // SubscribeImportService : definition.map.import subscriber
-func SubscribeImportService(msg *nats.Msg) {
-	res := route(msg, "import")
-	if err := n.Publish(msg.Reply, res); err != nil {
-		log.Panic(err)
+// For a given filters it will generate a workflow to fully
+// import a provider service.
+func SubscribeImportService(body []byte) ([]byte, error) {
+	var filters []string
+	n, t, _ := getInputDetails(body)
+	// TODO Allow multi-filters for azure development
+	filters = append(filters, n)
+	m := providers.NewMapper(t)
+	g := m.CreateImportGraph(filters)
+	if g, err = g.Diff(graph.New()); err != nil {
+		return body, err
 	}
+
+	return json.Marshal(g)
 }
 
 // SubscribeDeleteService : definition.map.deletion subscriber
-func SubscribeDeleteService(msg *nats.Msg) {
-	res := route(msg, "deletion")
-	if err := n.Publish(msg.Reply, res); err != nil {
-		log.Panic(err)
+// For a given existing service will generate a valid internal
+// service with a workflow to delete all its components
+func SubscribeDeleteService(body []byte) ([]byte, error) {
+	var gd map[string]interface{}
+	if err := json.Unmarshal(body, &gd); err != nil {
+		return body, err
 	}
+	_, t, _ := getInputDetails(body)
+	m := providers.NewMapper(t)
+
+	empty := graph.New()
+	original, err := m.LoadGraph(gd)
+	if err != nil {
+		return body, err
+	}
+
+	g, err := empty.Diff(original)
+	if err != nil {
+		return body, err
+	}
+
+	return json.Marshal(g)
 }
 
-// Subscribe : Manages all subscriptions
-func Subscribe() {
-	if _, err := n.Subscribe("definition.map.creation", SubscribeCreateService); err != nil {
+// SubscribeMapService : definition.map.service subscriber
+// For a given full service will generate the relative
+// definition
+func SubscribeMapService(body []byte) ([]byte, error) {
+	_, t, _ := getInputDetails(body)
+	m := providers.NewMapper(t)
+
+	var gd map[string]interface{}
+	if err := json.Unmarshal(body, &gd); err != nil {
+		return body, err
+	}
+
+	original, err := m.LoadGraph(gd)
+	if err != nil {
+		return body, err
+	}
+	definition, err := m.ConvertGraph(original)
+	if err != nil {
+		return body, err
+	}
+
+	return json.Marshal(definition)
+}
+
+// ManageDefinitions : Manages all subscriptions
+func ManageDefinitions() {
+	if _, err := n.Subscribe("definition.map.creation", func(m *nats.Msg) {
+		if body, err := SubscribeCreateService(m.Data); err != nil {
+			if err := n.Publish(m.Reply, body); err != nil {
+				log.Panic(err.Error())
+			}
+		} else {
+			log.Panic(err.Error())
+		}
+	}); err != nil {
 		log.Panic(err)
 	}
-	if _, err := n.Subscribe("definition.map.import", SubscribeImportService); err != nil {
+
+	if _, err := n.Subscribe("definition.map.import", func(m *nats.Msg) {
+		if body, err := SubscribeImportService(m.Data); err != nil {
+			if err := n.Publish(m.Reply, body); err != nil {
+				log.Panic(err.Error())
+			}
+		} else {
+			log.Panic(err.Error())
+		}
+	}); err != nil {
 		log.Panic(err)
 	}
-	if _, err := n.Subscribe("definition.map.deletion", SubscribeDeleteService); err != nil {
+
+	if _, err := n.Subscribe("definition.map.deletion", func(m *nats.Msg) {
+		if body, err := SubscribeDeleteService(m.Data); err != nil {
+			if err := n.Publish(m.Reply, body); err != nil {
+				log.Panic(err.Error())
+			}
+		} else {
+			log.Panic(err.Error())
+		}
+	}); err != nil {
+		log.Panic(err)
+	}
+
+	if _, err := n.Subscribe("definition.map.service", func(m *nats.Msg) {
+		if body, err := SubscribeMapService(m.Data); err != nil {
+			if err := n.Publish(m.Reply, body); err != nil {
+				log.Panic(err.Error())
+			}
+		} else {
+			log.Panic(err.Error())
+		}
+	}); err != nil {
 		log.Panic(err)
 	}
 }
@@ -96,6 +210,6 @@ func setup() {
 
 func main() {
 	setup()
-	Subscribe()
+	ManageDefinitions()
 	runtime.Goexit()
 }
