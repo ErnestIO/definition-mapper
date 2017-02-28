@@ -6,6 +6,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -45,7 +46,12 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 		return nil, err
 	}
 
-	d, err := m.LoadDefinition(gd)
+	definition, ok := gd["service"].(map[string]interface{})
+	if ok != true {
+		return nil, errors.New("could not convert definition")
+	}
+
+	d, err := m.LoadDefinition(definition)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +108,7 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 		}
 	}
 
-	return json.Marshal(g)
+	return g.ToJSON()
 }
 
 // SubscribeImportService : definition.map.import subscriber
