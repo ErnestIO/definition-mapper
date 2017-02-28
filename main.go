@@ -118,6 +118,7 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 		fmt.Println("error serializing to graph")
 	}
 
+	fmt.Println("output")
 	fmt.Println(string(data))
 
 	return g.ToJSON()
