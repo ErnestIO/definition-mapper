@@ -38,9 +38,12 @@ func getInputDetails(body []byte) (string, string, string) {
 	return service.Name, service.Datacenter.Type, service.Previous
 }
 
-func stringToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
+func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 	var gd map[string]interface{}
-	err = json.Unmarshal(body, &gd)
+	err := json.Unmarshal(body, &gd)
+	if err != nil {
+		return nil, err
+	}
 
 	d, err := m.LoadDefinition(gd)
 	if err != nil {
@@ -48,6 +51,16 @@ func stringToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 	}
 
 	return m.ConvertDefinition(d)
+}
+
+func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
+	var gm map[string]interface{}
+	err = json.Unmarshal(body, &gm)
+	if err != nil {
+		return nil, err
+	}
+
+	return m.LoadGraph(gm)
 }
 
 // SubscribeCreateService : definition.map.creation subscriber
@@ -62,23 +75,28 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 		return body, fmt.Errorf("Unconfigured provider type : '%s'", t)
 	}
 
-	g, err := stringToGraph(m, body)
+	g, err := definitionToGraph(m, body)
 	if err != nil {
 		return body, err
 	}
 
 	// If there is a previous service
 	if p != "" {
-		oMsg, err := n.Request("service.get.definition", []byte(`{"service_id":"`+p+`"}`), time.Second)
+		oMsg, err := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
 		if err != nil {
 			return body, err
 		}
-		og, err := stringToGraph(m, oMsg.Data)
+		og, err := mappingToGraph(m, oMsg.Data)
 		if err != nil {
 			return body, err
 		}
 
 		g, err = g.Diff(og)
+		if err != nil {
+			return body, err
+		}
+	} else {
+		g, err = g.Diff(graph.New())
 		if err != nil {
 			return body, err
 		}
