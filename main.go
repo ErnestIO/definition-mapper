@@ -193,7 +193,7 @@ func SubscribeMapService(body []byte) ([]byte, error) {
 // ManageDefinitions : Manages all subscriptions
 func ManageDefinitions() {
 	if _, err := n.Subscribe("definition.map.creation", func(m *nats.Msg) {
-		if body, err := SubscribeCreateService(m.Data); err != nil {
+		if body, err := SubscribeCreateService(m.Data); err == nil {
 			if err := n.Publish(m.Reply, body); err != nil {
 				log.Panic(err.Error())
 			}
@@ -205,7 +205,7 @@ func ManageDefinitions() {
 	}
 
 	if _, err := n.Subscribe("definition.map.import", func(m *nats.Msg) {
-		if body, err := SubscribeImportService(m.Data); err != nil {
+		if body, err := SubscribeImportService(m.Data); err == nil {
 			if err := n.Publish(m.Reply, body); err != nil {
 				log.Panic(err.Error())
 			}
@@ -217,7 +217,7 @@ func ManageDefinitions() {
 	}
 
 	if _, err := n.Subscribe("definition.map.deletion", func(m *nats.Msg) {
-		if body, err := SubscribeDeleteService(m.Data); err != nil {
+		if body, err := SubscribeDeleteService(m.Data); err == nil {
 			if err := n.Publish(m.Reply, body); err != nil {
 				log.Panic(err.Error())
 			}
@@ -229,7 +229,7 @@ func ManageDefinitions() {
 	}
 
 	if _, err := n.Subscribe("definition.map.service", func(m *nats.Msg) {
-		if body, err := SubscribeMapService(m.Data); err != nil {
+		if body, err := SubscribeMapService(m.Data); err == nil {
 			if err := n.Publish(m.Reply, body); err != nil {
 				log.Panic(err.Error())
 			}
