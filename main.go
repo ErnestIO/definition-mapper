@@ -76,11 +76,13 @@ func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 func SubscribeCreateService(body []byte) ([]byte, error) {
 	_, t, p := getInputDetails(body)
 
+	fmt.Println("getting mapper")
 	m := providers.NewMapper(t)
 	if m == nil {
 		return body, fmt.Errorf("Unconfigured provider type : '%s'", t)
 	}
 
+	fmt.Println("getting graph from definition")
 	g, err := definitionToGraph(m, body)
 	if err != nil {
 		return body, err
@@ -88,6 +90,7 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 
 	// If there is a previous service
 	if p != "" {
+		fmt.Println("getting previous service")
 		oMsg, err := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
 		if err != nil {
 			return body, err
@@ -102,11 +105,20 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 			return body, err
 		}
 	} else {
+		fmt.Println("diffing against empty graph")
+
 		g, err = g.Diff(graph.New())
 		if err != nil {
 			return body, err
 		}
 	}
+
+	data, err := g.ToJSON()
+	if err != nil {
+		fmt.Println("error serializing to graph")
+	}
+
+	fmt.Println(string(data))
 
 	return g.ToJSON()
 }
