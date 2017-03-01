@@ -23,8 +23,9 @@ import (
 var n *nats.Conn
 var err error
 
-func getInputDetails(body []byte) (string, string, string) {
+func getInputDetails(body []byte) (string, string, string, string) {
 	var service struct {
+		ID         string `json:"id"`
 		Name       string `json:"name"`
 		Previous   string `json:"previous_id"`
 		Datacenter struct {
@@ -36,7 +37,7 @@ func getInputDetails(body []byte) (string, string, string) {
 		log.Panic(err)
 	}
 
-	return service.Name, service.Datacenter.Type, service.Previous
+	return service.ID, service.Name, service.Datacenter.Type, service.Previous
 }
 
 func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
@@ -93,7 +94,7 @@ func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 // and necessary workflow to create the environment on the
 // provider
 func SubscribeCreateService(body []byte) ([]byte, error) {
-	_, t, p := getInputDetails(body)
+	id, _, t, p := getInputDetails(body)
 
 	m := providers.NewMapper(t)
 	if m == nil {
@@ -127,6 +128,8 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 		}
 	}
 
+	g.ID = id
+
 	return g.ToJSON()
 }
 
@@ -135,7 +138,7 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 // import a provider service.
 func SubscribeImportService(body []byte) ([]byte, error) {
 	var filters []string
-	n, t, _ := getInputDetails(body)
+	id, n, t, _ := getInputDetails(body)
 	// TODO Allow multi-filters for azure development
 	filters = append(filters, n)
 	m := providers.NewMapper(t)
@@ -144,7 +147,9 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 		return body, err
 	}
 
-	return json.Marshal(g)
+	g.ID = id
+
+	return g.ToJSON()
 }
 
 // SubscribeDeleteService : definition.map.deletion subscriber
@@ -155,7 +160,7 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 	if err := json.Unmarshal(body, &gd); err != nil {
 		return body, err
 	}
-	_, t, _ := getInputDetails(body)
+	id, _, t, _ := getInputDetails(body)
 	m := providers.NewMapper(t)
 
 	empty := graph.New()
@@ -169,6 +174,8 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 		return body, err
 	}
 
+	g.ID = id
+
 	return json.Marshal(g)
 }
 
@@ -176,7 +183,7 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 // For a given full service will generate the relative
 // definition
 func SubscribeMapService(body []byte) ([]byte, error) {
-	_, t, _ := getInputDetails(body)
+	_, _, t, _ := getInputDetails(body)
 	m := providers.NewMapper(t)
 
 	var gd map[string]interface{}
