@@ -51,12 +51,24 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 		return nil, errors.New("could not convert definition")
 	}
 
+	sid, ok := gd["id"].(map[string]interface{})
+	if ok != true {
+		return nil, errors.New("could not find service id")
+	}
+
 	d, err := m.LoadDefinition(definition)
 	if err != nil {
 		return nil, err
 	}
 
-	return m.ConvertDefinition(d)
+	g, err := m.ConvertDefinition(d)
+	if err != nil {
+		return nil, err
+	}
+
+	g.ID = sid
+
+	return g, nil
 }
 
 func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
