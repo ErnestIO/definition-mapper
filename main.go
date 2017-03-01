@@ -51,6 +51,11 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 		return nil, errors.New("could not convert definition")
 	}
 
+	credentials, ok := gd["datacenter"].(map[string]interface{})
+	if ok != true {
+		return nil, errors.New("could not find datacenter credentials")
+	}
+
 	sid, ok := gd["id"].(string)
 	if ok != true {
 		return nil, errors.New("could not find service id")
@@ -66,7 +71,9 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 		return nil, err
 	}
 
+	// set graph ID and credentials
 	g.ID = sid
+	g.AddComponent(m.ProviderCredentials(credentials))
 
 	return g, nil
 }
