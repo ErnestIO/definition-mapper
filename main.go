@@ -74,7 +74,10 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 
 	// set graph ID and credentials
 	g.ID = sid
-	g.AddComponent(m.ProviderCredentials(credentials))
+	err = g.AddComponent(m.ProviderCredentials(credentials))
+	if err != nil {
+		return nil, err
+	}
 
 	return g, nil
 }
