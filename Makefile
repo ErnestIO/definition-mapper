@@ -16,7 +16,9 @@ cover:
 deps:
 	go get github.com/nats-io/nats
 	go get github.com/ernestio/ernest-config-client
-	go get github.com/ernestio/libmapper
+	go get github.com/mitchellh/mapstructure
+	go get github.com/ghodss/yaml
+	go get gopkg.in/r3labs/graph.v2
 
 dev-deps: deps
 	go get github.com/smartystreets/goconvey/convey
