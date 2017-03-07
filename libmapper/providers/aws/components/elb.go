@@ -225,8 +225,7 @@ func (e *ELB) Dependencies() []string {
 		deps = append(deps, TYPENETWORK+TYPEDELIMITER+nw)
 	}
 
-	// TODO : needs to not depend on instance group!
-	for _, in := range e.Instances {
+	for _, in := range e.InstanceNames {
 		deps = append(deps, TYPEINSTANCE+TYPEDELIMITER+in)
 	}
 
@@ -262,10 +261,10 @@ func (e *ELB) Validate() error {
 			return fmt.Errorf("From Port (%d) is out of range [1 - 65535]", listener.ToPort)
 		}
 
-		if listener.Protocol != "http" &&
-			listener.Protocol != "https" &&
-			listener.Protocol != "tcp" &&
-			listener.Protocol != "ssl" {
+		if listener.Protocol != "HTTP" &&
+			listener.Protocol != "HTTPS" &&
+			listener.Protocol != "TCP" &&
+			listener.Protocol != "SSL" {
 			return errors.New("ELB Protocol must be one of http, https, tcp or ssl")
 		}
 

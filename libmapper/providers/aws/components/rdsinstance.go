@@ -491,10 +491,6 @@ func (r *RDSInstance) validateDatabase() error {
 
 func (r *RDSInstance) validateEngine() error {
 	if r.Cluster != "" {
-		if r.Engine != "" {
-			return fmt.Errorf("RDS Instance engine type should be set on cluster")
-		}
-
 		if r.EngineVersion != "" {
 			return fmt.Errorf("RDS Instance engine version should be set on cluster")
 		}
