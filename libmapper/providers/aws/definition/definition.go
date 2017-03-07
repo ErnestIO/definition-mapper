@@ -22,9 +22,9 @@ type Definition struct {
 	EBSVolumes     []EBSVolume     `json:"ebs_volumes,omitempty"`
 	NatGateways    []NatGateway    `json:"nat_gateways,omitempty"`
 	RDSClusters    []RDSCluster    `json:"rds_clusters,omitempty"`
-	//S3Buckets         []S3            `json:"s3_buckets,omitempty"`
-	//Route53Zones      []Route53Zone   `json:"route53_zones,omitempty"`
-	//RDSInstances      []RDSInstance   `json:"rds_instances,omitempty"`
+	RDSInstances   []RDSInstance   `json:"rds_instances,omitempty"`
+	Route53Zones   []Route53Zone   `json:"route53_zones,omitempty"`
+	S3Buckets      []S3            `json:"s3_buckets,omitempty"`
 }
 
 // New returns a new Definition

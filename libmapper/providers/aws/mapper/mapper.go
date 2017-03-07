@@ -92,6 +92,9 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 	d.EBSVolumes = MapDefinitionEBSVolumes(g)
 	d.NatGateways = MapDefinitionNats(g)
 	d.RDSClusters = MapDefinitionRDSClusters(g)
+	d.RDSInstances = MapDefinitionRDSInstances(g)
+	d.Route53Zones = MapDefinitionRoute53Zones(g)
+	d.S3Buckets = MapDefinitionS3Buckets(g)
 
 	return d, nil
 }
@@ -133,6 +136,12 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.NatGateway{}
 		case "rds_cluster":
 			c = &components.RDSCluster{}
+		case "rds_instance":
+			c = &components.RDSInstance{}
+		case "route53":
+			c = &components.Route53Zone{}
+		case "s3":
+			c = &components.S3Bucket{}
 		}
 
 		config := &mapstructure.DecoderConfig{
@@ -243,6 +252,27 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 
 	for _, rds := range MapRDSClusters(d) {
 		err := g.AddComponent(rds)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, rds := range MapRDSInstances(d) {
+		err := g.AddComponent(rds)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, s3 := range MapS3Buckets(d) {
+		err := g.AddComponent(s3)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, route53 := range MapRoute53Zones(d) {
+		err := g.AddComponent(route53)
 		if err != nil {
 			return err
 		}

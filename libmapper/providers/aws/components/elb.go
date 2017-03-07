@@ -225,8 +225,9 @@ func (e *ELB) Dependencies() []string {
 		deps = append(deps, TYPENETWORK+TYPEDELIMITER+nw)
 	}
 
+	// TODO : needs to not depend on instance group!
 	for _, in := range e.Instances {
-		deps = append(deps, TYPENETWORK+TYPEDELIMITER+in)
+		deps = append(deps, TYPEINSTANCE+TYPEDELIMITER+in)
 	}
 
 	return deps
