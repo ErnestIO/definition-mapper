@@ -262,6 +262,10 @@ func (z *Route53Zone) Dependencies() []string {
 		}
 	}
 
+	if z.Vpc != "" {
+		deps = append(deps, TYPEVPC+TYPEDELIMITER+z.Vpc)
+	}
+
 	return deps
 }
 
