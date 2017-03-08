@@ -41,6 +41,10 @@ func templSubnetID(nw string) string {
 	return `$(components.#[_component_id="` + TYPENETWORK + TYPEDELIMITER + nw + `"].network_aws_id)`
 }
 
+func templSubnetVPCID(nw string) string {
+	return `$(components.#[_component_id="` + TYPENETWORK + TYPEDELIMITER + nw + `"].vpc_id)`
+}
+
 func templInstanceID(in string) string {
 	return `$(components.#[_component_id="` + TYPEINSTANCE + TYPEDELIMITER + in + `"].instance_aws_id)`
 }

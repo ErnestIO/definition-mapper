@@ -26,11 +26,13 @@ type NatGateway struct {
 	PublicNetworkAWSID     string            `json:"public_network_aws_id"`
 	NatGatewayAllocationID string            `json:"nat_gateway_allocation_id"`
 	NatGatewayAllocationIP string            `json:"nat_gateway_allocation_ip"`
+	InternetGatewayID      string            `json:"internet_gateway_id"`
 	DatacenterType         string            `json:"datacenter_type"`
 	DatacenterName         string            `json:"datacenter_name"`
 	DatacenterRegion       string            `json:"datacenter_region"`
 	AccessKeyID            string            `json:"aws_access_key_id"`
 	SecretAccessKey        string            `json:"aws_secret_access_key"`
+	VpcID                  string            `json:"vpc_id"`
 	Tags                   map[string]string `json:"tags"`
 	Service                string            `json:"service"`
 }
@@ -144,6 +146,8 @@ func (n *NatGateway) Rebuild(g *graph.Graph) {
 			}
 		}
 	}
+
+	n.VpcID = templSubnetVPCID(n.PublicNetwork)
 
 	n.SetDefaultVariables()
 }

@@ -44,6 +44,8 @@ type Route53Zone struct {
 	Name             string            `json:"name"`
 	Private          bool              `json:"private"`
 	Records          []Record          `json:"records"`
+	Vpc              string            `json:"vpc"`
+	VpcID            string            `json:"vpc_id"`
 	Tags             map[string]string `json:"tags"`
 	DatacenterType   string            `json:"datacenter_type"`
 	DatacenterName   string            `json:"datacenter_name"`
@@ -223,6 +225,18 @@ func (z *Route53Zone) Rebuild(g *graph.Graph) {
 		}
 	}
 
+	if z.Private {
+		if z.VpcID != "" && z.Vpc == "" {
+			v := g.GetComponents().ByProviderID(z.VpcID)
+			if v != nil {
+				z.Vpc = v.GetName()
+			}
+		}
+		if z.Vpc != "" && z.VpcID == "" {
+			templVpcID(z.Vpc)
+		}
+	}
+
 	z.SetDefaultVariables()
 }
 
@@ -255,6 +269,10 @@ func (z *Route53Zone) Dependencies() []string {
 func (z *Route53Zone) Validate() error {
 	if z.Name == "" {
 		return errors.New("Route53 zone name should not be null")
+	}
+
+	if z.Private && z.Vpc == "" {
+		return errors.New("Route53 private zone must specify a vpc!")
 	}
 
 	for _, record := range z.Records {

@@ -21,4 +21,5 @@ type Route53Zone struct {
 	Name    string   `json:"name"`
 	Private bool     `json:"private"`
 	Records []Record `json:"records"`
+	Vpc     string   `json:"vpc"`
 }

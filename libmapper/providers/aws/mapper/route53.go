@@ -18,6 +18,7 @@ func MapRoute53Zones(d *definition.Definition) []*components.Route53Zone {
 		z := &components.Route53Zone{
 			Name:    zone.Name,
 			Private: zone.Private,
+			Vpc:     zone.Vpc,
 			Tags:    mapTagsServiceOnly(d.Name),
 		}
 
