@@ -15,7 +15,7 @@ import (
 )
 
 // SUPPORTEDCOMPONENTS represents all component types supported by ernest
-var SUPPORTEDCOMPONENTS = []string{"vpc", "network", "instance", "security_group", "nat_gateway", "elb", "ebs", "s3", "route53", "rds_instance", "rds_cluster"}
+var SUPPORTEDCOMPONENTS = []string{"vpc", "network", "instance", "firewall", "nat_gateway", "elb", "ebs", "s3", "route53", "rds_instance", "rds_cluster"}
 
 // Mapper : implements the generic mapper structure
 type Mapper struct{}
@@ -126,7 +126,7 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.Network{}
 		case "instance":
 			c = &components.Instance{}
-		case "security_group":
+		case "firewall":
 			c = &components.SecurityGroup{}
 		case "elb":
 			c = &components.ELB{}

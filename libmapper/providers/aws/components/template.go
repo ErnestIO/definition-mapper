@@ -11,7 +11,7 @@ const (
 	TYPEINSTANCE      = "instance"
 	TYPEELB           = "elb"
 	TYPEEBSVOLUME     = "ebs_volume"
-	TYPESECURITYGROUP = "security_group"
+	TYPESECURITYGROUP = "firewall"
 	TYPENATGATEWAY    = "nat"
 	TYPERDSCLUSTER    = "rds_cluster"
 	TYPERDSINSTANCE   = "rds_instance"
