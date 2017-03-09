@@ -156,7 +156,7 @@ func (n *NatGateway) Rebuild(g *graph.Graph) {
 func (n *NatGateway) Dependencies() []string {
 	var deps []string
 
-	for _, nw := range n.RoutedNetworkAWSIDs {
+	for _, nw := range n.RoutedNetworks {
 		deps = append(deps, TYPENETWORK+TYPEDELIMITER+nw)
 	}
 
