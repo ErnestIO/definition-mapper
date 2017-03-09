@@ -20,6 +20,7 @@ func MapVpcs(d *definition.Definition) []*components.Vpc {
 			VpcAWSID:   vpc.ID,
 			Subnet:     vpc.Subnet,
 			AutoRemove: vpc.AutoRemove,
+			Tags:       mapTags(vpc.Name, d.Name),
 		}
 
 		if vpc.ID != "" {

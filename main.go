@@ -162,28 +162,27 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 // For a given existing service will generate a valid internal
 // service with a workflow to delete all its components
 func SubscribeDeleteService(body []byte) ([]byte, error) {
-	var gd map[string]interface{}
-
-	if err := json.Unmarshal(body, &gd); err != nil {
-		return body, err
-	}
-
-	id, _, t, _ := getInputDetails(body)
+	_, _, t, p := getInputDetails(body)
 	m := providers.NewMapper(t)
 
-	empty := graph.New()
-
-	original, err := m.LoadGraph(gd)
-	if err != nil {
-		return body, err
+	oMsg, rerr := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
+	if rerr != nil {
+		return body, rerr
 	}
+
+	original, merr := mappingToGraph(m, oMsg.Data)
+	if merr != nil {
+		return body, merr
+	}
+
+	empty := graph.New()
 
 	g, err := empty.Diff(original)
 	if err != nil {
 		return body, err
 	}
 
-	g.ID = id
+	g.ID = p
 
 	return json.Marshal(g)
 }
