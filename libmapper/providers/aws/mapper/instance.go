@@ -18,8 +18,7 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 	var is []*components.Instance
 
 	for _, instance := range d.Instances {
-		ip := make(net.IP, net.IPv4len)
-		copy(ip, net.ParseIP(instance.StartIP))
+		ip := net.ParseIP(instance.StartIP).To4()
 
 		for i := 0; i < instance.Count; i++ {
 			name := instance.Name + "-" + strconv.Itoa(i+1)
