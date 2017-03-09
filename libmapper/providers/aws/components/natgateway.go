@@ -128,7 +128,7 @@ func (n *NatGateway) Rebuild(g *graph.Graph) {
 		}
 	}
 
-	if n.PublicNetworkAWSID != "" && n.PublicNetwork != "" {
+	if n.PublicNetworkAWSID == "" && n.PublicNetwork != "" {
 		n.PublicNetworkAWSID = templSubnetID(n.PublicNetwork)
 	}
 
