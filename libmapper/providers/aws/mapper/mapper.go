@@ -142,6 +142,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.Route53Zone{}
 		case "s3":
 			c = &components.S3Bucket{}
+		default:
+			continue
 		}
 
 		config := &mapstructure.DecoderConfig{
@@ -188,6 +190,7 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 	credentials := make(graph.GenericComponent)
 
 	credentials["_action"] = "none"
+	credentials["_component"] = "credentials"
 	credentials["_component_id"] = "credentials::aws"
 	credentials["_provider"] = details["type"]
 	credentials["name"] = details["name"]
