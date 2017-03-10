@@ -190,7 +190,7 @@ func (e *ELB) Rebuild(g *graph.Graph) {
 	if len(e.Instances) > len(e.InstanceAWSIDs) {
 		for _, ig := range e.Instances {
 			for _, i := range g.GetComponents().ByGroup(GROUPINSTANCE, ig) {
-				e.InstanceAWSIDs = append(e.InstanceAWSIDs, templInstanceID(i.GetProviderID()))
+				e.InstanceAWSIDs = append(e.InstanceAWSIDs, templInstanceID(i.GetName()))
 			}
 		}
 	}

@@ -68,7 +68,7 @@ func (i *Instance) GetProvider() string {
 
 // GetProviderID returns a components provider id
 func (i *Instance) GetProviderID() string {
-	return i.NetworkAWSID
+	return i.InstanceAWSID
 }
 
 // GetType : returns the type of the component
