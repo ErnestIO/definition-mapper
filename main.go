@@ -13,15 +13,14 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/ernestio/definition-mapper/libmapper"
+	"github.com/ernestio/definition-mapper/libmapper/providers"
 	ecc "github.com/ernestio/ernest-config-client"
-	"github.com/ernestio/libmapper"
-	"github.com/ernestio/libmapper/providers"
 	"github.com/nats-io/nats"
 	"gopkg.in/r3labs/graph.v2"
 )
 
 var n *nats.Conn
-var err error
 
 func getInputDetails(body []byte) (string, string, string, string) {
 	var service struct {
@@ -84,7 +83,7 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 
 func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 	var gm map[string]interface{}
-	err = json.Unmarshal(body, &gm)
+	err := json.Unmarshal(body, &gm)
 	if err != nil {
 		return nil, err
 	}
@@ -111,13 +110,13 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 
 	// If there is a previous service
 	if p != "" {
-		oMsg, err := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
-		if err != nil {
-			return body, err
+		oMsg, rerr := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
+		if rerr != nil {
+			return body, rerr
 		}
-		og, err := mappingToGraph(m, oMsg.Data)
-		if err != nil {
-			return body, err
+		og, merr := mappingToGraph(m, oMsg.Data)
+		if merr != nil {
+			return body, merr
 		}
 
 		g, err = g.Diff(og)
@@ -140,11 +139,15 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 // For a given filters it will generate a workflow to fully
 // import a provider service.
 func SubscribeImportService(body []byte) ([]byte, error) {
+	var err error
 	var filters []string
+
 	id, n, t, _ := getInputDetails(body)
 	// TODO Allow multi-filters for azure development
 	filters = append(filters, n)
+
 	m := providers.NewMapper(t)
+
 	g := m.CreateImportGraph(filters)
 	if g, err = g.Diff(graph.New()); err != nil {
 		return body, err
@@ -159,25 +162,27 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 // For a given existing service will generate a valid internal
 // service with a workflow to delete all its components
 func SubscribeDeleteService(body []byte) ([]byte, error) {
-	var gd map[string]interface{}
-	if err := json.Unmarshal(body, &gd); err != nil {
-		return body, err
-	}
-	id, _, t, _ := getInputDetails(body)
+	_, _, t, p := getInputDetails(body)
 	m := providers.NewMapper(t)
 
-	empty := graph.New()
-	original, err := m.LoadGraph(gd)
-	if err != nil {
-		return body, err
+	oMsg, rerr := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
+	if rerr != nil {
+		return body, rerr
 	}
+
+	original, merr := mappingToGraph(m, oMsg.Data)
+	if merr != nil {
+		return body, merr
+	}
+
+	empty := graph.New()
 
 	g, err := empty.Diff(original)
 	if err != nil {
 		return body, err
 	}
 
-	g.ID = id
+	g.ID = p
 
 	return json.Marshal(g)
 }
@@ -186,13 +191,14 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 // For a given full service will generate the relative
 // definition
 func SubscribeMapService(body []byte) ([]byte, error) {
-	_, _, t, _ := getInputDetails(body)
-	m := providers.NewMapper(t)
-
 	var gd map[string]interface{}
+
 	if err := json.Unmarshal(body, &gd); err != nil {
 		return body, err
 	}
+
+	_, _, t, _ := getInputDetails(body)
+	m := providers.NewMapper(t)
 
 	original, err := m.LoadGraph(gd)
 	if err != nil {
@@ -210,7 +216,7 @@ func SubscribeMapService(body []byte) ([]byte, error) {
 func ManageDefinitions() {
 	if _, err := n.Subscribe("definition.map.creation", func(m *nats.Msg) {
 		if body, err := SubscribeCreateService(m.Data); err == nil {
-			if err := n.Publish(m.Reply, body); err != nil {
+			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println(err.Error())
 			}
 		} else {
@@ -222,7 +228,7 @@ func ManageDefinitions() {
 
 	if _, err := n.Subscribe("definition.map.import", func(m *nats.Msg) {
 		if body, err := SubscribeImportService(m.Data); err == nil {
-			if err := n.Publish(m.Reply, body); err != nil {
+			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println(err.Error())
 			}
 		} else {
@@ -234,7 +240,7 @@ func ManageDefinitions() {
 
 	if _, err := n.Subscribe("definition.map.deletion", func(m *nats.Msg) {
 		if body, err := SubscribeDeleteService(m.Data); err == nil {
-			if err := n.Publish(m.Reply, body); err != nil {
+			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println(err.Error())
 			}
 		} else {
@@ -246,7 +252,7 @@ func ManageDefinitions() {
 
 	if _, err := n.Subscribe("definition.map.service", func(m *nats.Msg) {
 		if body, err := SubscribeMapService(m.Data); err == nil {
-			if err := n.Publish(m.Reply, body); err != nil {
+			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println(err.Error())
 			}
 		} else {
