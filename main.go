@@ -119,6 +119,13 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 			return body, merr
 		}
 
+		for _, c := range g.Components {
+			oc := og.Component(c.GetID())
+			if oc != nil {
+				c.Update(oc)
+			}
+		}
+
 		g, err = g.Diff(og)
 		if err != nil {
 			return body, err
