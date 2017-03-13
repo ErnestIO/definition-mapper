@@ -70,9 +70,9 @@ func templELBDNS(elb string) string {
 }
 
 func templRDSClusterDNS(rds string) string {
-	return `$(components.#[_component_id="` + TYPERDSCLUSTER + TYPEDELIMITER + `"].endpoint)`
+	return `$(components.#[_component_id="` + TYPERDSCLUSTER + TYPEDELIMITER + rds + `"].endpoint)`
 }
 
 func templRDSInstanceDNS(rds string) string {
-	return `$(components.#[_component_id="` + TYPERDSINSTANCE + TYPEDELIMITER + `"].endpoint)`
+	return `$(components.#[_component_id="` + TYPERDSINSTANCE + TYPEDELIMITER + rds + `"].endpoint)`
 }
