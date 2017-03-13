@@ -7,7 +7,6 @@ package components
 import (
 	"errors"
 	"net"
-	"reflect"
 
 	graph "gopkg.in/r3labs/graph.v2"
 )
@@ -97,10 +96,12 @@ func (n *Network) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (n *Network) Diff(c graph.Component) bool {
-	cn, ok := c.(*Network)
-	if ok {
-		return !reflect.DeepEqual(n.Tags, cn.Tags)
-	}
+	/*
+		cn, ok := c.(*Network)
+		if ok {
+			return !reflect.DeepEqual(n.Tags, cn.Tags)
+		}
+	*/
 
 	return false
 }
