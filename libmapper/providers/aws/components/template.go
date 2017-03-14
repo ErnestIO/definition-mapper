@@ -15,7 +15,7 @@ const (
 	TYPENATGATEWAY    = "nat"
 	TYPERDSCLUSTER    = "rds_cluster"
 	TYPERDSINSTANCE   = "rds_instance"
-	TYPEROUTE53       = "route_53"
+	TYPEROUTE53       = "route53"
 	TYPES3BUCKET      = "s3"
 
 	GROUPINSTANCE  = "ernest.instance_group"
