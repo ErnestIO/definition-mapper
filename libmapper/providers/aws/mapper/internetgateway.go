@@ -16,13 +16,14 @@ func MapInternetGateways(d *definition.Definition) []*components.InternetGateway
 
 	for _, network := range d.Networks {
 		if network.Public {
-			vpcs = append(vpcs, network.VPC)
+			vpcs = appendUnique(vpcs, network.VPC)
 		}
 	}
 
 	for _, vpc := range vpcs {
 		ig := &components.InternetGateway{
 			Name: vpc,
+			Vpc:  vpc,
 			Tags: mapTags(vpc, d.Name),
 		}
 

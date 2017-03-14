@@ -143,8 +143,8 @@ func (i *InternetGateway) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *InternetGateway) SetDefaultVariables() {
-	i.ComponentType = TYPENETWORK
-	i.ComponentID = TYPENETWORK + TYPEDELIMITER + i.Name
+	i.ComponentType = TYPEINTERNETGATEWAY
+	i.ComponentID = TYPEINTERNETGATEWAY + TYPEDELIMITER + i.Name
 	i.ProviderType = PROVIDERTYPE
 	i.DatacenterName = DATACENTERNAME
 	i.DatacenterType = DATACENTERTYPE
