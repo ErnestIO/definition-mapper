@@ -20,6 +20,7 @@ func MapNetworks(d *definition.Definition) []*components.Network {
 			Subnet:           network.Subnet,
 			IsPublic:         network.Public,
 			AvailabilityZone: network.AvailabilityZone,
+			InternetGateway:  network.VPC,
 			Vpc:              network.VPC,
 			Tags:             mapNetworkTags(network.Name, d.Name, network.NatGateway),
 		}

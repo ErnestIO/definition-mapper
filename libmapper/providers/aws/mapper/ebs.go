@@ -70,6 +70,7 @@ func MapDefinitionEBSVolumes(g *graph.Graph) []definition.EBSVolume {
 
 	return vols
 }
+
 func mapEBSTags(name, service, volumeGroup string) map[string]string {
 	tags := make(map[string]string)
 
