@@ -7,6 +7,7 @@ package providers
 import (
 	"github.com/ernestio/definition-mapper/libmapper"
 	aws "github.com/ernestio/definition-mapper/libmapper/providers/aws/mapper"
+	vcloud "github.com/ernestio/definition-mapper/libmapper/providers/aws/mapper"
 )
 
 // NewMapper : Get a new mapper based on a specified type
@@ -14,6 +15,8 @@ func NewMapper(t string) (m libmapper.Mapper) {
 	switch t {
 	case "aws", "aws-fake":
 		m = aws.New()
+	case "vcloud", "vcloud-fake":
+		m = vcloud.New()
 	}
 
 	return m
