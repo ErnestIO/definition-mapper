@@ -9,6 +9,7 @@ lint:
 
 test:
 	go test -v ./...
+	gucumber
 
 cover:
 	go test -v ./... --cover
@@ -21,6 +22,11 @@ deps:
 	go get gopkg.in/r3labs/graph.v2
 
 dev-deps: deps
+	go get golang.org/x/crypto/pbkdf2
+	go get github.com/ernestio/crypto
+	go get github.com/ernestio/crypto/aes
+	go get -u github.com/gucumber/gucumber/cmd/gucumber
+	go get github.com/tidwall/gjson
 	go get github.com/smartystreets/goconvey/convey
 	go get github.com/alecthomas/gometalinter
 	gometalinter --install
