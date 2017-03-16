@@ -18,4 +18,3 @@ Feature: Update service with changed datacenter credentials
     And I stop recording
     Then all "instance.create.aws-fake" messages should contain an encrypted field "aws_access_key_id" with "tmp_secret_up_to_16_chars_2"
     And all "instance.create.aws-fake" messages should contain an encrypted field "aws_secret_access_key" with "tmp_secret_access_key_2"
-

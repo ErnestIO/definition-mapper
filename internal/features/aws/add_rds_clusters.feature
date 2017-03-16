@@ -10,7 +10,7 @@ Feature: Service apply
     And I apply the definition "aws16.yml"
     And I stop recording
     Then an event "rds_cluster.create.aws-fake" should be called exactly "1" times
-    And all "rds_cluster.create.aws-fake" messages should contain a field "_type" with "aws-fake"
+    And all "rds_cluster.create.aws-fake" messages should contain a field "_provider" with "aws-fake"
     And all "rds_cluster.create.aws-fake" messages should contain an encrypted field "aws_access_key_id" with "up_to_16_characters_secret"
     And all "rds_cluster.create.aws-fake" messages should contain an encrypted field "aws_secret_access_key" with "fake_up_to_16_characters"
     And all "rds_cluster.create.aws-fake" messages should contain a field "datacenter_region" with "fake"

@@ -10,7 +10,7 @@ Feature: Service apply
     And I apply the definition "aws13.yml"
     And I stop recording
     Then an event "elb.create.aws-fake" should be called exactly "1" times
-    And all "elb.create.aws-fake" messages should contain a field "_type" with "aws-fake"
+    And all "elb.create.aws-fake" messages should contain a field "_provider" with "aws-fake"
     And all "elb.create.aws-fake" messages should contain an encrypted field "aws_access_key_id" with "up_to_16_characters_secret"
     And all "elb.create.aws-fake" messages should contain an encrypted field "aws_secret_access_key" with "fake_up_to_16_characters"
     And all "elb.create.aws-fake" messages should contain a field "datacenter_region" with "fake"
@@ -23,7 +23,7 @@ Feature: Service apply
     And message "elb.create.aws-fake" number "0" should contain "HTTP" as json field "listeners.0.protocol"
     And message "elb.create.aws-fake" number "0" should have an empty json field "listeners.0.ssl_cert"
     Then an event "s3.create.aws-fake" should be called exactly "1" times
-    And all "s3.create.aws-fake" messages should contain a field "_type" with "aws-fake"
+    And all "s3.create.aws-fake" messages should contain a field "_provider" with "aws-fake"
     And all "s3.create.aws-fake" messages should contain an encrypted field "aws_access_key_id" with "up_to_16_characters_secret"
     And all "s3.create.aws-fake" messages should contain an encrypted field "aws_secret_access_key" with "fake_up_to_16_characters"
     And all "s3.create.aws-fake" messages should contain a field "bucket_location" with "eu-west-1"

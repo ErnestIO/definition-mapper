@@ -10,7 +10,7 @@ Feature: Service apply
     And I apply the definition "aws8.yml"
     And I stop recording
     Then an event "network.create.aws-fake" should be called exactly "1" times
-    And all "network.create.aws-fake" messages should contain a field "_type" with "aws-fake"
+    And all "network.create.aws-fake" messages should contain a field "_provider" with "aws-fake"
     And all "network.create.aws-fake" messages should contain a field "datacenter_region" with "fake"
     And all "network.create.aws-fake" messages should contain a field "vpc_id" with "fakeaws"
     And all "network.create.aws-fake" messages should contain a field "range" with "10.2.0.0/24"
