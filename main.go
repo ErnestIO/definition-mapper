@@ -221,6 +221,9 @@ func ManageDefinitions() {
 			}
 		} else {
 			log.Println(err.Error())
+			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
+				log.Println("Error trying to respond through nats : " + err.Error())
+			}
 		}
 	}); err != nil {
 		log.Panic(err)
@@ -233,6 +236,9 @@ func ManageDefinitions() {
 			}
 		} else {
 			log.Println(err.Error())
+			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
+				log.Println("Error trying to respond through nats : " + err.Error())
+			}
 		}
 	}); err != nil {
 		log.Panic(err)
@@ -245,6 +251,9 @@ func ManageDefinitions() {
 			}
 		} else {
 			log.Println(err.Error())
+			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
+				log.Println("Error trying to respond through nats : " + err.Error())
+			}
 		}
 	}); err != nil {
 		log.Panic(err)
@@ -257,6 +266,9 @@ func ManageDefinitions() {
 			}
 		} else {
 			log.Println(err.Error())
+			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
+				log.Println("Error trying to respond through nats : " + err.Error())
+			}
 		}
 	}); err != nil {
 		log.Panic(err)
