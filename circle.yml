@@ -31,7 +31,7 @@ dependencies:
     - ./internal/ci_install_service.sh r3labs composable master
     - ./internal/ci_install_service.sh ernestio ernest-cli develop
     - mkdir /tmp/composable
-    - git clone -b git@github.com:ernestio/ernest.git /tmp/ernest 
+    - git clone -b develop git@github.com:ernestio/ernest.git /tmp/ernest 
     - sed -i "s:master:develop:g" /tmp/ernest/definition.yml
     - composable gen -E ERNEST_CRYPTO_KEY=$ERNEST_CRYPTO_KEY -exclude='*-aws-connector,*-vcloud-connector,definition-mapper' /tmp/ernest/definition.yml internal/template.yml --
     - docker-compose -f docker-compose.yml up -d
