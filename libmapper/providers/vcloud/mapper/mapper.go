@@ -41,19 +41,20 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 	}
 
 	for _, c := range g.Components {
-		// Build internal & template values
-		for _, dep := range c.Dependencies() {
-			if g.HasComponent(dep) != true {
-				return g, errors.New("Could not resolve component dependency: " + dep)
-			}
-		}
-
+		// rebuild variables
 		c.Rebuild(g)
 
 		// Validate Components
 		err := c.Validate()
 		if err != nil {
 			return g, err
+		}
+
+		// Build internal & template values
+		for _, dep := range c.Dependencies() {
+			if g.HasComponent(dep) != true {
+				return g, errors.New("Could not resolve component dependency: " + dep)
+			}
 		}
 
 		// Build dependencies
@@ -158,14 +159,12 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 		}
 	}
 
-	/*
-		for _, network := range MapNetworks(d) {
-			err := g.AddComponent(network)
-			if err != nil {
-				return err
-			}
+	for _, network := range MapNetworks(d) {
+		err := g.AddComponent(network)
+		if err != nil {
+			return err
 		}
-	*/
+	}
 
 	for _, instance := range MapInstances(d) {
 		err := g.AddComponent(instance)

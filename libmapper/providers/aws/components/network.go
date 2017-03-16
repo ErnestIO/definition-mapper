@@ -163,6 +163,10 @@ func (n *Network) Validate() error {
 		return errors.New("Network name should not be null")
 	}
 
+	if n.Vpc == "" {
+		return errors.New("Network must specify a vpc")
+	}
+
 	if n.IsPublic && n.Tags["ernest.nat_gateway"] != "" {
 		return errors.New("Public Network should not specify a nat gateway")
 	}

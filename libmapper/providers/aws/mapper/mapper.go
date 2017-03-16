@@ -41,19 +41,19 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 	}
 
 	for _, c := range g.Components {
-		// Build internal & template values
-		for _, dep := range c.Dependencies() {
-			if g.HasComponent(dep) != true {
-				return g, errors.New("Could not resolve component dependency: " + dep)
-			}
-		}
-
 		c.Rebuild(g)
 
 		// Validate Components
 		err := c.Validate()
 		if err != nil {
 			return g, err
+		}
+
+		// Build internal & template values
+		for _, dep := range c.Dependencies() {
+			if g.HasComponent(dep) != true {
+				return g, errors.New("Could not resolve component dependency: " + dep)
+			}
 		}
 
 		// Build dependencies

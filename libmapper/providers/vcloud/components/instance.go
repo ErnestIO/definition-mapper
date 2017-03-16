@@ -7,7 +7,6 @@ package components
 import (
 	"errors"
 	"reflect"
-	"strings"
 
 	graph "gopkg.in/r3labs/graph.v2"
 )
@@ -150,16 +149,11 @@ func (i *Instance) Validate() error {
 		return errors.New("Instance image should not be null")
 	}
 
-	imageParts := strings.Split(i.Image, "/")
-	if len(imageParts) < 2 {
-		return errors.New("Instance image invalid, use format <catalog>/<image>")
-	}
-
-	if imageParts[0] == "" {
+	if i.Catalog == "" {
 		return errors.New("Instance image catalog should not be null, use format <catalog>/<image>")
 	}
 
-	if imageParts[1] == "" {
+	if i.Image == "" {
 		return errors.New("Instance image image should not be null, use format <catalog>/<image>")
 	}
 

@@ -112,7 +112,7 @@ func (n *Network) Rebuild(g *graph.Graph) {
 
 // Dependencies : returns a list cf component id's upon which the component depends
 func (n *Network) Dependencies() []string {
-	return []string{TYPEROUTER + TYPEDELIMITER + n.Name}
+	return []string{TYPEROUTER + TYPEDELIMITER + n.Router}
 }
 
 // Validate : validates the components values
@@ -142,8 +142,8 @@ func (n *Network) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (n *Network) SetDefaultVariables() {
-	n.ComponentType = TYPEROUTER
-	n.ComponentID = TYPEROUTER + TYPEDELIMITER + n.Name
+	n.ComponentType = TYPENETWORK
+	n.ComponentID = TYPENETWORK + TYPEDELIMITER + n.Name
 	n.ProviderType = PROVIDERTYPE
 	n.DatacenterName = DATACENTERNAME
 	n.DatacenterType = DATACENTERTYPE
