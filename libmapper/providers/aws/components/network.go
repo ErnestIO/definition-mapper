@@ -7,32 +7,33 @@ package components
 import (
 	"errors"
 	"net"
-	"reflect"
 
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // Network : Mapping of a network component
 type Network struct {
-	ProviderType     string            `json:"_provider"`
-	ComponentType    string            `json:"_component"`
-	ComponentID      string            `json:"_component_id"`
-	State            string            `json:"_state"`
-	Action           string            `json:"_action"`
-	NetworkAWSID     string            `json:"network_aws_id"`
-	Name             string            `json:"name"`
-	Subnet           string            `json:"range"`
-	IsPublic         bool              `json:"is_public"`
-	Tags             map[string]string `json:"tags"`
-	AvailabilityZone string            `json:"availability_zone"`
-	DatacenterType   string            `json:"datacenter_type"`
-	DatacenterName   string            `json:"datacenter_name"`
-	DatacenterRegion string            `json:"datacenter_region"`
-	AccessKeyID      string            `json:"aws_access_key_id"`
-	SecretAccessKey  string            `json:"aws_secret_access_key"`
-	Vpc              string            `json:"vpc"`
-	VpcID            string            `json:"vpc_id"`
-	Service          string            `json:"service"`
+	ProviderType         string            `json:"_provider"`
+	ComponentType        string            `json:"_component"`
+	ComponentID          string            `json:"_component_id"`
+	State                string            `json:"_state"`
+	Action               string            `json:"_action"`
+	NetworkAWSID         string            `json:"network_aws_id"`
+	Name                 string            `json:"name"`
+	Subnet               string            `json:"range"`
+	IsPublic             bool              `json:"is_public"`
+	InternetGateway      string            `json:"internet_gateway"`
+	InternetGatewayAWSID string            `json:"internet_gateway_aws_id"`
+	Tags                 map[string]string `json:"tags"`
+	AvailabilityZone     string            `json:"availability_zone"`
+	DatacenterType       string            `json:"datacenter_type"`
+	DatacenterName       string            `json:"datacenter_name"`
+	DatacenterRegion     string            `json:"datacenter_region"`
+	AccessKeyID          string            `json:"aws_access_key_id"`
+	SecretAccessKey      string            `json:"aws_secret_access_key"`
+	Vpc                  string            `json:"vpc"`
+	VpcID                string            `json:"vpc_id"`
+	Service              string            `json:"service"`
 }
 
 // GetID : returns the component's ID
@@ -97,10 +98,12 @@ func (n *Network) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (n *Network) Diff(c graph.Component) bool {
-	cn, ok := c.(*Network)
-	if ok {
-		return !reflect.DeepEqual(n.Tags, cn.Tags)
-	}
+	/*
+		cn, ok := c.(*Network)
+		if ok {
+			return !reflect.DeepEqual(n.Tags, cn.Tags)
+		}
+	*/
 
 	return false
 }
@@ -129,12 +132,24 @@ func (n *Network) Rebuild(g *graph.Graph) {
 		n.VpcID = templVpcID(n.Vpc)
 	}
 
+	if n.IsPublic {
+		n.InternetGateway = n.Vpc
+		n.InternetGatewayAWSID = templInternetGatewayID(n.Vpc)
+	}
+
 	n.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
 func (n *Network) Dependencies() []string {
-	return []string{"vpc::" + n.Vpc}
+	var deps []string
+	if n.IsPublic {
+		deps = append(deps, TYPEINTERNETGATEWAY+TYPEDELIMITER+n.InternetGateway)
+	} else {
+		deps = append(deps, TYPEVPC+TYPEDELIMITER+n.Vpc)
+	}
+
+	return deps
 }
 
 // Validate : validates the components values
@@ -146,6 +161,10 @@ func (n *Network) Validate() error {
 
 	if n.Name == "" {
 		return errors.New("Network name should not be null")
+	}
+
+	if n.Vpc == "" {
+		return errors.New("Network must specify a vpc")
 	}
 
 	if n.IsPublic && n.Tags["ernest.nat_gateway"] != "" {

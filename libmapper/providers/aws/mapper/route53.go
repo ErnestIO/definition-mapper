@@ -49,7 +49,7 @@ func MapRoute53Zones(d *definition.Definition) []*components.Route53Zone {
 func MapDefinitionRoute53Zones(g *graph.Graph) []definition.Route53Zone {
 	var zones []definition.Route53Zone
 
-	for _, gzone := range g.GetComponents().ByType("route_53") {
+	for _, gzone := range g.GetComponents().ByType("route53") {
 		zone := gzone.(*components.Route53Zone)
 
 		z := definition.Route53Zone{

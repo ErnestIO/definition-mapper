@@ -8,14 +8,14 @@ import (
 	"errors"
 
 	"github.com/ernestio/definition-mapper/libmapper"
-	"github.com/ernestio/definition-mapper/libmapper/providers/aws/components"
-	def "github.com/ernestio/definition-mapper/libmapper/providers/aws/definition"
+	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/components"
+	def "github.com/ernestio/definition-mapper/libmapper/providers/vcloud/definition"
 	"github.com/mitchellh/mapstructure"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // SUPPORTEDCOMPONENTS represents all component types supported by ernest
-var SUPPORTEDCOMPONENTS = []string{"vpc", "internet_gateway", "network", "instance", "firewall", "nat_gateway", "elb", "ebs", "s3", "route53", "rds_instance", "rds_cluster"}
+var SUPPORTEDCOMPONENTS = []string{"router", "network", "instance"}
 
 // Mapper : implements the generic mapper structure
 type Mapper struct{}
@@ -41,6 +41,7 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 	}
 
 	for _, c := range g.Components {
+		// rebuild variables
 		c.Rebuild(g)
 
 		// Validate Components
@@ -67,36 +68,7 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 
 // ConvertGraph : converts the service graph into an input yaml format
 func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
-	var d def.Definition
-
-	for _, c := range g.Components {
-		c.Rebuild(g)
-
-		for _, dep := range c.Dependencies() {
-			if g.HasComponent(dep) != true {
-				return g, errors.New("Could not resolve component dependency: " + dep)
-			}
-		}
-
-		err := c.Validate()
-		if err != nil {
-			return d, err
-		}
-	}
-
-	d.Vpcs = MapDefinitionVpcs(g)
-	d.Networks = MapDefinitionNetworks(g)
-	d.Instances = MapDefinitionInstances(g)
-	d.SecurityGroups = MapDefinitionSecurityGroups(g)
-	d.ELBs = MapDefinitionELBs(g)
-	d.EBSVolumes = MapDefinitionEBSVolumes(g)
-	d.NatGateways = MapDefinitionNats(g)
-	d.RDSClusters = MapDefinitionRDSClusters(g)
-	d.RDSInstances = MapDefinitionRDSInstances(g)
-	d.Route53Zones = MapDefinitionRoute53Zones(g)
-	d.S3Buckets = MapDefinitionS3Buckets(g)
-
-	return d, nil
+	return def.Definition{}, nil
 }
 
 // LoadDefinition : returns an aws type definition
@@ -120,30 +92,12 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 		var c graph.Component
 
 		switch gc.GetType() {
-		case "vpc":
-			c = &components.Vpc{}
+		case "router":
+			c = &components.Router{}
 		case "network":
 			c = &components.Network{}
-		case "internet_gateway":
-			c = &components.InternetGateway{}
 		case "instance":
 			c = &components.Instance{}
-		case "firewall":
-			c = &components.SecurityGroup{}
-		case "elb":
-			c = &components.ELB{}
-		case "ebs_volume":
-			c = &components.EBSVolume{}
-		case "nat":
-			c = &components.NatGateway{}
-		case "rds_cluster":
-			c = &components.RDSCluster{}
-		case "rds_instance":
-			c = &components.RDSInstance{}
-		case "route53":
-			c = &components.Route53Zone{}
-		case "s3":
-			c = &components.S3Bucket{}
 		default:
 			continue
 		}
@@ -173,16 +127,6 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 // CreateImportGraph : creates a new graph with component queries used to import components from a provider
 func (m Mapper) CreateImportGraph(params []string) *graph.Graph {
 	g := graph.New()
-	filter := make(map[string]string)
-
-	if len(params) > 0 {
-		filter["ernest.service"] = params[0]
-	}
-
-	for _, ctype := range SUPPORTEDCOMPONENTS {
-		q := MapQuery(ctype, filter)
-		g.AddComponent(q)
-	}
 
 	return g
 }
@@ -193,12 +137,14 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 
 	credentials["_action"] = "none"
 	credentials["_component"] = "credentials"
-	credentials["_component_id"] = "credentials::aws"
+	credentials["_component_id"] = "credentials::vcloud"
 	credentials["_provider"] = details["type"]
 	credentials["name"] = details["name"]
 	credentials["region"] = details["region"]
-	credentials["aws_access_key_id"] = details["aws_access_key_id"]
-	credentials["aws_secret_access_key"] = details["aws_secret_access_key"]
+	credentials["username"] = details["username"]
+	credentials["password"] = details["password"]
+	credentials["vcloud_url"] = details["vcloud_url"]
+	credentials["external_network"] = details["external_network"]
 
 	return &credentials
 }
@@ -206,15 +152,8 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 func mapComponents(d *def.Definition, g *graph.Graph) error {
 	// Map basic component values from definition
 
-	for _, vpc := range MapVpcs(d) {
-		err := g.AddComponent(vpc)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, gateway := range MapInternetGateways(d) {
-		err := g.AddComponent(gateway)
+	for _, router := range MapRouters(d) {
+		err := g.AddComponent(router)
 		if err != nil {
 			return err
 		}
@@ -234,78 +173,5 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 		}
 	}
 
-	for _, securitygroup := range MapSecurityGroups(d) {
-		err := g.AddComponent(securitygroup)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, elb := range MapELBs(d) {
-		err := g.AddComponent(elb)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, ebs := range MapEBSVolumes(d) {
-		err := g.AddComponent(ebs)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, nat := range MapNats(d) {
-		err := g.AddComponent(nat)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, rds := range MapRDSClusters(d) {
-		err := g.AddComponent(rds)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, rds := range MapRDSInstances(d) {
-		err := g.AddComponent(rds)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, s3 := range MapS3Buckets(d) {
-		err := g.AddComponent(s3)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, route53 := range MapRoute53Zones(d) {
-		err := g.AddComponent(route53)
-		if err != nil {
-			return err
-		}
-	}
-
 	return nil
-}
-
-func mapTags(name, service string) map[string]string {
-	tags := make(map[string]string)
-
-	tags["Name"] = name
-	tags["ernest.service"] = service
-
-	return tags
-}
-
-func mapTagsServiceOnly(service string) map[string]string {
-	tags := make(map[string]string)
-
-	tags["ernest.service"] = service
-
-	return tags
 }

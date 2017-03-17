@@ -164,6 +164,10 @@ func (sg *SecurityGroup) Validate() error {
 		return errors.New("Security Group name should not be null")
 	}
 
+	if sg.Vpc == "" {
+		return errors.New("Secuirty Group must specify a vpc")
+	}
+
 	for _, rule := range sg.Rules.Ingress {
 		err := rule.Validate()
 		if err != nil {

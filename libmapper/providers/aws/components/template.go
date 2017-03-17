@@ -5,18 +5,19 @@
 package components
 
 const (
-	TYPEDELIMITER     = "::"
-	TYPEVPC           = "vpc"
-	TYPENETWORK       = "network"
-	TYPEINSTANCE      = "instance"
-	TYPEELB           = "elb"
-	TYPEEBSVOLUME     = "ebs_volume"
-	TYPESECURITYGROUP = "firewall"
-	TYPENATGATEWAY    = "nat"
-	TYPERDSCLUSTER    = "rds_cluster"
-	TYPERDSINSTANCE   = "rds_instance"
-	TYPEROUTE53       = "route_53"
-	TYPES3BUCKET      = "s3"
+	TYPEDELIMITER       = "::"
+	TYPEVPC             = "vpc"
+	TYPENETWORK         = "network"
+	TYPEINSTANCE        = "instance"
+	TYPEELB             = "elb"
+	TYPEEBSVOLUME       = "ebs_volume"
+	TYPESECURITYGROUP   = "firewall"
+	TYPENATGATEWAY      = "nat"
+	TYPERDSCLUSTER      = "rds_cluster"
+	TYPERDSINSTANCE     = "rds_instance"
+	TYPEINTERNETGATEWAY = "internet_gateway"
+	TYPEROUTE53         = "route53"
+	TYPES3BUCKET        = "s3"
 
 	GROUPINSTANCE  = "ernest.instance_group"
 	GROUPEBSVOLUME = "ernest.volume_group"
@@ -49,6 +50,10 @@ func templInstanceID(in string) string {
 	return `$(components.#[_component_id="` + TYPEINSTANCE + TYPEDELIMITER + in + `"].instance_aws_id)`
 }
 
+func templInternetGatewayID(in string) string {
+	return `$(components.#[_component_id="` + TYPEINTERNETGATEWAY + TYPEDELIMITER + in + `"].internet_gateway_aws_id)`
+}
+
 func templEBSVolumeID(ebs string) string {
 	return `$(components.#[_component_id="` + TYPEEBSVOLUME + TYPEDELIMITER + ebs + `"].volume_aws_id)`
 }
@@ -70,9 +75,9 @@ func templELBDNS(elb string) string {
 }
 
 func templRDSClusterDNS(rds string) string {
-	return `$(components.#[_component_id="` + TYPERDSCLUSTER + TYPEDELIMITER + `"].endpoint)`
+	return `$(components.#[_component_id="` + TYPERDSCLUSTER + TYPEDELIMITER + rds + `"].endpoint)`
 }
 
 func templRDSInstanceDNS(rds string) string {
-	return `$(components.#[_component_id="` + TYPERDSINSTANCE + TYPEDELIMITER + `"].endpoint)`
+	return `$(components.#[_component_id="` + TYPERDSINSTANCE + TYPEDELIMITER + rds + `"].endpoint)`
 }

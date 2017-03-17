@@ -15,11 +15,15 @@ func MapNats(d *definition.Definition) []*components.NatGateway {
 	var nats []*components.NatGateway
 
 	for _, ng := range d.NatGateways {
-		nats = append(nats, &components.NatGateway{
+		nt := &components.NatGateway{
 			Name:           ng.Name,
 			PublicNetwork:  ng.PublicNetwork,
 			RoutedNetworks: mapNetworkNames(d, ng.Name),
-		})
+		}
+
+		nt.SetDefaultVariables()
+
+		nats = append(nats, nt)
 	}
 
 	return nats
