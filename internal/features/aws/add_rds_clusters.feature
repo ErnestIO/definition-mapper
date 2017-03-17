@@ -14,7 +14,7 @@ Feature: Service apply
     And all "rds_cluster.create.aws-fake" messages should contain an encrypted field "aws_access_key_id" with "up_to_16_characters_secret"
     And all "rds_cluster.create.aws-fake" messages should contain an encrypted field "aws_secret_access_key" with "fake_up_to_16_characters"
     And all "rds_cluster.create.aws-fake" messages should contain a field "datacenter_region" with "fake"
-    And all "rds_cluster.create.aws-fake" messages should contain a field "name" with "fakeaws-$(name)-aurora"
+    And all "rds_cluster.create.aws-fake" messages should contain a field "name" with "aurora"
     And all "rds_cluster.create.aws-fake" messages should contain a field "engine" with "aurora"
     And all "rds_cluster.create.aws-fake" messages should contain a field "database_name" with "test"
     And all "rds_cluster.create.aws-fake" messages should contain a field "database_username" with "test"
