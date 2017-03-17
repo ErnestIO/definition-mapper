@@ -7,7 +7,7 @@ package providers
 import (
 	"github.com/ernestio/definition-mapper/libmapper"
 	aws "github.com/ernestio/definition-mapper/libmapper/providers/aws/mapper"
-	vcloud "github.com/ernestio/definition-mapper/libmapper/providers/aws/mapper"
+	vcloud "github.com/ernestio/definition-mapper/libmapper/providers/vcloud/mapper"
 )
 
 // NewMapper : Get a new mapper based on a specified type
