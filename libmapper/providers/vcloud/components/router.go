@@ -7,6 +7,7 @@ package components
 import (
 	"errors"
 	"net"
+	"reflect"
 
 	graph "gopkg.in/r3labs/graph.v2"
 )
@@ -121,29 +122,16 @@ func (r *Router) Diff(c graph.Component) bool {
 			return true
 		}
 
-		for i := 0; i < len(r.FirewallRules); i++ {
-			if r.FirewallRules[i].DestinationIP != cr.FirewallRules[i].DestinationIP ||
-				r.FirewallRules[i].DestinationPort != cr.FirewallRules[i].DestinationPort ||
-				r.FirewallRules[i].Protocol != cr.FirewallRules[i].Protocol ||
-				r.FirewallRules[i].SourceIP != cr.FirewallRules[i].SourceIP ||
-				r.FirewallRules[i].SourcePort != cr.FirewallRules[i].SourcePort {
-				return true
-			}
+		if reflect.DeepEqual(r.FirewallRules, cr.FirewallRules) != true {
+			return true
 		}
 
 		if len(r.NatRules) != len(cr.NatRules) {
 			return true
 		}
 
-		for i := 0; i < len(r.NatRules); i++ {
-			if r.NatRules[i].OriginIP != cr.NatRules[i].OriginIP ||
-				r.NatRules[i].OriginPort != cr.NatRules[i].OriginPort ||
-				r.NatRules[i].TranslationIP != cr.NatRules[i].TranslationIP ||
-				r.NatRules[i].TranslationPort != cr.NatRules[i].TranslationPort ||
-				r.NatRules[i].Protocol != cr.NatRules[i].Protocol ||
-				r.NatRules[i].Type != cr.NatRules[i].Type {
-				return true
-			}
+		if reflect.DeepEqual(r.NatRules, cr.NatRules) != true {
+			return true
 		}
 	}
 

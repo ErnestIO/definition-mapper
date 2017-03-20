@@ -109,16 +109,28 @@ func (i *Instance) GetTag(tag string) string {
 func (i *Instance) Diff(c graph.Component) bool {
 	ci, ok := c.(*Instance)
 	if ok {
-		if i.Name == ci.Name &&
-			i.Hostname == ci.Hostname &&
-			i.Catalog == ci.Catalog &&
-			i.Image == ci.Image &&
-			i.Cpus == ci.Cpus &&
-			i.Memory == ci.Memory &&
-			i.Network == ci.Network &&
-			i.IP == ci.IP &&
-			reflect.DeepEqual(i.Disks, ci.Disks) {
-			return false
+		if i.Hostname == ci.Hostname {
+			return true
+		}
+
+		if i.Cpus == ci.Cpus {
+			return true
+		}
+
+		if i.Memory == ci.Memory {
+			return true
+		}
+
+		if i.Network == ci.Network {
+			return true
+		}
+
+		if i.IP == ci.IP {
+			return true
+		}
+
+		if reflect.DeepEqual(i.Disks, ci.Disks) != true {
+			return true
 		}
 	}
 
