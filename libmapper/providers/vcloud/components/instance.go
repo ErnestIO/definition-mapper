@@ -109,23 +109,23 @@ func (i *Instance) GetTag(tag string) string {
 func (i *Instance) Diff(c graph.Component) bool {
 	ci, ok := c.(*Instance)
 	if ok {
-		if i.Hostname == ci.Hostname {
+		if i.Hostname != ci.Hostname {
 			return true
 		}
 
-		if i.Cpus == ci.Cpus {
+		if i.Cpus != ci.Cpus {
 			return true
 		}
 
-		if i.Memory == ci.Memory {
+		if i.Memory != ci.Memory {
 			return true
 		}
 
-		if i.Network == ci.Network {
+		if i.Network != ci.Network {
 			return true
 		}
 
-		if i.IP == ci.IP {
+		if i.IP != ci.IP {
 			return true
 		}
 
