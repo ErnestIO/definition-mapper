@@ -122,8 +122,14 @@ func (r *Router) Diff(c graph.Component) bool {
 			return true
 		}
 
-		if reflect.DeepEqual(r.FirewallRules, cr.FirewallRules) != true {
-			return true
+		for i := 0; i < len(r.FirewallRules); i++ {
+			if r.FirewallRules[i].DestinationIP != cr.FirewallRules[i].DestinationIP ||
+				r.FirewallRules[i].DestinationPort != cr.FirewallRules[i].DestinationPort ||
+				r.FirewallRules[i].Protocol != cr.FirewallRules[i].Protocol ||
+				r.FirewallRules[i].SourceIP != cr.FirewallRules[i].SourceIP ||
+				r.FirewallRules[i].SourcePort != cr.FirewallRules[i].SourcePort {
+				return true
+			}
 		}
 
 		if len(r.NatRules) != len(cr.NatRules) {

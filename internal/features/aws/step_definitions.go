@@ -266,10 +266,19 @@ func init() {
 			return
 		}
 
-		value := gjson.Get(string(messages[subject][num]), key).String()
-		if value != val {
-			T.Errorf("Message " + subject + " field " + key + " is equal to " + value + " not " + val)
+		value := gjson.Get(string(messages[subject][num]), key)
+
+		switch value.Type {
+		case gjson.String:
+			if value.String() != val {
+				T.Errorf("Message " + subject + " field " + key + " is equal to " + value.String() + " not " + val)
+			}
+		case gjson.Number:
+			if strconv.FormatInt(value.Int(), 10) != val {
+				T.Errorf("Message " + subject + " field " + key + " is equal to " + strconv.FormatInt(value.Int(), 10) + " not " + val)
+			}
 		}
+
 	})
 
 	And(`^message "(.+?)" number "(.+?)" should have an empty json field "(.+?)"$`, func(subject string, num int, key string) {
