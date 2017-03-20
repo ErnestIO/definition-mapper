@@ -17,7 +17,7 @@ var (
 	// S3GRANTEETYPES : s3 supported grantee types
 	S3GRANTEETYPES = []string{"id", "emailaddress", "uri", "canonicaluser"}
 	// S3PERMISSIONTYPES : s3 supported permission types
-	S3PERMISSIONTYPES = []string{"full_control", "write", "write_acp", "read", "read_acp"}
+	S3PERMISSIONTYPES = []string{"FULL_CONTROL", "WRITE", "WRITE_ACP", "READ", "READ_ACP"}
 	// S3ACLTYPES : s3 supported acl types
 	S3ACLTYPES = []string{"private", "public-read", "public-read-write", "aws-exec-read", "authenticated-read", "log-delivery-write"}
 )
@@ -122,7 +122,11 @@ func (s3 *S3Bucket) Diff(c graph.Component) bool {
 			return false
 		}
 
-		return !reflect.DeepEqual(cs3.Grantees, cs3.Grantees)
+		if len(s3.Grantees) != len(cs3.Grantees) {
+			return true
+		}
+
+		return !reflect.DeepEqual(s3.Grantees, cs3.Grantees)
 	}
 
 	return false
@@ -176,7 +180,7 @@ func (s3 *S3Bucket) Validate() error {
 		}
 
 		if isOneOf(S3PERMISSIONTYPES, g.Permissions) == false {
-			return fmt.Errorf("S3 grantee permissions (%s) is not valid. Must be one of [%s]", s3.ACL, strings.Join(S3PERMISSIONTYPES, " | "))
+			return fmt.Errorf("S3 grantee permissions (%s) is not valid. Must be one of [%s]", s3.ACL, strings.ToLower(strings.Join(S3PERMISSIONTYPES, " | ")))
 		}
 	}
 	return nil

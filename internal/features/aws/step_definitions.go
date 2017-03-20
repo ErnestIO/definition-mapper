@@ -205,7 +205,7 @@ func init() {
 	Then(`^all "(.+?)" messages should contain a field "(.+?)" with "(.+?)"$`, func(subject string, field string, val string) {
 		val = strings.Replace(val, "$(name)", serviceName, -1)
 		if len(messages[subject]) == 0 {
-			T.Errorf("No '" + subject + "' messages where catched")
+			T.Errorf("No '" + subject + "' messages where caught")
 			return
 		}
 		for _, body := range messages[subject] {
@@ -220,7 +220,7 @@ func init() {
 	Then(`^all "(.+?)" messages should contain an encrypted field "(.+?)" with "(.+?)"$`, func(subject string, field string, val string) {
 		var msg map[string]string
 		if len(messages[subject]) == 0 {
-			T.Errorf("No '" + subject + "' messages where catched")
+			T.Errorf("No '" + subject + "' messages where caught")
 			return
 		}
 		for _, body := range messages[subject] {
@@ -238,7 +238,7 @@ func init() {
 
 	And(`^an event "(.+?)" should be called exactly "(.+?)" times$`, func(subject string, number int) {
 		if len(messages[subject]) != number {
-			T.Errorf("No '" + subject + "' messages where catched")
+			T.Errorf("Message '"+subject+"' caught exactly %d times", len(messages[subject]))
 			return
 		}
 	})
@@ -256,7 +256,7 @@ func init() {
 	And(`^message "(.+?)" number "(.+?)" should contain "(.+?)" as json field "(.+?)"$`, func(subject string, num int, val, key string) {
 		val = strings.Replace(val, "$(name)", serviceName, -1)
 		if len(messages[subject]) == 0 {
-			T.Errorf("No '" + subject + "' messages where catched")
+			T.Errorf("No '" + subject + "' messages where caught")
 			return
 		}
 
@@ -268,7 +268,7 @@ func init() {
 
 	And(`^message "(.+?)" number "(.+?)" should have an empty json field "(.+?)"$`, func(subject string, num int, key string) {
 		if len(messages[subject]) == 0 {
-			T.Errorf("No '" + subject + "' messages where catched")
+			T.Errorf("No '" + subject + "' messages where caught")
 			return
 		}
 

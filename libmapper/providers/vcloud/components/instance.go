@@ -33,6 +33,7 @@ type Instance struct {
 	Network            string            `json:"network"`
 	IP                 string            `json:"ip"`
 	Disks              []InstanceDisk    `json:"disks"`
+	InstanceOnly       bool              `json:"-"`
 	ShellCommands      []string          `json:"shell_commands"`
 	Tags               map[string]string `json:"tags"`
 	DatacenterType     string            `json:"datacenter_type"`
@@ -136,6 +137,9 @@ func (i *Instance) Rebuild(g *graph.Graph) {
 
 // Dependencies : returns a list of component id's upon which the component depends
 func (i *Instance) Dependencies() []string {
+	if i.InstanceOnly {
+		return []string{}
+	}
 	return []string{TYPENETWORK + TYPEDELIMITER + i.Network}
 }
 

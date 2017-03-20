@@ -55,6 +55,10 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 				ShellCommands: commands,
 			}
 
+			if len(d.Routers) < 1 {
+				newInstance.InstanceOnly = true
+			}
+
 			newInstance.SetDefaultVariables()
 
 			instances = append(instances, newInstance)

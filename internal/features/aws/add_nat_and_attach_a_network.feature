@@ -15,9 +15,9 @@ Feature: Service apply
     And all "nat.create.aws-fake" messages should contain an encrypted field "aws_access_key_id" with "up_to_16_characters_secret"
     And all "nat.create.aws-fake" messages should contain an encrypted field "aws_secret_access_key" with "fake_up_to_16_characters"
     And all "nat.create.aws-fake" messages should contain a field "vpc_id" with "fakeaws"
-    And all "nat.create.aws-fake" messages should contain a field "public_network" with "fakeaws-$(name)-web"
-    And message "nat.create.aws-fake" number "0" should contain "fakeaws-$(name)-db" as json field "routed_networks.0"
-    And all "nat.create.aws-fake" messages should contain a field "status" with "processing"
+    And all "nat.create.aws-fake" messages should contain a field "public_network" with "web"
+    And message "nat.create.aws-fake" number "0" should contain "db" as json field "routed_networks.0"
+    And all "nat.create.aws-fake" messages should contain a field "_state" with "running"
     Then an event "network.create.aws-fake" should be called exactly "1" times
     And all "network.create.aws-fake" messages should contain a field "_provider" with "aws-fake"
     And all "network.create.aws-fake" messages should contain a field "datacenter_region" with "fake"
