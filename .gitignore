@@ -3,3 +3,5 @@ bin
 pkg
 src
 .fuse*
+internal/features/_test/
+*__.go
