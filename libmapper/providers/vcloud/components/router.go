@@ -7,7 +7,6 @@ package components
 import (
 	"errors"
 	"net"
-	"reflect"
 
 	graph "gopkg.in/r3labs/graph.v2"
 )
@@ -136,8 +135,15 @@ func (r *Router) Diff(c graph.Component) bool {
 			return true
 		}
 
-		if reflect.DeepEqual(r.NatRules, cr.NatRules) != true {
-			return true
+		for i := 0; i < len(r.NatRules); i++ {
+			if r.NatRules[i].OriginIP != cr.NatRules[i].OriginIP ||
+				r.NatRules[i].OriginPort != cr.NatRules[i].OriginPort ||
+				r.NatRules[i].TranslationIP != cr.NatRules[i].TranslationIP ||
+				r.NatRules[i].TranslationPort != cr.NatRules[i].TranslationPort ||
+				r.NatRules[i].Protocol != cr.NatRules[i].Protocol ||
+				r.NatRules[i].Type != cr.NatRules[i].Type {
+				return true
+			}
 		}
 	}
 
