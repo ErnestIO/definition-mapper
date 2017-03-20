@@ -238,7 +238,7 @@ func init() {
 
 	And(`^an event "(.+?)" should be called exactly "(.+?)" times$`, func(subject string, number int) {
 		if len(messages[subject]) != number {
-			T.Errorf("No '" + subject + "' messages where caught")
+			T.Errorf("Message '"+subject+"' caught exactly %d times", len(messages[subject]))
 			return
 		}
 	})
