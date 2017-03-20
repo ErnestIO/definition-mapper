@@ -122,7 +122,11 @@ func (s3 *S3Bucket) Diff(c graph.Component) bool {
 			return false
 		}
 
-		return !reflect.DeepEqual(cs3.Grantees, cs3.Grantees)
+		if len(s3.Grantees) != len(cs3.Grantees) {
+			return true
+		}
+
+		return !reflect.DeepEqual(s3.Grantees, cs3.Grantees)
 	}
 
 	return false
