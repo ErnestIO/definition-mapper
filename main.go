@@ -149,6 +149,17 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 	var err error
 	var filters []string
 
+	var gd map[string]interface{}
+	err = json.Unmarshal(body, &gd)
+	if err != nil {
+		return nil, err
+	}
+
+	credentials, ok := gd["datacenter"].(map[string]interface{})
+	if ok != true {
+		return nil, errors.New("could not find datacenter credentials")
+	}
+
 	id, n, t, _ := getInputDetails(body)
 	// TODO Allow multi-filters for azure development
 	filters = append(filters, n)
@@ -161,6 +172,10 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 	}
 
 	g.ID = id
+	err = g.AddComponent(m.ProviderCredentials(credentials))
+	if err != nil {
+		return nil, err
+	}
 
 	return g.ToJSON()
 }
