@@ -180,7 +180,7 @@ func (m Mapper) CreateImportGraph(params []string) *graph.Graph {
 	}
 
 	for _, ctype := range SUPPORTEDCOMPONENTS {
-		q := MapQuery(ctype, filter)
+		q := MapQuery(ctype+"s", filter)
 		g.AddComponent(q)
 	}
 
