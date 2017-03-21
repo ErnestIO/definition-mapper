@@ -2,6 +2,7 @@ package aws
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -209,7 +210,7 @@ func init() {
 			return
 		}
 		for _, body := range messages[subject] {
-			if strings.Contains(string(body), `"`+field+`":"`+val+`"`) == false {
+			if strings.Contains(string(body), `"`+field+`":"`+val+`"`) == false && strings.Contains(string(body), `"`+field+`":`+val+``) == false {
 				T.Errorf("Message " + subject + " does not contain the " + field + "/" + val + " pair")
 				T.Errorf("Original message : " + (string(body)))
 				return
@@ -218,14 +219,19 @@ func init() {
 	})
 
 	Then(`^all "(.+?)" messages should contain an encrypted field "(.+?)" with "(.+?)"$`, func(subject string, field string, val string) {
-		var msg map[string]string
+		var msg map[string]interface{}
 		if len(messages[subject]) == 0 {
 			T.Errorf("No '" + subject + "' messages where caught")
 			return
 		}
 		for _, body := range messages[subject] {
-			_ = json.Unmarshal(body, &msg)
-			if value, ok := msg[field]; ok == false {
+			err := json.Unmarshal(body, &msg)
+			if err != nil {
+				fmt.Println(err)
+			}
+			if value, ok := msg[field].(string); ok == false {
+				fmt.Println(field)
+				fmt.Println(msg)
 				T.Errorf("Message " + subject + " does not contain the " + field + "/" + val + " pair\nOriginal message : " + (string(body)))
 			} else {
 				dec, _ := crypto.Decrypt(value, key)
@@ -260,10 +266,19 @@ func init() {
 			return
 		}
 
-		value := gjson.Get(string(messages[subject][num]), key).String()
-		if value != val {
-			T.Errorf("Message " + subject + " field " + key + " is equal to " + value + " not " + val)
+		value := gjson.Get(string(messages[subject][num]), key)
+
+		switch value.Type {
+		case gjson.String:
+			if value.String() != val {
+				T.Errorf("Message " + subject + " field " + key + " is equal to " + value.String() + " not " + val)
+			}
+		case gjson.Number:
+			if strconv.FormatInt(value.Int(), 10) != val {
+				T.Errorf("Message " + subject + " field " + key + " is equal to " + strconv.FormatInt(value.Int(), 10) + " not " + val)
+			}
 		}
+
 	})
 
 	And(`^message "(.+?)" number "(.+?)" should have an empty json field "(.+?)"$`, func(subject string, num int, key string) {
