@@ -22,7 +22,7 @@ import (
 
 var n *nats.Conn
 
-func getInputDetails(body []byte) (string, string, string, string) {
+func getInputDetails(body []byte) (string, string, string, string, string) {
 	var service struct {
 		ID         string `json:"id"`
 		Name       string `json:"name"`
@@ -30,13 +30,16 @@ func getInputDetails(body []byte) (string, string, string, string) {
 		Datacenter struct {
 			Type string `json:"type"`
 		} `json:"datacenter"`
+		Definition struct {
+			Name string `json:"name"`
+		} `json:"service"`
 	}
 
 	if err := json.Unmarshal(body, &service); err != nil {
 		log.Panic(err)
 	}
 
-	return service.ID, service.Name, service.Datacenter.Type, service.Previous
+	return service.ID, service.Name, service.Datacenter.Type, service.Previous, service.Definition.Name
 }
 
 func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
@@ -96,7 +99,7 @@ func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 // and necessary workflow to create the environment on the
 // provider
 func SubscribeCreateService(body []byte) ([]byte, error) {
-	id, _, t, p := getInputDetails(body)
+	id, _, t, p, _ := getInputDetails(body)
 
 	m := providers.NewMapper(t)
 	if m == nil {
@@ -160,8 +163,8 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 		return nil, errors.New("could not find datacenter credentials")
 	}
 
-	id, n, t, _ := getInputDetails(body)
-	// TODO Allow multi-filters for azure development
+	id, _, t, _, n := getInputDetails(body)
+
 	filters = append(filters, n)
 
 	m := providers.NewMapper(t)
@@ -184,7 +187,7 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 // For a given existing service will generate a valid internal
 // service with a workflow to delete all its components
 func SubscribeDeleteService(body []byte) ([]byte, error) {
-	_, _, t, p := getInputDetails(body)
+	_, _, t, p, _ := getInputDetails(body)
 	m := providers.NewMapper(t)
 
 	oMsg, rerr := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
@@ -219,7 +222,7 @@ func SubscribeMapService(body []byte) ([]byte, error) {
 		return body, err
 	}
 
-	_, _, t, _ := getInputDetails(body)
+	_, _, t, _, _ := getInputDetails(body)
 	m := providers.NewMapper(t)
 
 	original, err := m.LoadGraph(gd)
