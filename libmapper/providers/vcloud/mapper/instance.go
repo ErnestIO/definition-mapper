@@ -53,6 +53,7 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 				Network:       instance.Network,
 				IP:            ip.String(),
 				ShellCommands: commands,
+				Tags:          mapInstanceTags(d.Name, instance.Name),
 			}
 
 			if len(d.Routers) < 1 {
@@ -83,4 +84,13 @@ func MapInstanceDisks(d []string) []components.InstanceDisk {
 	}
 
 	return disks
+}
+
+func mapInstanceTags(service, instanceGroup string) map[string]string {
+	tags := make(map[string]string)
+
+	tags["ernest.service"] = service
+	tags["ernest.instance_group"] = instanceGroup
+
+	return tags
 }
