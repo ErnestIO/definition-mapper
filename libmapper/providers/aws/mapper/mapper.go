@@ -15,7 +15,7 @@ import (
 )
 
 // SUPPORTEDCOMPONENTS represents all component types supported by ernest
-var SUPPORTEDCOMPONENTS = []string{"vpc", "internet_gateway", "network", "instance", "firewall", "nat_gateway", "elb", "ebs", "s3", "route53", "rds_instance", "rds_cluster"}
+var SUPPORTEDCOMPONENTS = []string{"vpc", "internet_gateway", "network", "instance", "firewall", "nat", "elb", "ebs_volume", "s3", "route53", "rds_instance", "rds_cluster"}
 
 // Mapper : implements the generic mapper structure
 type Mapper struct{}
