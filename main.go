@@ -203,14 +203,19 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	g := graph.New()
-	err = g.Load(gg)
+	gx := graph.New()
+	err = gx.Load(gg)
 	if err != nil {
 		return err
 	}
 
-	id, provider := getGraphDetails(g)
+	id, provider := getGraphDetails(gx)
 	m := providers.NewMapper(provider)
+
+	g, err := m.LoadGraph(gg)
+	if err != nil {
+		return err
+	}
 
 	d, err := m.ConvertGraph(g)
 	if err != nil {
