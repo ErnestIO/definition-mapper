@@ -42,6 +42,12 @@ func getInputDetails(body []byte) (string, string, string, string, string) {
 	return service.ID, service.Name, service.Datacenter.Type, service.Previous, service.Definition.Name
 }
 
+func getGraphDetails(g *graph.Graph) (string, string) {
+	credentials := g.GetComponents().ByType("credentials")
+
+	return g.ID, credentials[0].GetProvider()
+}
+
 func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 	var gd map[string]interface{}
 	err := json.Unmarshal(body, &gd)
@@ -183,6 +189,52 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 	return g.ToJSON()
 }
 
+// SubscribeImportComplete : service.create.done subscriber
+// Converts a completed import graph to an inpurt definition
+func SubscribeImportComplete(body []byte) error {
+	var service struct {
+		ID         string `json:"id"`
+		Definition string `json:"definition"`
+	}
+
+	var gg map[string]interface{}
+	err := json.Unmarshal(body, &gg)
+	if err != nil {
+		return err
+	}
+
+	g := graph.New()
+	err = g.Load(gg)
+	if err != nil {
+		return err
+	}
+
+	id, provider := getGraphDetails(g)
+	m := providers.NewMapper(provider)
+
+	d, err := m.ConvertGraph(g)
+	if err != nil {
+		return err
+	}
+
+	ddata, err := json.Marshal(d)
+	if err != nil {
+		return err
+	}
+
+	service.ID = id
+	service.Definition = string(ddata)
+
+	sdata, err := json.Marshal(service)
+	if err != nil {
+		return err
+	}
+
+	n.Publish("service.set.definition", sdata)
+
+	return nil
+}
+
 // SubscribeDeleteService : definition.map.deletion subscriber
 // For a given existing service will generate a valid internal
 // service with a workflow to delete all its components
@@ -289,6 +341,19 @@ func ManageDefinitions() {
 			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println(err.Error())
 			}
+		} else {
+			log.Println(err.Error())
+			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
+				log.Println("Error trying to respond through nats : " + err.Error())
+			}
+		}
+	}); err != nil {
+		log.Panic(err)
+	}
+
+	if _, err := n.Subscribe("service.import.done", func(m *nats.Msg) {
+		if err := SubscribeImportComplete(m.Data); err == nil {
+			log.Println(err.Error())
 		} else {
 			log.Println(err.Error())
 			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
