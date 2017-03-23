@@ -16,6 +16,7 @@ import (
 	"github.com/ernestio/definition-mapper/libmapper"
 	"github.com/ernestio/definition-mapper/libmapper/providers"
 	ecc "github.com/ernestio/ernest-config-client"
+	"github.com/ghodss/yaml"
 	"github.com/nats-io/nats"
 	"gopkg.in/r3labs/graph.v2"
 )
@@ -246,8 +247,13 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
+	ydata, err := yaml.JSONToYAML(ddata)
+	if err != nil {
+		return err
+	}
+
 	service.ID = id
-	service.Definition = string(ddata)
+	service.Definition = string(ydata)
 
 	sdata, err := json.Marshal(service)
 	if err != nil {
@@ -376,13 +382,8 @@ func ManageDefinitions() {
 	}
 
 	if _, err := n.Subscribe("service.import.done", func(m *nats.Msg) {
-		if err := SubscribeImportComplete(m.Data); err == nil {
+		if err := SubscribeImportComplete(m.Data); err != nil {
 			log.Println(err.Error())
-		} else {
-			log.Println(err.Error())
-			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
-				log.Println("Error trying to respond through nats : " + err.Error())
-			}
 		}
 	}); err != nil {
 		log.Panic(err)
