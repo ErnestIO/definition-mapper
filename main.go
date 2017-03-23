@@ -42,11 +42,16 @@ func getInputDetails(body []byte) (string, string, string, string, string) {
 	return service.ID, service.Name, service.Datacenter.Type, service.Previous, service.Definition.Name
 }
 
-func getGraphDetails(gg map[string]interface{}) (string, string) {
-	cg := copyMap(gg)
+func getGraphDetails(body []byte) (string, string) {
+	var gg map[string]interface{}
+	err := json.Unmarshal(body, &gg)
+	if err != nil {
+		log.Println("could not process graph")
+		return "", ""
+	}
 
 	gx := graph.New()
-	err := gx.Load(cg)
+	err = gx.Load(gg)
 	if err != nil {
 		log.Println("could not load graph")
 		return "", ""
@@ -216,13 +221,14 @@ func SubscribeImportComplete(body []byte) error {
 		Definition string `json:"definition"`
 	}
 
+	id, provider := getGraphDetails(body)
+
 	var gg map[string]interface{}
 	err := json.Unmarshal(body, &gg)
 	if err != nil {
 		return err
 	}
 
-	id, provider := getGraphDetails(gg)
 	m := providers.NewMapper(provider)
 
 	g, err := m.LoadGraph(gg)
