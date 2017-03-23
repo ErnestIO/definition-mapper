@@ -45,6 +45,7 @@ func MapDefinitionNetworks(g *graph.Graph) []definition.Network {
 			Subnet:           n.Subnet,
 			Public:           n.IsPublic,
 			AvailabilityZone: n.AvailabilityZone,
+			VPC:              n.Vpc,
 			NatGateway:       n.Tags["ernest.nat_gateway"],
 		})
 	}

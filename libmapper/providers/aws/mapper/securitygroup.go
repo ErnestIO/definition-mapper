@@ -49,6 +49,7 @@ func MapDefinitionSecurityGroups(g *graph.Graph) []definition.SecurityGroup {
 
 		s := definition.SecurityGroup{
 			Name: sg.Name,
+			Vpc:  sg.Vpc,
 		}
 
 		for _, rule := range sg.Rules.Ingress {
