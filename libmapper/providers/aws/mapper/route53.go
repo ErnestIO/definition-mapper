@@ -58,7 +58,7 @@ func MapDefinitionRoute53Zones(g *graph.Graph) []definition.Route53Zone {
 		}
 
 		for _, record := range zone.Records {
-			z.Records = append(z.Records, definition.Record{
+			r := definition.Record{
 				Entry:         record.Entry,
 				Type:          record.Type,
 				TTL:           record.TTL,
@@ -67,7 +67,15 @@ func MapDefinitionRoute53Zones(g *graph.Graph) []definition.Route53Zone {
 				RDSClusters:   record.RDSClusters,
 				RDSInstances:  record.RDSInstances,
 				Values:        record.Values,
-			})
+			}
+
+			for i := len(r.Values) - 1; i >= 0; i++ {
+				if r.Values[i][0:2] == "$(" {
+					r.Values = append(r.Values[:i], r.Values[i+1:]...)
+				}
+			}
+
+			z.Records = append(z.Records, r)
 		}
 
 		zones = append(zones, z)
