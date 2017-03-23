@@ -42,16 +42,11 @@ func getInputDetails(body []byte) (string, string, string, string, string) {
 	return service.ID, service.Name, service.Datacenter.Type, service.Previous, service.Definition.Name
 }
 
-func getGraphDetails(body []byte) (string, string) {
-	var gg map[string]interface{}
-	err := json.Unmarshal(body, &gg)
-	if err != nil {
-		log.Println("could not unmarshal graph")
-		return "", ""
-	}
+func getGraphDetails(gg map[string]interface{}) (string, string) {
+	cg := copyMap(gg)
 
 	gx := graph.New()
-	err = gx.Load(gg)
+	err := gx.Load(cg)
 	if err != nil {
 		log.Println("could not load graph")
 		return "", ""
@@ -60,6 +55,16 @@ func getGraphDetails(body []byte) (string, string) {
 	credentials := gx.GetComponents().ByType("credentials")
 
 	return gx.ID, credentials[0].GetProvider()
+}
+
+func copyMap(m map[string]interface{}) map[string]interface{} {
+	cm := make(map[string]interface{})
+
+	for k, v := range m {
+		cm[k] = v
+	}
+
+	return cm
 }
 
 func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
@@ -217,7 +222,7 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	id, provider := getGraphDetails(body)
+	id, provider := getGraphDetails(gg)
 	m := providers.NewMapper(provider)
 
 	g, err := m.LoadGraph(gg)

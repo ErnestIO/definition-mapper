@@ -218,6 +218,16 @@ func (r *RDSInstance) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (r *RDSInstance) Rebuild(g *graph.Graph) {
+	if r.Cluster != "" {
+		r.DatabaseName = ""
+		r.DatabaseUsername = ""
+		r.EngineVersion = ""
+		r.StorageType = ""
+		r.StorageIops = nil
+		r.StorageSize = nil
+		r.Port = nil
+	}
+
 	if len(r.Networks) > len(r.NetworkAWSIDs) {
 		for _, nw := range r.Networks {
 			r.NetworkAWSIDs = append(r.NetworkAWSIDs, templSubnetID(nw))

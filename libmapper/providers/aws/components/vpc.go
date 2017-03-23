@@ -118,9 +118,6 @@ func (v *Vpc) Validate() error {
 	if v.Subnet == "" && v.VpcAWSID == "" {
 		return errors.New("vpc must specify either subnet or an existing vpc id")
 	}
-	if v.Subnet != "" && v.VpcAWSID != "" {
-		return errors.New("vpc must specify either subnet or an existing vpc id")
-	}
 
 	return nil
 }

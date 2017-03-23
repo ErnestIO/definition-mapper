@@ -53,7 +53,7 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 		// Build internal & template values
 		for _, dep := range c.Dependencies() {
 			if g.HasComponent(dep) != true {
-				return g, errors.New("Could not resolve component dependency: " + dep)
+				return g, errors.New("Component '" + c.GetID() + "': Could not resolve component dependency '" + dep + "'")
 			}
 		}
 

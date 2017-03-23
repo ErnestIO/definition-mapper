@@ -52,7 +52,7 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 		// Build internal & template values
 		for _, dep := range c.Dependencies() {
 			if g.HasComponent(dep) != true {
-				return g, errors.New("Could not resolve component dependency: " + dep)
+				return g, errors.New("Component '" + c.GetID() + "': Could not resolve component dependency '" + dep + "'")
 			}
 		}
 
@@ -69,12 +69,19 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 	var d def.Definition
 
-	for _, c := range g.Components {
+	for i := len(g.Components) - 1; i >= 0; i-- {
+		c := g.Components[i]
 		c.Rebuild(g)
+
+		// remove any components that were determined to not be apart of the service
+		if c == nil {
+			g.Components = append(g.Components[:i], g.Components[i+1:]...)
+			continue
+		}
 
 		for _, dep := range c.Dependencies() {
 			if g.HasComponent(dep) != true {
-				return g, errors.New("Could not resolve component dependency: " + dep)
+				return g, errors.New("Component '" + c.GetID() + "': Could not resolve component dependency '" + dep + "'")
 			}
 		}
 

@@ -121,10 +121,21 @@ func (n *NatGateway) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (n *NatGateway) Rebuild(g *graph.Graph) {
+	for _, nw := range n.RoutedNetworkAWSIDs {
+		fn := g.GetComponents().ByProviderID(nw)
+		if fn != nil {
+			n.Name = fn.GetTag("ernest.nat_gateway")
+		}
+	}
+
 	if n.PublicNetwork == "" && n.PublicNetworkAWSID != "" {
 		pn := g.GetComponents().ByProviderID(n.PublicNetworkAWSID)
 		if pn != nil {
 			n.PublicNetwork = pn.GetName()
+		} else {
+			// remove the nat gateway if its not apart of this service
+			n = nil
+			return
 		}
 	}
 
