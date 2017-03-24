@@ -260,9 +260,9 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	n.Publish("service.set.definition", sdata)
+	err = n.Publish("service.set.definition", sdata)
 
-	return nil
+	return err
 }
 
 // SubscribeDeleteService : definition.map.deletion subscriber
