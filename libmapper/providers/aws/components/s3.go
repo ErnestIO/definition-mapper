@@ -15,7 +15,7 @@ import (
 
 var (
 	// S3GRANTEETYPES : s3 supported grantee types
-	S3GRANTEETYPES = []string{"id", "emailaddress", "uri", "canonicaluser"}
+	S3GRANTEETYPES = []string{"id", "emailaddress", "uri", "canonicaluser", "AmazonCustomerByEmail", "CanonicalUser", "Group"}
 	// S3PERMISSIONTYPES : s3 supported permission types
 	S3PERMISSIONTYPES = []string{"FULL_CONTROL", "WRITE", "WRITE_ACP", "READ", "READ_ACP"}
 	// S3ACLTYPES : s3 supported acl types
