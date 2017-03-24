@@ -250,17 +250,15 @@ func (r *RDSCluster) Validate() error {
 		return errors.New("RDS Cluster database username should not exceed 16 characters")
 	}
 
-	if r.DatabasePassword == "" {
-		return errors.New("RDS Cluster database password should not be null")
-	}
+	if r.DatabasePassword != "" {
+		if len(r.DatabasePassword) < 8 || len(r.DatabasePassword) > 41 {
+			return errors.New("RDS Cluster database password should be between 8 and 41 characters")
+		}
 
-	if len(r.DatabasePassword) < 8 || len(r.DatabasePassword) > 41 {
-		return errors.New("RDS Cluster database password should be between 8 and 41 characters")
-	}
-
-	for _, c := range r.DatabasePassword {
-		if unicode.IsSymbol(c) || unicode.IsMark(c) {
-			return fmt.Errorf("RDS Cluster database password contains an offending character: '%c'", c)
+		for _, c := range r.DatabasePassword {
+			if unicode.IsSymbol(c) || unicode.IsMark(c) {
+				return fmt.Errorf("RDS Cluster database password contains an offending character: '%c'", c)
+			}
 		}
 	}
 

@@ -16,13 +16,14 @@ import (
 	"github.com/ernestio/definition-mapper/libmapper"
 	"github.com/ernestio/definition-mapper/libmapper/providers"
 	ecc "github.com/ernestio/ernest-config-client"
+	"github.com/ghodss/yaml"
 	"github.com/nats-io/nats"
 	"gopkg.in/r3labs/graph.v2"
 )
 
 var n *nats.Conn
 
-func getInputDetails(body []byte) (string, string, string, string) {
+func getInputDetails(body []byte) (string, string, string, string, string) {
 	var service struct {
 		ID         string `json:"id"`
 		Name       string `json:"name"`
@@ -30,13 +31,46 @@ func getInputDetails(body []byte) (string, string, string, string) {
 		Datacenter struct {
 			Type string `json:"type"`
 		} `json:"datacenter"`
+		Definition struct {
+			Name string `json:"name"`
+		} `json:"service"`
 	}
 
 	if err := json.Unmarshal(body, &service); err != nil {
 		log.Panic(err)
 	}
 
-	return service.ID, service.Name, service.Datacenter.Type, service.Previous
+	return service.ID, service.Name, service.Datacenter.Type, service.Previous, service.Definition.Name
+}
+
+func getGraphDetails(body []byte) (string, string) {
+	var gg map[string]interface{}
+	err := json.Unmarshal(body, &gg)
+	if err != nil {
+		log.Println("could not process graph")
+		return "", ""
+	}
+
+	gx := graph.New()
+	err = gx.Load(gg)
+	if err != nil {
+		log.Println("could not load graph")
+		return "", ""
+	}
+
+	credentials := gx.GetComponents().ByType("credentials")
+
+	return gx.ID, credentials[0].GetProvider()
+}
+
+func copyMap(m map[string]interface{}) map[string]interface{} {
+	cm := make(map[string]interface{})
+
+	for k, v := range m {
+		cm[k] = v
+	}
+
+	return cm
 }
 
 func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
@@ -96,7 +130,7 @@ func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 // and necessary workflow to create the environment on the
 // provider
 func SubscribeCreateService(body []byte) ([]byte, error) {
-	id, _, t, p := getInputDetails(body)
+	id, _, t, p, _ := getInputDetails(body)
 
 	m := providers.NewMapper(t)
 	if m == nil {
@@ -149,8 +183,19 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 	var err error
 	var filters []string
 
-	id, n, t, _ := getInputDetails(body)
-	// TODO Allow multi-filters for azure development
+	var gd map[string]interface{}
+	err = json.Unmarshal(body, &gd)
+	if err != nil {
+		return nil, err
+	}
+
+	credentials, ok := gd["datacenter"].(map[string]interface{})
+	if ok != true {
+		return nil, errors.New("could not find datacenter credentials")
+	}
+
+	id, _, t, _, n := getInputDetails(body)
+
 	filters = append(filters, n)
 
 	m := providers.NewMapper(t)
@@ -161,15 +206,70 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 	}
 
 	g.ID = id
+	err = g.AddComponent(m.ProviderCredentials(credentials))
+	if err != nil {
+		return nil, err
+	}
 
 	return g.ToJSON()
+}
+
+// SubscribeImportComplete : service.create.done subscriber
+// Converts a completed import graph to an inpurt definition
+func SubscribeImportComplete(body []byte) error {
+	var service struct {
+		ID         string `json:"id"`
+		Definition string `json:"definition"`
+	}
+
+	id, provider := getGraphDetails(body)
+
+	var gg map[string]interface{}
+	err := json.Unmarshal(body, &gg)
+	if err != nil {
+		return err
+	}
+
+	m := providers.NewMapper(provider)
+
+	g, err := m.LoadGraph(gg)
+	if err != nil {
+		return err
+	}
+
+	d, err := m.ConvertGraph(g)
+	if err != nil {
+		return err
+	}
+
+	ddata, err := json.Marshal(d)
+	if err != nil {
+		return err
+	}
+
+	ydata, err := yaml.JSONToYAML(ddata)
+	if err != nil {
+		return err
+	}
+
+	service.ID = id
+	service.Definition = string(ydata)
+
+	sdata, err := json.Marshal(service)
+	if err != nil {
+		return err
+	}
+
+	n.Publish("service.set.definition", sdata)
+
+	return nil
 }
 
 // SubscribeDeleteService : definition.map.deletion subscriber
 // For a given existing service will generate a valid internal
 // service with a workflow to delete all its components
 func SubscribeDeleteService(body []byte) ([]byte, error) {
-	_, _, t, p := getInputDetails(body)
+	_, _, t, p, _ := getInputDetails(body)
 	m := providers.NewMapper(t)
 
 	oMsg, rerr := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
@@ -204,7 +304,7 @@ func SubscribeMapService(body []byte) ([]byte, error) {
 		return body, err
 	}
 
-	_, _, t, _ := getInputDetails(body)
+	_, _, t, _, _ := getInputDetails(body)
 	m := providers.NewMapper(t)
 
 	original, err := m.LoadGraph(gd)
@@ -276,6 +376,14 @@ func ManageDefinitions() {
 			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
 				log.Println("Error trying to respond through nats : " + err.Error())
 			}
+		}
+	}); err != nil {
+		log.Panic(err)
+	}
+
+	if _, err := n.Subscribe("service.import.done", func(m *nats.Msg) {
+		if err := SubscribeImportComplete(m.Data); err != nil {
+			log.Println(err.Error())
 		}
 	}); err != nil {
 		log.Panic(err)
