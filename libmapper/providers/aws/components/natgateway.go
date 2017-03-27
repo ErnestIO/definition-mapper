@@ -33,6 +33,7 @@ type NatGateway struct {
 	AccessKeyID            string            `json:"aws_access_key_id"`
 	SecretAccessKey        string            `json:"aws_secret_access_key"`
 	VpcID                  string            `json:"vpc_id"`
+	Remove                 bool              `json:"-"`
 	Tags                   map[string]string `json:"tags"`
 	Service                string            `json:"service"`
 }
@@ -133,8 +134,7 @@ func (n *NatGateway) Rebuild(g *graph.Graph) {
 		if pn != nil {
 			n.PublicNetwork = pn.GetName()
 		} else {
-			// remove the nat gateway if its not apart of this service
-			n = nil
+			n.Remove = true
 			return
 		}
 	}
@@ -191,7 +191,7 @@ func (n *NatGateway) Validate() error {
 
 // IsStateful : returns true if the component needs to be actioned to be removed.
 func (n *NatGateway) IsStateful() bool {
-	return true
+	return !n.Remove
 }
 
 // SetDefaultVariables : sets up the default template variables for a component

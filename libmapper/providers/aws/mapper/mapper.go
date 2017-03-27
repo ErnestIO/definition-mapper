@@ -74,7 +74,7 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 		c.Rebuild(g)
 
 		// remove any components that were determined to not be apart of the service
-		if c == nil {
+		if c.IsStateful() != true {
 			g.Components = append(g.Components[:i], g.Components[i+1:]...)
 			continue
 		}
