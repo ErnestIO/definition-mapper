@@ -6,16 +6,16 @@ package definition
 
 // SecurityGroup ...
 type SecurityGroup struct {
-	Name    string              `json:"name"`
-	Vpc     string              `json:"vpc"`
-	Ingress []SecurityGroupRule `json:"ingress"`
-	Egress  []SecurityGroupRule `json:"egress"`
+	Name    string              `json:"name" yaml:"name"`
+	Vpc     string              `json:"vpc" yaml:"vpc"`
+	Ingress []SecurityGroupRule `json:"ingress" yaml:"ingress"`
+	Egress  []SecurityGroupRule `json:"egress" yaml:"egress"`
 }
 
 // SecurityGroupRule ...
 type SecurityGroupRule struct {
-	IP       string `json:"ip"`
-	FromPort string `json:"from_port"`
-	ToPort   string `json:"to_port"`
-	Protocol string `json:"protocol"`
+	IP       string `json:"ip" yaml:"ip"`
+	FromPort string `json:"from_port" yaml:"from_port"`
+	ToPort   string `json:"to_port" yaml:"to_port"`
+	Protocol string `json:"protocol" yaml:"protocol"`
 }

@@ -6,10 +6,10 @@ package definition
 
 // Network ...
 type Network struct {
-	Name             string `json:"name"`
-	Subnet           string `json:"subnet"`
-	Public           bool   `json:"public"`
-	NatGateway       string `json:"nat_gateway"`
-	AvailabilityZone string `json:"availability_zone"`
-	VPC              string `json:"vpc"`
+	Name             string `json:"name" yaml:"name"`
+	Subnet           string `json:"subnet" yaml:"subnet"`
+	Public           bool   `json:"public" yaml:"public"`
+	NatGateway       string `json:"nat_gateway" yaml:"nat_gateway"`
+	AvailabilityZone string `json:"availability_zone" yaml:"availability_zone"`
+	VPC              string `json:"vpc" yaml:"vpc"`
 }

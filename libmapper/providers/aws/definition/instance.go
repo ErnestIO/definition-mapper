@@ -6,21 +6,21 @@ package definition
 
 // InstanceVolume ...
 type InstanceVolume struct {
-	Volume string `json:"volume"`
-	Device string `json:"device"`
+	Volume string `json:"volume" yaml:"volume"`
+	Device string `json:"device" yaml:"device"`
 }
 
 // Instance ...
 type Instance struct {
-	Name           string           `json:"name"`
-	Type           string           `json:"type"`
-	Image          string           `json:"image"`
-	Count          int              `json:"count"`
-	Network        string           `json:"network"`
-	StartIP        string           `json:"start_ip"`
-	KeyPair        string           `json:"key_pair"`
-	ElasticIP      bool             `json:"elastic_ip"`
-	SecurityGroups []string         `json:"security_groups"`
-	Volumes        []InstanceVolume `json:"volumes"`
-	UserData       string           `json:"user_data"`
+	Name           string           `json:"name" yaml:"name"`
+	Type           string           `json:"type" yaml:"type"`
+	Image          string           `json:"image" yaml:"image"`
+	Count          int              `json:"count" yaml:"count"`
+	Network        string           `json:"network" yaml:"network"`
+	StartIP        string           `json:"start_ip" yaml:"start_ip"`
+	KeyPair        string           `json:"key_pair" yaml:"key_pair"`
+	ElasticIP      bool             `json:"elastic_ip" yaml:"elastic_ip"`
+	SecurityGroups []string         `json:"security_groups" yaml:"security_groups"`
+	Volumes        []InstanceVolume `json:"volumes" yaml:"volumes"`
+	UserData       string           `json:"user_data" yaml:"user_data"`
 }
