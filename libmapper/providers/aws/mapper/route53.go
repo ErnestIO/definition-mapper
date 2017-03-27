@@ -69,7 +69,7 @@ func MapDefinitionRoute53Zones(g *graph.Graph) []definition.Route53Zone {
 				Values:        record.Values,
 			}
 
-			for i := len(r.Values) - 1; i >= 0; i++ {
+			for i := len(r.Values) - 1; i >= 0; i-- {
 				if len(r.Values[i]) < 2 {
 					continue
 				}
