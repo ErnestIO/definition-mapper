@@ -56,7 +56,7 @@ func MapDefinitionS3Buckets(g *graph.Graph) []definition.S3 {
 		for _, grantee := range s3.Grantees {
 			s.Grantees = append(s.Grantees, definition.S3Grantee{
 				ID:          grantee.ID,
-				Type:        strings.ToLower(grantee.Type),
+				Type:        grantee.Type,
 				Permissions: strings.ToLower(grantee.Permissions),
 			})
 		}
