@@ -44,7 +44,7 @@ func MapSecurityGroups(d *definition.Definition) []*components.SecurityGroup {
 func MapDefinitionSecurityGroups(g *graph.Graph) []definition.SecurityGroup {
 	var sgs []definition.SecurityGroup
 
-	for _, c := range g.GetComponents().ByType("security_group") {
+	for _, c := range g.GetComponents().ByType("firewall") {
 		sg := c.(*components.SecurityGroup)
 
 		s := definition.SecurityGroup{
