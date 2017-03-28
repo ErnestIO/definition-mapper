@@ -68,7 +68,7 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 
 // ConvertGraph : converts the service graph into an input yaml format
 func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
-	return def.Definition{}, nil
+	return &def.Definition{}, nil
 }
 
 // LoadDefinition : returns an aws type definition

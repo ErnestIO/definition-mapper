@@ -6,12 +6,12 @@ package definition
 
 // EBSVolume ...
 type EBSVolume struct {
-	Name             string  `json:"name"`
-	Type             string  `json:"type"`
-	Size             *int64  `json:"size"`
-	Iops             *int64  `json:"iops"`
-	Count            int     `json:"count"`
-	Encrypted        bool    `json:"encrypted"`
-	EncryptionKeyID  *string `json:"encryption_key_id"`
-	AvailabilityZone string  `json:"availability_zone"`
+	Name             string  `json:"name" yaml:"name"`
+	Type             string  `json:"type" yaml:"type"`
+	Size             *int64  `json:"size" yaml:"size"`
+	Iops             *int64  `json:"iops" yaml:"iops"`
+	Count            int     `json:"count" yaml:"count"`
+	Encrypted        bool    `json:"encrypted" yaml:"encrypted"`
+	EncryptionKeyID  *string `json:"encryption_key_id" yaml:"encryption_key_id"`
+	AvailabilityZone string  `json:"availability_zone" yaml:"availability_zone"`
 }

@@ -15,32 +15,35 @@ import (
 
 	"github.com/ernestio/definition-mapper/libmapper"
 	"github.com/ernestio/definition-mapper/libmapper/providers"
+	aws "github.com/ernestio/definition-mapper/libmapper/providers/aws/definition"
 	ecc "github.com/ernestio/ernest-config-client"
-	"github.com/ghodss/yaml"
 	"github.com/nats-io/nats"
 	"gopkg.in/r3labs/graph.v2"
+	yaml "gopkg.in/yaml.v2"
 )
 
 var n *nats.Conn
 
-func getInputDetails(body []byte) (string, string, string, string, string) {
-	var service struct {
-		ID         string `json:"id"`
+type service struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Previous   string `json:"previous_id"`
+	Datacenter struct {
+		Type string `json:"type"`
+	} `json:"datacenter"`
+	Definition struct {
 		Name       string `json:"name"`
-		Previous   string `json:"previous_id"`
-		Datacenter struct {
-			Type string `json:"type"`
-		} `json:"datacenter"`
-		Definition struct {
-			Name string `json:"name"`
-		} `json:"service"`
-	}
+		Datacenter string `json:"datacenter"`
+	} `json:"service"`
+}
 
-	if err := json.Unmarshal(body, &service); err != nil {
+func getInputDetails(body []byte) (string, string, string, string, string) {
+	var s service
+	if err := json.Unmarshal(body, &s); err != nil {
 		log.Panic(err)
 	}
 
-	return service.ID, service.Name, service.Datacenter.Type, service.Previous, service.Definition.Name
+	return s.ID, s.Name, s.Datacenter.Type, s.Previous, s.Definition.Name
 }
 
 func getGraphDetails(body []byte) (string, string) {
@@ -61,6 +64,29 @@ func getGraphDetails(body []byte) (string, string) {
 	credentials := gx.GetComponents().ByType("credentials")
 
 	return gx.ID, credentials[0].GetProvider()
+}
+
+func getDefinition(id string) (map[string]interface{}, error) {
+	var d map[string]interface{}
+
+	resp, err := n.Request("service.get.definition", []byte(`{"id":"`+id+`"}`), time.Second)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(resp.Data, &d)
+
+	return d, err
+}
+
+func getDefinitionDetails(d map[string]interface{}) (string, string) {
+	var name string
+	var datacenter string
+
+	name, _ = d["name"].(string)
+	datacenter, _ = d["datacenter"].(string)
+
+	return name, datacenter
 }
 
 func copyMap(m map[string]interface{}) map[string]interface{} {
@@ -224,8 +250,13 @@ func SubscribeImportComplete(body []byte) error {
 
 	id, provider := getGraphDetails(body)
 
+	pd, err := getDefinition(id)
+	if err != nil {
+		return err
+	}
+
 	var gg map[string]interface{}
-	err := json.Unmarshal(body, &gg)
+	err = json.Unmarshal(body, &gg)
 	if err != nil {
 		return err
 	}
@@ -242,18 +273,19 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	ddata, err := json.Marshal(d)
-	if err != nil {
-		return err
+	switch provider {
+	case "aws":
+		def := d.(*aws.Definition)
+		def.Name, def.Datacenter = getDefinitionDetails(pd)
 	}
 
-	ydata, err := yaml.JSONToYAML(ddata)
+	data, err := yaml.Marshal(d)
 	if err != nil {
 		return err
 	}
 
 	service.ID = id
-	service.Definition = string(ydata)
+	service.Definition = string(data)
 
 	sdata, err := json.Marshal(service)
 	if err != nil {

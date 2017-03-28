@@ -6,15 +6,15 @@ package definition
 
 // S3Grantee ...
 type S3Grantee struct {
-	ID          string `json:"id"`
-	Type        string `json:"type"`
-	Permissions string `json:"permissions"`
+	ID          string `json:"id" yaml:"id"`
+	Type        string `json:"type" yaml:"type"`
+	Permissions string `json:"permissions" yaml:"permissions"`
 }
 
 // S3 ...
 type S3 struct {
-	Name           string      `json:"name"`
-	ACL            string      `json:"acl,omitempty"`
-	BucketLocation string      `json:"bucket_location"`
-	Grantees       []S3Grantee `json:"grantees,omitempty"`
+	Name           string      `json:"name" yaml:"name"`
+	ACL            string      `json:"acl,omitempty" yaml:"acl,omitempty"`
+	BucketLocation string      `json:"bucket_location" yaml:"bucket_location"`
+	Grantees       []S3Grantee `json:"grantees,omitempty" yaml:"grantees,omitempty"`
 }

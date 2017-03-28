@@ -4,9 +4,10 @@
 
 package definition
 
+// Vpc ...
 type Vpc struct {
-	ID         string `json:"id"`
-	Name       string `json:"name"`
-	Subnet     string `json:"subnet"`
-	AutoRemove bool   `json:"auto_remove"`
+	ID         string `json:"id" yaml:"id"`
+	Name       string `json:"name" yaml:"name"`
+	Subnet     string `json:"subnet" yaml:"subnet"`
+	AutoRemove bool   `json:"auto_remove" yaml:"auto_remove"`
 }

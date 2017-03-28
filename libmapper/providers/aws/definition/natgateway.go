@@ -6,6 +6,6 @@ package definition
 
 // NatGateway ...
 type NatGateway struct {
-	Name          string `json:"name"`
-	PublicNetwork string `json:"public_network"`
+	Name          string `json:"name" yaml:"name"`
+	PublicNetwork string `json:"public_network" yaml:"public_network"`
 }

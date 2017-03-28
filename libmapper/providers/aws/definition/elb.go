@@ -6,18 +6,18 @@ package definition
 
 // ELBListener ...
 type ELBListener struct {
-	FromPort int    `json:"from_port"`
-	ToPort   int    `json:"to_port"`
-	Protocol string `json:"protocol"`
-	SSLCert  string `json:"ssl_cert"`
+	FromPort int    `json:"from_port" yaml:"from_port"`
+	ToPort   int    `json:"to_port" yaml:"to_port"`
+	Protocol string `json:"protocol" yaml:"protocol"`
+	SSLCert  string `json:"ssl_cert" yaml:"ssl_cert"`
 }
 
 // ELB ...
 type ELB struct {
-	Name           string        `json:"name"`
-	Private        bool          `json:"private"`
-	Subnets        []string      `json:"networks"`
-	Instances      []string      `json:"instances"`
-	SecurityGroups []string      `json:"security_groups"`
-	Listeners      []ELBListener `json:"listeners"`
+	Name           string        `json:"name" yaml:"name" `
+	Private        bool          `json:"private" yaml:"private"`
+	Subnets        []string      `json:"networks" yaml:"networks"`
+	Instances      []string      `json:"instances" yaml:"instances"`
+	SecurityGroups []string      `json:"security_groups" yaml:"security_groups"`
+	Listeners      []ELBListener `json:"listeners" yaml:"listeners"`
 }
