@@ -103,7 +103,7 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 	d.Route53Zones = MapDefinitionRoute53Zones(g)
 	d.S3Buckets = MapDefinitionS3Buckets(g)
 
-	return d, nil
+	return &d, nil
 }
 
 // LoadDefinition : returns an aws type definition

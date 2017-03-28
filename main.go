@@ -79,6 +79,16 @@ func getDefinition(id string) (map[string]interface{}, error) {
 	return d, err
 }
 
+func getDefinitionDetails(d map[string]interface{}) (string, string) {
+	var name string
+	var datacenter string
+
+	name, _ = d["name"].(string)
+	datacenter, _ = d["datacenter"].(string)
+
+	return name, datacenter
+}
+
 func copyMap(m map[string]interface{}) map[string]interface{} {
 	cm := make(map[string]interface{})
 
@@ -265,9 +275,8 @@ func SubscribeImportComplete(body []byte) error {
 
 	switch provider {
 	case "aws":
-		def := d.(aws.Definition)
-		def.Name, _ = pd["name"].(string)
-		def.Datacenter, _ = pd["datacenter"].(string)
+		def := d.(*aws.Definition)
+		def.Name, def.Datacenter = getDefinitionDetails(pd)
 	}
 
 	data, err := yaml.Marshal(d)
