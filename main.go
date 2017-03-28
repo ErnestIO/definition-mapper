@@ -265,7 +265,7 @@ func SubscribeImportComplete(body []byte) error {
 
 	switch provider {
 	case "aws":
-		def := d.(*aws.Definition)
+		def := d.(aws.Definition)
 		def.Name, _ = pd["name"].(string)
 		def.Datacenter, _ = pd["datacenter"].(string)
 	}
