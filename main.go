@@ -292,7 +292,20 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	err = n.Publish("service.set.definition", sdata)
+	gdata, err := g.ToJSON()
+	if err != nil {
+		return err
+	}
+
+	_, err = n.Request("service.set.mapping", gdata, time.Second)
+	if err != nil {
+		return err
+	}
+
+	_, err = n.Request("service.set.definition", sdata, time.Second)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
