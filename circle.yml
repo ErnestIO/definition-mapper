@@ -2,8 +2,6 @@ machine:
   pre:
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
     - touch /tmp/ernest.log && chmod 666 /tmp/ernest.log
-    - curl -L https://github.com/docker/compose/releases/download/1.10.0/docker-compose-`uname -s`-`uname -m` > /home/ubuntu/bin/docker-compose
-    - chmod +x /home/ubuntu/bin/docker-compose
   services:
     - docker
   environment:
@@ -27,29 +25,16 @@ dependencies:
     - mkdir -p "$GOPATH/src/$IMPORT_PATH"
     - rsync -azC --delete ./ "$GOPATH/src/$IMPORT_PATH/"
     - make dev-deps
-    - ./internal/ci_install_service.sh r3labs natsc master
-    - ./internal/ci_install_service.sh r3labs composable master
-    - ./internal/ci_install_service.sh ernestio ernest-cli develop
-    - mkdir /tmp/composable
-    - git clone -b develop git@github.com:ernestio/ernest.git /tmp/ernest 
-    - sed -i "s:master:develop:g" /tmp/ernest/definition.yml
-    - composable gen -E ERNEST_CRYPTO_KEY=$ERNEST_CRYPTO_KEY -exclude='*-aws-connector,*-vcloud-connector,definition-mapper' /tmp/ernest/definition.yml internal/template.yml --
-    - docker-compose -f docker-compose.yml up -d
-    - docker-compose logs > /tmp/compose.log:
-          background: true
     - mkdir -p $ROOTPATH/
     - rm -rf $ROOTPATH/definition-mapper
     - cp -R /home/ubuntu/definition-mapper $ROOTPATH/definition-mapper
     - cd $ROOTPATH/definition-mapper/ && make install
-    - definition-mapper > /tmp/definition-mapper.log:
-          background: true
-  override:
-    - $ROOTPATH/definition-mapper/internal/ci_setup.sh
-    - $ROOTPATH/definition-mapper/internal/ci_install_service.sh r3labs natsc master
-    - $ROOTPATH/definition-mapper/internal/ci_install_service.sh r3labs composable master
+    - rm -rf $ROOTPATH/toolset/ && git clone git@github.com:ernestio/toolset.git $ROOTPATH/toolset/
+    - cd $ROOTPATH/toolset/ernestci/ && bundle install
 
 test:
   override:
     - cd $ROOTPATH/definition-mapper && make test
+    - cd $ROOTPATH/definition-mapper && ruby $ROOTPATH/toolset/ernestci/run.rb .ernest-ci
     - cd $ROOTPATH/definition-mapper && make lint
 
