@@ -246,6 +246,7 @@ func SubscribeImportComplete(body []byte) error {
 	var service struct {
 		ID         string `json:"id"`
 		Definition string `json:"definition"`
+		Mapping    string `json:"mapping"`
 	}
 
 	id, provider := getGraphDetails(body)
@@ -284,15 +285,29 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
+	gdata, err := g.ToJSON()
+	if err != nil {
+		return err
+	}
+
 	service.ID = id
 	service.Definition = string(data)
+	service.Mapping = string(gdata)
 
 	sdata, err := json.Marshal(service)
 	if err != nil {
 		return err
 	}
 
-	err = n.Publish("service.set.definition", sdata)
+	_, err = n.Request("service.set.mapping", sdata, time.Second)
+	if err != nil {
+		return err
+	}
+
+	_, err = n.Request("service.set.definition", sdata, time.Second)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
