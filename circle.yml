@@ -35,6 +35,6 @@ dependencies:
 test:
   override:
     - cd $ROOTPATH/definition-mapper && make test
-    - cd $ROOTPATH/definition-mapper && ruby $ROOTPATH/toolset/ernestci/run.rb .ernest-ci
+    - cd $ROOTPATH/definition-mapper && ruby $ROOTPATH/toolset/ernestci/local_run.rb .ernest-ci
     - cd $ROOTPATH/definition-mapper && make lint
 
