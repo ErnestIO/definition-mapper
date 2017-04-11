@@ -126,28 +126,28 @@ func (e *EBSVolume) Dependencies() []string {
 // Validate : validates the components values
 func (e *EBSVolume) Validate() error {
 	if e.Name == "" {
-		return errors.New("EBS Volume name should not be null")
+		return errors.New(EBSErrNilName)
 	}
 
 	if e.AvailabilityZone == "" {
-		return errors.New("EBS Volume availability zone name should not be null")
+		return errors.New(EBSErrAvailabilityNameNil)
 	}
 
 	if e.VolumeType == "" {
-		return errors.New("EBS Volume type should not be null")
+		return errors.New(EBSErrNilType)
 	}
 
 	if e.Encrypted && e.EncryptionKeyID == nil {
-		return errors.New("EBS Volume encryption key id (KMS key id) should be set if volume is encrypted")
+		return errors.New(EBSErrNilEncryption)
 	}
 
 	if e.VolumeType != "io1" && e.Iops != nil {
-		return errors.New("EBS Volume type must be 'io1' when specifying iops")
+		return errors.New(EBSErrInvalidType)
 	}
 
 	if e.Size != nil {
 		if *e.Size < 1 || *e.Size > 16384 {
-			return errors.New("EBS Volume size should be between 1 - 16385 (GB)")
+			return errors.New(EBSErrInvalidSize)
 		}
 	}
 
