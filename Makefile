@@ -28,6 +28,7 @@ dev-deps: deps
 	go get github.com/tidwall/gjson
 	go get github.com/smartystreets/goconvey/convey
 	go get github.com/alecthomas/gometalinter
+	go get github.com/stretchr/testify/suite
 	gometalinter --install
 
 clean:

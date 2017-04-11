@@ -28,6 +28,18 @@ const (
 	TARGETANY = "any"
 	// AWSMAXNAME : Maximum size of an aws character
 	AWSMAXNAME = 50
+	// EBSErrNilName : EBS Name is nil
+	EBSErrNilName = "EBS Volume name should not be null"
+	// EBSErrAvailabilityNameNil : EBS availability zone name is nil
+	EBSErrAvailabilityNameNil = "EBS Volume availability zone name should not be null"
+	// EBSErrNilType : Volume type is nil
+	EBSErrNilType = "EBS Volume type should not be null"
+	// EBSErrNilEncryption : EBS encryption key is nil
+	EBSErrNilEncryption = "EBS Volume encryption key id (KMS key id) should be set if volume is encrypted"
+	// EBSErrInvalidType : EBS type is invalid
+	EBSErrInvalidType = "EBS Volume type must be 'io1' when specifying iops"
+	// EBSErrInvalidSize : EBS size is invalid
+	EBSErrInvalidSize = "EBS Volume size should be between 1 - 16385 (GB)"
 )
 
 func validateProtocol(p string) error {
