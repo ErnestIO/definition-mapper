@@ -11,31 +11,37 @@ import (
 )
 
 // MapPublicIPs ...
-func MapPublicIPs(d *definition.Definition, rg *components.ResourceGroup) (ips []*components.PublicIP) {
-	for _, ip := range d.PublicIPs {
-		n := components.PublicIP{}
-		n.Name = ip.Name
-		n.Location = ip.Location
-		n.ResourceGroupName = rg.Name
-		n.PublicIPAddressAllocation = ip.PublicIPAddressAllocation
-		n.Tags = mapTags(ip.Name, d.Name)
+func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
+	for _, rg := range d.ResourceGroups {
+		for _, ip := range rg.PublicIPs {
+			n := components.PublicIP{}
+			n.Name = ip.Name
+			n.Location = ip.Location
+			n.ResourceGroupName = rg.Name
+			n.PublicIPAddressAllocation = ip.PublicIPAddressAllocation
+			n.Tags = mapTags(ip.Name, d.Name)
 
-		if ip.ID != "" {
-			n.SetAction("none")
+			if ip.ID != "" {
+				n.SetAction("none")
+			}
+
+			n.SetDefaultVariables()
+
+			ips = append(ips, &n)
 		}
-
-		n.SetDefaultVariables()
-
-		ips = append(ips, &n)
 	}
 
 	return
 }
 
 // MapDefinitionPublicIPs : ...
-func MapDefinitionPublicIPs(g *graph.Graph) (ips []definition.PublicIP) {
+func MapDefinitionPublicIPs(g *graph.Graph, rg *definition.ResourceGroup) (ips []definition.PublicIP) {
 	for _, c := range g.GetComponents().ByType("public_ip") {
 		ip := c.(*components.PublicIP)
+
+		if ip.ResourceGroupName != rg.Name {
+			continue
+		}
 
 		nIP := definition.PublicIP{
 			ID:       ip.GetID(),

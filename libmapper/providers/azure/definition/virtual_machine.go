@@ -39,10 +39,10 @@ type VirtualMachine struct {
 		OSType       string `json:"os_type" yaml:"os_type"`
 		DiskSizeGB   string `json:"disk_size_gb" yaml:"disk_size_gb"`
 	} `json:"storage_data_disk" yaml:"storage_data_disk"`
-	DeleteOSDiskOnTermination    `json:"delete_os_disk_on_termination" yaml:"delete_os_disk_on_termination"`
-	DeleteDataDisksOnTermination `json:"delete_data_disks_on_termination" yaml:"delete_data_disks_on_termination"`
-	LicenseType                  string            `json:"license_type" yaml:"license_type"`
-	Tags                         map[string]string `json:"tags" yaml:"tags"`
+	//DeleteOSDiskOnTermination    `json:"delete_os_disk_on_termination" yaml:"delete_os_disk_on_termination"`
+	//DeleteDataDisksOnTermination `json:"delete_data_disks_on_termination" yaml:"delete_data_disks_on_termination"`
+	LicenseType string            `json:"license_type" yaml:"license_type"`
+	Tags        map[string]string `json:"tags" yaml:"tags"`
 }
 
 // Authentication ...

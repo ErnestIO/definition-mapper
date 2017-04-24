@@ -12,41 +12,49 @@ import (
 )
 
 // MapNetworkInterfaces ...
-func MapNetworkInterfaces(d *definition.Definition, rg *components.ResourceGroup) (interfaces []*components.NetworkInterface) {
-	for _, ni := range d.NetworkInterfaces {
-		cv := components.NetworkInterface{}
-		cv.Name = ni.Name
-		cv.NetworkSecurityGroup = ni.SecurityGroup
-		cv.DNSServers = ni.DNSServers
-		cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
-		cv.ResourceGroupName = rg.Name
-		cv.Tags = mapTags(ni.Name, d.Name)
-		for _, ip := range ni.IPConfigurations {
-			nIP := networkinterface.IPConfiguration{
-				Name:                       ip.Name,
-				Subnet:                     ip.Subnet,
-				PrivateIPAddress:           ip.PrivateIPAddress,
-				PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
-				PublicIPAddress:            ip.PublicIPAddressID,
+func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.NetworkInterface) {
+	for _, rg := range d.ResourceGroups {
+		for _, ni := range rg.NetworkInterfaces {
+			cv := components.NetworkInterface{}
+			cv.Name = ni.Name
+			cv.NetworkSecurityGroup = ni.SecurityGroup
+			cv.DNSServers = ni.DNSServers
+			cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
+			cv.ResourceGroupName = rg.Name
+			cv.Tags = mapTags(ni.Name, d.Name)
+
+			for _, ip := range ni.IPConfigurations {
+				nIP := networkinterface.IPConfiguration{
+					Name:                       ip.Name,
+					Subnet:                     ip.Subnet,
+					PrivateIPAddress:           ip.PrivateIPAddress,
+					PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
+					PublicIPAddress:            ip.PublicIPAddressID,
+				}
+				cv.IPConfigurations = append(cv.IPConfigurations, nIP)
 			}
-			cv.IPConfigurations = append(cv.IPConfigurations, nIP)
-		}
-		if ni.ID != "" {
-			cv.SetAction("none")
-		}
 
-		cv.SetDefaultVariables()
+			if ni.ID != "" {
+				cv.SetAction("none")
+			}
 
-		interfaces = append(interfaces, &cv)
+			cv.SetDefaultVariables()
+
+			interfaces = append(interfaces, &cv)
+		}
 	}
 
 	return
 }
 
 // MapDefinitionNetworkInterfaces : ...
-func MapDefinitionNetworkInterfaces(g *graph.Graph) (nis []definition.NetworkInterface) {
+func MapDefinitionNetworkInterfaces(g *graph.Graph, rg *definition.ResourceGroup) (nis []definition.NetworkInterface) {
 	for _, c := range g.GetComponents().ByType("network_interface") {
 		ni := c.(*components.NetworkInterface)
+
+		if ni.ResourceGroupName != rg.Name {
+			continue
+		}
 
 		nNi := definition.NetworkInterface{
 			ID:                   ni.GetID(),

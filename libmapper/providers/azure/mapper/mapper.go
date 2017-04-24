@@ -92,8 +92,15 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 	}
 
 	d.ResourceGroups = MapDefinitionResourceGroups(g)
-	d.NetworkInterfaces = MapDefinitionNetworkInterfaces(g)
-	d.PublicIPs = MapDefinitionPublicIPs(g)
+
+	for i := 0; i < len(d.ResourceGroups); i++ {
+		d.ResourceGroups[i].NetworkInterfaces = MapDefinitionNetworkInterfaces(g, &d.ResourceGroups[i])
+		for x := 0; x < len(d.ResourceGroups[i].VirtualNetworks); x++ {
+			d.ResourceGroups[i].VirtualNetworks[x].Subnets = MapDefinitionSubnets(g, &d.ResourceGroups[i], &d.ResourceGroups[i].VirtualNetworks[x])
+		}
+
+		d.ResourceGroups[i].PublicIPs = MapDefinitionPublicIPs(g, &d.ResourceGroups[i])
+	}
 
 	return &d, nil
 }
@@ -195,14 +202,20 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 			return err
 		}
 
-		for _, ni := range MapNetworkInterfaces(d, rg) {
+		for _, ni := range MapNetworkInterfaces(d) {
 			if err := g.AddComponent(ni); err != nil {
 				return err
 			}
 		}
 
-		for _, ip := range MapPublicIPs(d, rg) {
+		for _, ip := range MapPublicIPs(d) {
 			if err := g.AddComponent(ip); err != nil {
+				return err
+			}
+		}
+
+		for _, subnet := range MapSubnets(d) {
+			if err := g.AddComponent(subnet); err != nil {
 				return err
 			}
 		}

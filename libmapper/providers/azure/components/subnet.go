@@ -7,7 +7,7 @@ package components
 import (
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/subnet"
-	"github.com/r3labs/graph"
+	"gopkg.in/r3labs/graph.v2"
 )
 
 // Subnet : A resource group a container that holds
@@ -18,95 +18,119 @@ type Subnet struct {
 }
 
 // GetID : returns the component's ID
-func (i *Subnet) GetID() string {
-	return i.ComponentID
+func (s *Subnet) GetID() string {
+	return s.ComponentID
 }
 
 // GetName returns a components name
-func (i *Subnet) GetName() string {
-	return i.Name
+func (s *Subnet) GetName() string {
+	return s.Name
 }
 
 // GetProvider : returns the provider type
-func (i *Subnet) GetProvider() string {
-	return i.ProviderType
+func (s *Subnet) GetProvider() string {
+	return s.ProviderType
 }
 
 // GetProviderID returns a components provider id
-func (i *Subnet) GetProviderID() string {
-	return i.ID
+func (s *Subnet) GetProviderID() string {
+	return s.ID
 }
 
 // GetType : returns the type of the component
-func (i *Subnet) GetType() string {
-	return i.ComponentType
+func (s *Subnet) GetType() string {
+	return s.ComponentType
 }
 
 // GetState : returns the state of the component
-func (i *Subnet) GetState() string {
-	return i.State
+func (s *Subnet) GetState() string {
+	return s.State
 }
 
 // SetState : sets the state of the component
-func (i *Subnet) SetState(s string) {
-	i.State = s
+func (s *Subnet) SetState(state string) {
+	s.State = state
 }
 
 // GetAction : returns the action of the component
-func (i *Subnet) GetAction() string {
-	return i.Action
+func (s *Subnet) GetAction() string {
+	return s.Action
 }
 
 // SetAction : Sets the action of the component
-func (i *Subnet) SetAction(s string) {
-	i.Action = s
+func (s *Subnet) SetAction(action string) {
+	s.Action = action
 }
 
 // GetGroup : returns the components group
-func (i *Subnet) GetGroup() string {
+func (s *Subnet) GetGroup() string {
 	return ""
 }
 
 // GetTags returns a components tags
-func (i *Subnet) GetTags() (tags map[string]string) {
+func (s *Subnet) GetTags() (tags map[string]string) {
 	return
 }
 
 // GetTag returns a components tag
-func (i *Subnet) GetTag(tag string) string {
+func (s *Subnet) GetTag(tag string) string {
 	return ""
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *Subnet) Diff(c graph.Component) bool {
+func (s *Subnet) Diff(c graph.Component) bool {
+	cs, ok := c.(*Subnet)
+	if ok {
+		if s.NetworkSecurityGroup != cs.NetworkSecurityGroup {
+			return true
+		}
+	}
 
 	return false
 }
 
 // Update : updates the provider returned values of a component
-func (i *Subnet) Update(c graph.Component) {
+func (s *Subnet) Update(c graph.Component) {
+	cs, ok := c.(*Subnet)
+	if ok {
+		s.ID = cs.ID
+		s.IPConfigurations = cs.IPConfigurations
+		s.RouteTable = cs.RouteTable
+	}
+	s.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
-func (i *Subnet) Rebuild(g *graph.Graph) {
+func (s *Subnet) Rebuild(g *graph.Graph) {
+	s.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
-func (i *Subnet) Dependencies() (deps []string) {
-	return
+func (s *Subnet) Dependencies() (deps []string) {
+	return []string{TYPEVIRTUALNETWORK + TYPEDELIMITER + s.VirtualNetworkName}
 }
 
 // Validate : validates the components values
-func (i *Subnet) Validate() error {
+func (s *Subnet) Validate() error {
 	val := event.NewValidator()
-	return val.Validate(i)
+	return val.Validate(s)
 }
 
 // IsStateful : returns true if the component needs to be actioned to be removed.
-func (i *Subnet) IsStateful() bool {
+func (s *Subnet) IsStateful() bool {
 	return true
 }
 
 // SetDefaultVariables : sets up the default template variables for a component
-func (i *Subnet) SetDefaultVariables() {
+func (s *Subnet) SetDefaultVariables() {
+	s.ComponentType = TYPESUBNET
+	s.ComponentID = TYPESUBNET + TYPEDELIMITER + s.Name
+	s.DatacenterName = DATACENTERNAME
+	s.DatacenterType = DATACENTERTYPE
+	s.DatacenterRegion = DATACENTERREGION
+	s.ClientID = CLIENTID
+	s.ClientSecret = CLIENTSECRET
+	s.TenantID = TENANTID
+	s.SubscriptionID = SUBSCRIPTIONID
+	s.Environment = ENVIRONMENT
 }
