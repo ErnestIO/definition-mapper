@@ -5,9 +5,11 @@
 package components
 
 import (
+	"reflect"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/virtualnetwork"
-	"github.com/r3labs/graph"
+	"gopkg.in/r3labs/graph.v2"
 )
 
 // VirtualNetwork : A resource group a container that holds
@@ -18,95 +20,116 @@ type VirtualNetwork struct {
 }
 
 // GetID : returns the component's ID
-func (i *VirtualNetwork) GetID() string {
-	return i.ComponentID
+func (vn *VirtualNetwork) GetID() string {
+	return vn.ComponentID
 }
 
 // GetName returns a components name
-func (i *VirtualNetwork) GetName() string {
-	return i.Name
+func (vn *VirtualNetwork) GetName() string {
+	return vn.Name
 }
 
 // GetProvider : returns the provider type
-func (i *VirtualNetwork) GetProvider() string {
-	return i.ProviderType
+func (vn *VirtualNetwork) GetProvider() string {
+	return vn.ProviderType
 }
 
 // GetProviderID returns a components provider id
-func (i *VirtualNetwork) GetProviderID() string {
-	return i.ID
+func (vn *VirtualNetwork) GetProviderID() string {
+	return vn.ID
 }
 
 // GetType : returns the type of the component
-func (i *VirtualNetwork) GetType() string {
-	return i.ComponentType
+func (vn *VirtualNetwork) GetType() string {
+	return vn.ComponentType
 }
 
 // GetState : returns the state of the component
-func (i *VirtualNetwork) GetState() string {
-	return i.State
+func (vn *VirtualNetwork) GetState() string {
+	return vn.State
 }
 
 // SetState : sets the state of the component
-func (i *VirtualNetwork) SetState(s string) {
-	i.State = s
+func (vn *VirtualNetwork) SetState(s string) {
+	vn.State = s
 }
 
 // GetAction : returns the action of the component
-func (i *VirtualNetwork) GetAction() string {
-	return i.Action
+func (vn *VirtualNetwork) GetAction() string {
+	return vn.Action
 }
 
 // SetAction : Sets the action of the component
-func (i *VirtualNetwork) SetAction(s string) {
-	i.Action = s
+func (vn *VirtualNetwork) SetAction(s string) {
+	vn.Action = s
 }
 
 // GetGroup : returns the components group
-func (i *VirtualNetwork) GetGroup() string {
+func (vn *VirtualNetwork) GetGroup() string {
 	return ""
 }
 
 // GetTags returns a components tags
-func (i *VirtualNetwork) GetTags() map[string]string {
-	return i.Tags
+func (vn *VirtualNetwork) GetTags() map[string]string {
+	return vn.Tags
 }
 
 // GetTag returns a components tag
-func (i *VirtualNetwork) GetTag(tag string) string {
+func (vn *VirtualNetwork) GetTag(tag string) string {
 	return ""
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *VirtualNetwork) Diff(c graph.Component) bool {
+func (vn *VirtualNetwork) Diff(c graph.Component) bool {
+	cvn, ok := c.(*VirtualNetwork)
+	if ok {
+		return !reflect.DeepEqual(vn.DNSServerNames, cvn.DNSServerNames)
+	}
 
 	return false
 }
 
 // Update : updates the provider returned values of a component
-func (i *VirtualNetwork) Update(c graph.Component) {
+func (vn *VirtualNetwork) Update(c graph.Component) {
+	cvn, ok := c.(*VirtualNetwork)
+	if ok {
+		vn.ID = cvn.ID
+	}
+
+	vn.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
-func (i *VirtualNetwork) Rebuild(g *graph.Graph) {
+func (vn *VirtualNetwork) Rebuild(g *graph.Graph) {
+	vn.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
-func (i *VirtualNetwork) Dependencies() (deps []string) {
+func (vn *VirtualNetwork) Dependencies() (deps []string) {
 	return
 }
 
 // Validate : validates the components values
-func (i *VirtualNetwork) Validate() error {
+func (vn *VirtualNetwork) Validate() error {
 	val := event.NewValidator()
-	return val.Validate(i)
+	return val.Validate(vn)
 }
 
 // IsStateful : returns true if the component needs to be actioned to be removed.
-func (i *VirtualNetwork) IsStateful() bool {
+func (vn *VirtualNetwork) IsStateful() bool {
 	return true
 }
 
 // SetDefaultVariables : sets up the default template variables for a component
-func (i *VirtualNetwork) SetDefaultVariables() {
+func (vn *VirtualNetwork) SetDefaultVariables() {
+	vn.ComponentType = TYPEVIRTUALNETWORK
+	vn.ComponentID = TYPEVIRTUALNETWORK + TYPEDELIMITER + vn.Name
+	vn.DatacenterName = DATACENTERNAME
+	vn.DatacenterType = DATACENTERTYPE
+	vn.DatacenterRegion = DATACENTERREGION
+	vn.ClientID = CLIENTID
+	vn.ClientSecret = CLIENTSECRET
+	vn.TenantID = TENANTID
+	vn.SubscriptionID = SUBSCRIPTIONID
+	vn.Environment = ENVIRONMENT
 }

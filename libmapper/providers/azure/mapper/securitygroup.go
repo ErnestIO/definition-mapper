@@ -55,7 +55,7 @@ func MapDefinitionSecurityGroups(g *graph.Graph, rg *definition.ResourceGroup) (
 		}
 
 		nSG := definition.SecurityGroup{
-			ID:   sg.GetID(),
+			ID:   sg.GetProviderID(),
 			Name: sg.Name,
 		}
 

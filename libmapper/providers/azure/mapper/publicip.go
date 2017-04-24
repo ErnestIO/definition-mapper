@@ -44,7 +44,7 @@ func MapDefinitionPublicIPs(g *graph.Graph, rg *definition.ResourceGroup) (ips [
 		}
 
 		nIP := definition.PublicIP{
-			ID:       ip.GetID(),
+			ID:       ip.GetProviderID(),
 			Name:     ip.Name,
 			Location: ip.Location,
 		}

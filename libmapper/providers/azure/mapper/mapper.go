@@ -95,10 +95,10 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 
 	for i := 0; i < len(d.ResourceGroups); i++ {
 		d.ResourceGroups[i].NetworkInterfaces = MapDefinitionNetworkInterfaces(g, &d.ResourceGroups[i])
+		d.ResourceGroups[i].VirtualNetworks = MapDefinitionVirtualNetworks(g, &d.ResourceGroups[i])
 		for x := 0; x < len(d.ResourceGroups[i].VirtualNetworks); x++ {
 			d.ResourceGroups[i].VirtualNetworks[x].Subnets = MapDefinitionSubnets(g, &d.ResourceGroups[i], &d.ResourceGroups[i].VirtualNetworks[x])
 		}
-
 		d.ResourceGroups[i].PublicIPs = MapDefinitionPublicIPs(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].SecurityGroups = MapDefinitionSecurityGroups(g, &d.ResourceGroups[i])
 	}
@@ -135,6 +135,10 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.PublicIP{}
 		case "security_group":
 			c = &components.SecurityGroup{}
+		case "virtual_network":
+			c = &components.VirtualNetwork{}
+		case "subnet":
+			c = &components.Subnet{}
 		default:
 			continue
 		}
@@ -185,7 +189,7 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 
 	credentials["_action"] = "none"
 	credentials["_component"] = "credentials"
-	credentials["_component_id"] = "credentials::aws"
+	credentials["_component_id"] = "credentials::azure"
 	credentials["_provider"] = details["type"]
 	credentials["name"] = details["name"]
 	credentials["region"] = details["region"]
@@ -204,29 +208,29 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 		if err := g.AddComponent(rg); err != nil {
 			return err
 		}
+	}
 
-		for _, ni := range MapNetworkInterfaces(d) {
-			if err := g.AddComponent(ni); err != nil {
-				return err
-			}
+	for _, ni := range MapNetworkInterfaces(d) {
+		if err := g.AddComponent(ni); err != nil {
+			return err
 		}
+	}
 
-		for _, ip := range MapPublicIPs(d) {
-			if err := g.AddComponent(ip); err != nil {
-				return err
-			}
+	for _, ip := range MapPublicIPs(d) {
+		if err := g.AddComponent(ip); err != nil {
+			return err
 		}
+	}
 
-		for _, subnet := range MapSubnets(d) {
-			if err := g.AddComponent(subnet); err != nil {
-				return err
-			}
+	for _, subnet := range MapSubnets(d) {
+		if err := g.AddComponent(subnet); err != nil {
+			return err
 		}
+	}
 
-		for _, sg := range MapSecurityGroups(d) {
-			if err := g.AddComponent(sg); err != nil {
-				return err
-			}
+	for _, sg := range MapSecurityGroups(d) {
+		if err := g.AddComponent(sg); err != nil {
+			return err
 		}
 	}
 

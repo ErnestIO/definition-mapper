@@ -36,7 +36,7 @@ func MapDefinitionResourceGroups(g *graph.Graph) (rgs []definition.ResourceGroup
 		rg := c.(*components.ResourceGroup)
 
 		rgs = append(rgs, definition.ResourceGroup{
-			ID:       rg.GetID(),
+			ID:       rg.GetProviderID(),
 			Name:     rg.Name,
 			Location: rg.Location,
 		})

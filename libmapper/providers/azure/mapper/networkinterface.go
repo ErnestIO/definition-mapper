@@ -57,7 +57,7 @@ func MapDefinitionNetworkInterfaces(g *graph.Graph, rg *definition.ResourceGroup
 		}
 
 		nNi := definition.NetworkInterface{
-			ID:                   ni.GetID(),
+			ID:                   ni.GetProviderID(),
 			Name:                 ni.Name,
 			SecurityGroup:        ni.NetworkSecurityGroup,
 			DNSServers:           ni.DNSServers,
