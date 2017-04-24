@@ -6,6 +6,7 @@ package definition
 
 // ResourceGroup ...
 type ResourceGroup struct {
+	ID                string              `json:"id" yaml:"id"`
 	Name              string              `json:"name" yaml:"name"`
 	Location          string              `json:"location" yaml:"location"`
 	Tags              []map[string]string `json:"tags" yaml:"tags"`

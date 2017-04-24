@@ -7,13 +7,14 @@ package components
 import (
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/resourcegroup"
-	"github.com/r3labs/graph"
+	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // ResourceGroup : A resource group a container that holds
 // related resources for an Azure solution.
 type ResourceGroup struct {
-	*resourcegroup.Event
+	ID string `json:"id"`
+	resourcegroup.Event
 	*Base
 }
 
@@ -109,4 +110,14 @@ func (i *ResourceGroup) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *ResourceGroup) SetDefaultVariables() {
+	i.ComponentType = TYPERESOURCEGROUP
+	i.ComponentID = TYPERESOURCEGROUP + TYPEDELIMITER + i.Name
+	i.DatacenterName = DATACENTERNAME
+	i.DatacenterType = DATACENTERTYPE
+	i.DatacenterRegion = DATACENTERREGION
+	i.ClientID = CLIENTID
+	i.ClientSecret = CLIENTSECRET
+	i.TenantID = TENANTID
+	i.SubscriptionID = SUBSCRIPTIONID
+	i.Environment = ENVIRONMENT
 }

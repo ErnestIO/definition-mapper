@@ -6,9 +6,12 @@ package components
 
 // Base : Shared internal component fields
 type Base struct {
-	ProviderType  string `json:"_provider"`
-	ComponentID   string `json:"_component_id"`
-	ComponentType string `json:"_component"`
-	State         string `json:"_state"`
-	Action        string `json:"_action"`
+	ProviderType     string `json:"_provider"`
+	ComponentID      string `json:"_component_id"`
+	ComponentType    string `json:"_component"`
+	State            string `json:"_state"`
+	Action           string `json:"_action"`
+	DatacenterName   string `json:"datacenter_name"`
+	DatacenterType   string `json:"datacenter_type"`
+	DatacenterRegion string `json:"datacenter_region"`
 }
