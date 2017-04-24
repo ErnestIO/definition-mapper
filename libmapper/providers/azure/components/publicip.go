@@ -7,13 +7,14 @@ package components
 import (
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/publicip"
-	"github.com/r3labs/graph"
+	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // PublicIP : A resource group a container that holds
 // related resources for an Azure solution.
 type PublicIP struct {
-	*publicip.Event
+	ID string `json:"id"`
+	publicip.Event
 	*Base
 }
 

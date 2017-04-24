@@ -13,6 +13,7 @@ type ResourceGroup struct {
 	VirtualNetworks   []VirtualNetwork    `json:"virtual_network" yaml:"virtual_network"`
 	SecurityGroups    []SecurityGroup     `json:"security_groups" yaml:"security_groups"`
 	NetworkInterfaces []NetworkInterface  `json:"network_interfaces" yaml:"network_interfaces"`
+	PublicIPs         []PublicIP          `json:"public_ips" yaml:"public_ips"`
 	VirtualMachines   []VirtualMachine    `json:"virtual_machines" yaml:"virtual_machines"`
 	StorageAccounts   []StorageAccount    `json:"storage_accounts" yaml:"storage_accounts"`
 	SQLServers        []SQLServer         `json:"sql_servers" yaml:"sql_servers"`

@@ -16,7 +16,6 @@ func MapNetworkInterfaces(d *definition.Definition, rg *components.ResourceGroup
 	for _, ni := range d.NetworkInterfaces {
 		cv := components.NetworkInterface{}
 		cv.Name = ni.Name
-		// cv.ResourceGroupName = group.ResourceGroupName
 		cv.NetworkSecurityGroup = ni.SecurityGroup
 		cv.DNSServers = ni.DNSServers
 		cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
