@@ -100,6 +100,7 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 		}
 
 		d.ResourceGroups[i].PublicIPs = MapDefinitionPublicIPs(g, &d.ResourceGroups[i])
+		d.ResourceGroups[i].SecurityGroups = MapDefinitionSecurityGroups(g, &d.ResourceGroups[i])
 	}
 
 	return &d, nil
@@ -132,6 +133,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.NetworkInterface{}
 		case "public_ip":
 			c = &components.PublicIP{}
+		case "security_group":
+			c = &components.SecurityGroup{}
 		default:
 			continue
 		}
@@ -216,6 +219,12 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 
 		for _, subnet := range MapSubnets(d) {
 			if err := g.AddComponent(subnet); err != nil {
+				return err
+			}
+		}
+
+		for _, sg := range MapSecurityGroups(d) {
+			if err := g.AddComponent(sg); err != nil {
 				return err
 			}
 		}
