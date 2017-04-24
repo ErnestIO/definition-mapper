@@ -12,7 +12,7 @@ import (
 )
 
 // MapNetworkInterfaces ...
-func MapNetworkInterfaces(d *definition.Definition) (groups []*components.NetworkInterface) {
+func MapNetworkInterfaces(d *definition.Definition, rg *components.ResourceGroup) (interfaces []*components.NetworkInterface) {
 	for _, ni := range d.NetworkInterfaces {
 		cv := components.NetworkInterface{}
 		cv.Name = ni.Name
@@ -20,6 +20,7 @@ func MapNetworkInterfaces(d *definition.Definition) (groups []*components.Networ
 		cv.NetworkSecurityGroup = ni.SecurityGroup
 		cv.DNSServers = ni.DNSServers
 		cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
+		cv.ResourceGroupName = rg.Name
 		cv.Tags = mapTags(ni.Name, d.Name)
 		for _, ip := range ni.IPConfigurations {
 			nIP := networkinterface.IPConfiguration{
@@ -37,7 +38,7 @@ func MapNetworkInterfaces(d *definition.Definition) (groups []*components.Networ
 
 		cv.SetDefaultVariables()
 
-		groups = append(groups, &cv)
+		interfaces = append(interfaces, &cv)
 	}
 
 	return

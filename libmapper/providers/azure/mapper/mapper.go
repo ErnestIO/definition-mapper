@@ -191,10 +191,11 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 		if err := g.AddComponent(rg); err != nil {
 			return err
 		}
-	}
-	for _, rg := range MapNetworkInterfaces(d) {
-		if err := g.AddComponent(rg); err != nil {
-			return err
+
+		for _, ni := range MapNetworkInterfaces(d, rg) {
+			if err := g.AddComponent(ni); err != nil {
+				return err
+			}
 		}
 	}
 
