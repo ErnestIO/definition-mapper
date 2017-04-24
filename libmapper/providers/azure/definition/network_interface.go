@@ -6,6 +6,7 @@ package definition
 
 // NetworkInterface ...
 type NetworkInterface struct {
+	ID                   string              `json:"id" yaml:"id"`
 	Name                 string              `json:"name" yaml:"name"`
 	SecurityGroup        string              `json:"security_group" yaml:"security_group"`
 	InternalDNSNameLabel string              `json:"internal_dns_name_label" yaml:"internal_dns_name_label"`

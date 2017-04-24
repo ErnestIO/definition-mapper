@@ -12,9 +12,10 @@ import (
 
 // Definition ...
 type Definition struct {
-	Name           string          `json:"name" yaml:"name"`
-	Datacenter     string          `json:"datacenter" yaml:"datacenter"`
-	ResourceGroups []ResourceGroup `json:"resource_groups,omitempty" yaml:"resource_groups,omitempty"`
+	Name              string             `json:"name" yaml:"name"`
+	Datacenter        string             `json:"datacenter" yaml:"datacenter"`
+	ResourceGroups    []ResourceGroup    `json:"resource_groups,omitempty" yaml:"resource_groups,omitempty"`
+	NetworkInterfaces []NetworkInterface `json:"network_interfaces,omitempty" yaml:"network_interfaces,omitempty"`
 }
 
 // New returns a new Definition

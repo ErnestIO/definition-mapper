@@ -7,13 +7,13 @@ package components
 import (
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
-	"github.com/r3labs/graph"
+	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // NetworkInterface : A resource group a container that holds
 // related resources for an Azure solution.
 type NetworkInterface struct {
-	*networkinterface.Event
+	networkinterface.Event
 	*Base
 }
 

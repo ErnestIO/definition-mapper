@@ -92,6 +92,7 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 	}
 
 	d.ResourceGroups = MapDefinitionResourceGroups(g)
+	d.NetworkInterfaces = MapDefinitionNetworkInterfaces(g)
 
 	return &d, nil
 }
@@ -119,6 +120,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 		switch gc.GetType() {
 		case "resource_group":
 			c = &components.ResourceGroup{}
+		case "network_interface":
+			c = &components.NetworkInterface{}
 		default:
 			continue
 		}
@@ -185,6 +188,11 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 // mapComponents : Map basic component values from definition
 func mapComponents(d *def.Definition, g *graph.Graph) error {
 	for _, rg := range MapResourceGroups(d) {
+		if err := g.AddComponent(rg); err != nil {
+			return err
+		}
+	}
+	for _, rg := range MapNetworkInterfaces(d) {
 		if err := g.AddComponent(rg); err != nil {
 			return err
 		}
