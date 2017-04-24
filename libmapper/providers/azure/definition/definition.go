@@ -17,6 +17,7 @@ type Definition struct {
 	ResourceGroups    []ResourceGroup    `json:"resource_groups,omitempty" yaml:"resource_groups,omitempty"`
 	NetworkInterfaces []NetworkInterface `json:"network_interfaces,omitempty" yaml:"network_interfaces,omitempty"`
 	PublicIPs         []PublicIP         `json:"public_ips,omitempty" yaml:"public_ips,omitempty"`
+	SecurityGroups    []SecurityGroup    `json:"security_groups,omitempty" yaml:"security_groups,omitempty"`
 }
 
 // New returns a new Definition

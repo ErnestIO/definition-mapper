@@ -7,7 +7,7 @@ package components
 import (
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/securitygroup"
-	"github.com/r3labs/graph"
+	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // SecurityGroup : A resource group a container that holds
