@@ -99,7 +99,7 @@ func getImportFilters(m map[string]interface{}, name string, provider string) []
 			return filters
 		}
 
-		f, ok := d["filters"].([]string)
+		f, ok := d["import_filters"].([]string)
 		if ok {
 			filters = append(filters, f...)
 		}
