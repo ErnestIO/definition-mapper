@@ -102,6 +102,10 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 		d.ResourceGroups[i].PublicIPs = MapDefinitionPublicIPs(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].SecurityGroups = MapDefinitionSecurityGroups(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].SQLServers = MapDefinitionSQLServers(g, &d.ResourceGroups[i])
+
+		for x := 0; x < len(d.ResourceGroups[i].SQLServers); x++ {
+			d.ResourceGroups[i].SQLServers[x].Databases = MapDefinitionSQLDatabases(g, &d.ResourceGroups[i], &d.ResourceGroups[i].SQLServers[x])
+		}
 	}
 
 	return &d, nil
@@ -142,6 +146,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.Subnet{}
 		case "sql_server":
 			c = &components.SQLServer{}
+		case "sql_database":
+			c = &components.SQLDatabase{}
 		default:
 			continue
 		}
@@ -239,6 +245,12 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 
 	for _, ss := range MapSQLServers(d) {
 		if err := g.AddComponent(ss); err != nil {
+			return err
+		}
+	}
+
+	for _, sd := range MapSQLDatabases(d) {
+		if err := g.AddComponent(sd); err != nil {
 			return err
 		}
 	}

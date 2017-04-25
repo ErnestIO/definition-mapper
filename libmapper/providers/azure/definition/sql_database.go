@@ -4,8 +4,9 @@
 
 package definition
 
-// Database ..
-type Database struct {
+// SQLDatabase ..
+type SQLDatabase struct {
+	ID                            string            `json:"id" yaml:"id"`
 	Name                          string            `json:"name" yaml:"name"`
 	CreateMode                    string            `json:"create_mode" yaml:"create_mode"`
 	SourceDatabaseID              string            `json:"source_database_id" yaml:"source_database_id"`

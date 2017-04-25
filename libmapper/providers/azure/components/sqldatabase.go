@@ -7,7 +7,7 @@ package components
 import (
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqldatabase"
-	"github.com/r3labs/graph"
+	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // SQLDatabase : A resource group a container that holds
