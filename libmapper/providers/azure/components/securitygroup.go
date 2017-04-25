@@ -79,16 +79,51 @@ func (i *SecurityGroup) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (i *SecurityGroup) Diff(c graph.Component) bool {
+	cs, ok := c.(*SecurityGroup)
+	if ok {
+		if len(i.SecurityRules) != len(cs.SecurityRules) {
+			return true
+		}
+		for j := range cs.SecurityRules {
+			if i.SecurityRules[j].Name != cs.SecurityRules[j].Name {
+				return true
+			}
+			if i.SecurityRules[j].Description != cs.SecurityRules[j].Description {
+				return true
+			}
+			if i.SecurityRules[j].Protocol != cs.SecurityRules[j].Protocol {
+				return true
+			}
+			if i.SecurityRules[j].SourcePort != cs.SecurityRules[j].SourcePort {
+				return true
+			}
+			if i.SecurityRules[j].DestinationPortRange != cs.SecurityRules[j].DestinationPortRange {
+				return true
+			}
+			if i.SecurityRules[j].SourceAddressPrefix != cs.SecurityRules[j].SourceAddressPrefix {
+				return true
+			}
+			if i.SecurityRules[j].DestinationAddressPrefix != cs.SecurityRules[j].DestinationAddressPrefix {
+				return true
+			}
+		}
+	}
 
 	return false
 }
 
 // Update : updates the provider returned values of a component
 func (i *SecurityGroup) Update(c graph.Component) {
+	cs, ok := c.(*SecurityGroup)
+	if ok {
+		i.ID = cs.ID
+	}
+	i.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *SecurityGroup) Rebuild(g *graph.Graph) {
+	i.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
@@ -109,4 +144,14 @@ func (i *SecurityGroup) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *SecurityGroup) SetDefaultVariables() {
+	i.ComponentType = TYPESECURITYGROUP
+	i.ComponentID = TYPESECURITYGROUP + TYPEDELIMITER + i.Name
+	i.DatacenterName = DATACENTERNAME
+	i.DatacenterType = DATACENTERTYPE
+	i.DatacenterRegion = DATACENTERREGION
+	i.ClientID = CLIENTID
+	i.ClientSecret = CLIENTSECRET
+	i.TenantID = TENANTID
+	i.SubscriptionID = SUBSCRIPTIONID
+	i.Environment = ENVIRONMENT
 }
