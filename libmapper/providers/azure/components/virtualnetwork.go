@@ -106,7 +106,7 @@ func (vn *VirtualNetwork) Rebuild(g *graph.Graph) {
 
 // Dependencies : returns a list of component id's upon which the component depends
 func (vn *VirtualNetwork) Dependencies() (deps []string) {
-	return
+	return []string{TYPERESOURCEGROUP + TYPEDELIMITER + vn.ResourceGroupName}
 }
 
 // Validate : validates the components values

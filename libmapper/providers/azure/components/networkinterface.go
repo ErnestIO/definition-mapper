@@ -5,6 +5,8 @@
 package components
 
 import (
+	"strings"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
 	graph "gopkg.in/r3labs/graph.v2"
@@ -93,6 +95,19 @@ func (i *NetworkInterface) Rebuild(g *graph.Graph) {
 
 // Dependencies : returns a list of component id's upon which the component depends
 func (i *NetworkInterface) Dependencies() (deps []string) {
+	if i.NetworkSecurityGroup != "" {
+		deps = append(deps, TYPESECURITYGROUP+TYPEDELIMITER+i.NetworkSecurityGroup)
+	}
+
+	for _, config := range i.IPConfigurations {
+		subnet := strings.Split(config.Subnet, ":")[1]
+		deps = append(deps, TYPESUBNET+TYPEDELIMITER+subnet)
+	}
+
+	if len(deps) < 1 {
+		return []string{TYPERESOURCEGROUP + TYPEDELIMITER + i.ResourceGroupName}
+	}
+
 	return
 }
 

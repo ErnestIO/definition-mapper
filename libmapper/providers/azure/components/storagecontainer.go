@@ -93,7 +93,7 @@ func (i *StorageContainer) Rebuild(g *graph.Graph) {
 
 // Dependencies : returns a list of component id's upon which the component depends
 func (i *StorageContainer) Dependencies() (deps []string) {
-	return
+	return []string{TYPESTORAGEACCOUNT + TYPEDELIMITER + i.StorageAccountName}
 }
 
 // Validate : validates the components values
