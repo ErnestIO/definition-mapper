@@ -107,6 +107,9 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 			d.ResourceGroups[i].SQLServers[x].Databases = MapDefinitionSQLDatabases(g, &d.ResourceGroups[i], &d.ResourceGroups[i].SQLServers[x])
 		}
 		d.ResourceGroups[i].StorageAccounts = MapDefinitionStorageAccounts(g, &d.ResourceGroups[i])
+		for x := 0; x < len(d.ResourceGroups[i].StorageAccounts); x++ {
+			d.ResourceGroups[i].StorageAccounts[x].Containers = MapDefinitionStorageContainers(g, &d.ResourceGroups[i], &d.ResourceGroups[i].StorageAccounts[x])
+		}
 	}
 
 	return &d, nil
@@ -151,6 +154,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.SQLDatabase{}
 		case "storage_accounts":
 			c = &components.StorageAccount{}
+		case "storage_containers":
+			c = &components.StorageContainer{}
 		default:
 			continue
 		}
@@ -260,6 +265,12 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 
 	for _, sa := range MapStorageAccounts(d) {
 		if err := g.AddComponent(sa); err != nil {
+			return err
+		}
+	}
+
+	for _, sc := range MapStorageContainers(d) {
+		if err := g.AddComponent(sc); err != nil {
 			return err
 		}
 	}
