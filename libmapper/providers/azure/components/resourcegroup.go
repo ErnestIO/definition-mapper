@@ -15,7 +15,7 @@ import (
 type ResourceGroup struct {
 	ID string `json:"id"`
 	resourcegroup.Event
-	*Base
+	Base
 }
 
 // GetID : returns the component's ID

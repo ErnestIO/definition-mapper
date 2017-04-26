@@ -13,8 +13,8 @@ import (
 // SQLDatabase : A resource group a container that holds
 // related resources for an Azure solution.
 type SQLDatabase struct {
-	*sqldatabase.Event
-	*Base
+	sqldatabase.Event
+	Base
 }
 
 // GetID : returns the component's ID

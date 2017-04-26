@@ -16,7 +16,7 @@ import (
 // related resources for an Azure solution.
 type NetworkInterface struct {
 	networkinterface.Event
-	*Base
+	Base
 }
 
 // GetID : returns the component's ID

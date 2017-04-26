@@ -13,8 +13,8 @@ import (
 // SQLServer : A resource group a container that holds
 // related resources for an Azure solution.
 type SQLServer struct {
-	*sqlserver.Event
-	*Base
+	sqlserver.Event
+	Base
 }
 
 // GetID : returns the component's ID

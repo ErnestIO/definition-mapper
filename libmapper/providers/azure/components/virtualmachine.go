@@ -13,8 +13,8 @@ import (
 // VirtualMachine : A resource group a container that holds
 // related resources for an Azure solution.
 type VirtualMachine struct {
-	*virtualmachine.Event
-	*Base
+	virtualmachine.Event
+	Base
 }
 
 // GetID : returns the component's ID

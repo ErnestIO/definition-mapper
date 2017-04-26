@@ -13,8 +13,8 @@ import (
 // Subnet : A resource group a container that holds
 // related resources for an Azure solution.
 type Subnet struct {
-	*subnet.Event
-	*Base
+	subnet.Event
+	Base
 }
 
 // GetID : returns the component's ID

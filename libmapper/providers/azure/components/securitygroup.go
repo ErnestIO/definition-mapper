@@ -13,8 +13,8 @@ import (
 // SecurityGroup : A resource group a container that holds
 // related resources for an Azure solution.
 type SecurityGroup struct {
-	*securitygroup.Event
-	*Base
+	securitygroup.Event
+	Base
 }
 
 // GetID : returns the component's ID

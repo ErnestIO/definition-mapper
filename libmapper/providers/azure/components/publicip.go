@@ -15,7 +15,7 @@ import (
 type PublicIP struct {
 	ID string `json:"id"`
 	publicip.Event
-	*Base
+	Base
 }
 
 // GetID : returns the component's ID

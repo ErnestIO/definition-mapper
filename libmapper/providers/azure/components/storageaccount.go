@@ -13,8 +13,8 @@ import (
 // StorageAccount : A resource group a container that holds
 // related resources for an Azure solution.
 type StorageAccount struct {
-	*storageaccount.Event
-	*Base
+	storageaccount.Event
+	Base
 }
 
 // GetID : returns the component's ID

@@ -13,8 +13,8 @@ import (
 // StorageContainer : A resource group a container that holds
 // related resources for an Azure solution.
 type StorageContainer struct {
-	*storagecontainer.Event
-	*Base
+	storagecontainer.Event
+	Base
 }
 
 // GetID : returns the component's ID
