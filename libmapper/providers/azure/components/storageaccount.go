@@ -79,16 +79,33 @@ func (i *StorageAccount) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (i *StorageAccount) Diff(c graph.Component) bool {
-
+	cs, ok := c.(*StorageAccount)
+	if ok {
+		if i.AccountKind != cs.AccountKind {
+			return true
+		}
+		if i.AccountType != cs.AccountType {
+			return true
+		}
+		if i.EnableBlobEncryption != cs.EnableBlobEncryption {
+			return true
+		}
+	}
 	return false
 }
 
 // Update : updates the provider returned values of a component
 func (i *StorageAccount) Update(c graph.Component) {
+	cs, ok := c.(*StorageAccount)
+	if ok {
+		i.ID = cs.ID
+	}
+	i.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *StorageAccount) Rebuild(g *graph.Graph) {
+	i.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
@@ -109,4 +126,14 @@ func (i *StorageAccount) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *StorageAccount) SetDefaultVariables() {
+	i.ComponentType = TYPESTORAGEACCOUNT
+	i.ComponentID = TYPESTORAGEACCOUNT + TYPEDELIMITER + i.Name
+	i.DatacenterName = DATACENTERNAME
+	i.DatacenterType = DATACENTERTYPE
+	i.DatacenterRegion = DATACENTERREGION
+	i.ClientID = CLIENTID
+	i.ClientSecret = CLIENTSECRET
+	i.TenantID = TENANTID
+	i.SubscriptionID = SUBSCRIPTIONID
+	i.Environment = ENVIRONMENT
 }

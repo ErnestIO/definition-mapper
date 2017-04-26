@@ -81,16 +81,61 @@ func (i *NetworkInterface) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (i *NetworkInterface) Diff(c graph.Component) bool {
-
+	cs, ok := c.(*NetworkInterface)
+	if ok {
+		if i.Name != cs.Name {
+			return true
+		}
+		if i.NetworkSecurityGroup != cs.NetworkSecurityGroup {
+			return true
+		}
+		if i.InternalDNSNameLabel != cs.InternalDNSNameLabel {
+			return true
+		}
+		if i.ResourceGroupName != cs.ResourceGroupName {
+			return true
+		}
+		if len(i.IPConfigurations) != len(cs.IPConfigurations) {
+			return true
+		}
+		if len(i.DNSServers) != len(cs.DNSServers) {
+			return true
+		}
+		for j := range i.DNSServers {
+			if i.DNSServers[j] != cs.DNSServers[j] {
+				return true
+			}
+		}
+		for j := range i.IPConfigurations {
+			if i.IPConfigurations[j].Name != cs.IPConfigurations[j].Name {
+				return true
+			}
+			if i.IPConfigurations[j].PrivateIPAddress != cs.IPConfigurations[j].PrivateIPAddress {
+				return true
+			}
+			if i.IPConfigurations[j].PrivateIPAddressAllocation != cs.IPConfigurations[j].PrivateIPAddressAllocation {
+				return true
+			}
+			if i.IPConfigurations[j].PublicIPAddress != cs.IPConfigurations[j].PublicIPAddress {
+				return true
+			}
+		}
+	}
 	return false
 }
 
 // Update : updates the provider returned values of a component
 func (i *NetworkInterface) Update(c graph.Component) {
+	cs, ok := c.(*NetworkInterface)
+	if ok {
+		i.ID = cs.ID
+	}
+	i.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *NetworkInterface) Rebuild(g *graph.Graph) {
+	i.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
@@ -124,4 +169,14 @@ func (i *NetworkInterface) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *NetworkInterface) SetDefaultVariables() {
+	i.ComponentType = TYPENETWORKINTERFACE
+	i.ComponentID = TYPENETWORKINTERFACE + TYPEDELIMITER + i.Name
+	i.DatacenterName = DATACENTERNAME
+	i.DatacenterType = DATACENTERTYPE
+	i.DatacenterRegion = DATACENTERREGION
+	i.ClientID = CLIENTID
+	i.ClientSecret = CLIENTSECRET
+	i.TenantID = TENANTID
+	i.SubscriptionID = SUBSCRIPTIONID
+	i.Environment = ENVIRONMENT
 }

@@ -79,16 +79,33 @@ func (i *SQLServer) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (i *SQLServer) Diff(c graph.Component) bool {
-
+	cs, ok := c.(*SQLServer)
+	if ok {
+		if i.Version != cs.Version {
+			return true
+		}
+		if i.AdministratorLogin != cs.AdministratorLogin {
+			return true
+		}
+		if i.AdministratorLoginPassword != cs.AdministratorLoginPassword {
+			return true
+		}
+	}
 	return false
 }
 
 // Update : updates the provider returned values of a component
 func (i *SQLServer) Update(c graph.Component) {
+	cs, ok := c.(*SecurityGroup)
+	if ok {
+		i.ID = cs.ID
+	}
+	i.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *SQLServer) Rebuild(g *graph.Graph) {
+	i.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
@@ -109,4 +126,14 @@ func (i *SQLServer) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *SQLServer) SetDefaultVariables() {
+	i.ComponentType = TYPESQLSERVER
+	i.ComponentID = TYPESQLSERVER + TYPEDELIMITER + i.Name
+	i.DatacenterName = DATACENTERNAME
+	i.DatacenterType = DATACENTERTYPE
+	i.DatacenterRegion = DATACENTERREGION
+	i.ClientID = CLIENTID
+	i.ClientSecret = CLIENTSECRET
+	i.TenantID = TENANTID
+	i.SubscriptionID = SUBSCRIPTIONID
+	i.Environment = ENVIRONMENT
 }

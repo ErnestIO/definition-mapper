@@ -79,21 +79,62 @@ func (i *SQLDatabase) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (i *SQLDatabase) Diff(c graph.Component) bool {
-
+	cv, ok := c.(*SQLDatabase)
+	if ok {
+		if i.ServerName != cv.Name {
+			return true
+		}
+		if i.CreateMode != cv.CreateMode {
+			return true
+		}
+		if i.SourceDatabaseID != cv.SourceDatabaseID {
+			return true
+		}
+		if i.RestorePointInTime != cv.RestorePointInTime {
+			return true
+		}
+		if i.Edition != cv.Edition {
+			return true
+		}
+		if i.Collation != cv.Collation {
+			return true
+		}
+		if i.MaxSizeBytes != cv.MaxSizeBytes {
+			return true
+		}
+		if i.RequestedServiceObjectiveID != cv.RequestedServiceObjectiveID {
+			return true
+		}
+		if i.RequestedServiceObjectiveName != cv.RequestedServiceObjectiveName {
+			return true
+		}
+		if i.SourceDatabaseDeletionData != cv.SourceDatabaseDeletionData {
+			return true
+		}
+		if i.ElasticPoolName != cv.ElasticPoolName {
+			return true
+		}
+	}
 	return false
 }
 
 // Update : updates the provider returned values of a component
 func (i *SQLDatabase) Update(c graph.Component) {
+	cs, ok := c.(*SQLDatabase)
+	if ok {
+		i.ID = cs.ID
+	}
+	i.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *SQLDatabase) Rebuild(g *graph.Graph) {
+	i.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
 func (i *SQLDatabase) Dependencies() (deps []string) {
-	return []string{TYPERESOURCEGROUP + TYPEDELIMITER + i.ResourceGroupName}
+	return []string{TYPESQLSERVER + TYPEDELIMITER + i.ServerName}
 }
 
 // Validate : validates the components values
@@ -109,4 +150,14 @@ func (i *SQLDatabase) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *SQLDatabase) SetDefaultVariables() {
+	i.ComponentType = TYPESQLDATABASE
+	i.ComponentID = TYPESQLDATABASE + TYPEDELIMITER + i.Name
+	i.DatacenterName = DATACENTERNAME
+	i.DatacenterType = DATACENTERTYPE
+	i.DatacenterRegion = DATACENTERREGION
+	i.ClientID = CLIENTID
+	i.ClientSecret = CLIENTSECRET
+	i.TenantID = TENANTID
+	i.SubscriptionID = SUBSCRIPTIONID
+	i.Environment = ENVIRONMENT
 }

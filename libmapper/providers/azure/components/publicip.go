@@ -80,16 +80,28 @@ func (i *PublicIP) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (i *PublicIP) Diff(c graph.Component) bool {
+	cs, ok := c.(*PublicIP)
+	if ok {
+		if i.Location != cs.Location {
+			return true
+		}
+	}
 
 	return false
 }
 
 // Update : updates the provider returned values of a component
 func (i *PublicIP) Update(c graph.Component) {
+	cs, ok := c.(*PublicIP)
+	if ok {
+		i.ID = cs.ID
+	}
+	i.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *PublicIP) Rebuild(g *graph.Graph) {
+	i.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
@@ -110,4 +122,14 @@ func (i *PublicIP) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *PublicIP) SetDefaultVariables() {
+	i.ComponentType = TYPEPUBLICIP
+	i.ComponentID = TYPEPUBLICIP + TYPEDELIMITER + i.Name
+	i.DatacenterName = DATACENTERNAME
+	i.DatacenterType = DATACENTERTYPE
+	i.DatacenterRegion = DATACENTERREGION
+	i.ClientID = CLIENTID
+	i.ClientSecret = CLIENTSECRET
+	i.TenantID = TENANTID
+	i.SubscriptionID = SUBSCRIPTIONID
+	i.Environment = ENVIRONMENT
 }
