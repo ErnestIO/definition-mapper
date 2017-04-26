@@ -21,6 +21,7 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 			cv.DNSServers = ni.DNSServers
 			cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
 			cv.ResourceGroupName = rg.Name
+			cv.Location = rg.Location
 			cv.Tags = mapTags(ni.Name, d.Name)
 
 			for _, ip := range ni.IPConfigurations {
@@ -30,6 +31,9 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 					PrivateIPAddress:           ip.PrivateIPAddress,
 					PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
 					PublicIPAddress:            ip.PublicIPAddressID,
+				}
+				if nIP.PrivateIPAddressAllocation == "" {
+					nIP.PrivateIPAddressAllocation = "static"
 				}
 				cv.IPConfigurations = append(cv.IPConfigurations, nIP)
 			}
