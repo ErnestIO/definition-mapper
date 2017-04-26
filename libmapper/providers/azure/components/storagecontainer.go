@@ -87,7 +87,7 @@ func (i *StorageContainer) Diff(c graph.Component) bool {
 		if i.StorageAccountName != cs.Name {
 			return true
 		}
-		if i.ContainerAccessType != cs.AccessType {
+		if i.ContainerAccessType != cs.ContainerAccessType {
 			return true
 		}
 	}
