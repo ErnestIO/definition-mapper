@@ -37,12 +37,12 @@ type VirtualMachine struct {
 		Caching      bool   `json:"caching" yaml:"caching"`
 		ImageURI     string `json:"image_uri" yaml:"image_uri"`
 		OSType       string `json:"os_type" yaml:"os_type"`
-		DiskSizeGB   string `json:"disk_size_gb" yaml:"disk_size_gb"`
+		DiskSizeGB   int32  `json:"disk_size_gb" yaml:"disk_size_gb"`
 	} `json:"storage_data_disk" yaml:"storage_data_disk"`
-	//DeleteOSDiskOnTermination    `json:"delete_os_disk_on_termination" yaml:"delete_os_disk_on_termination"`
-	//DeleteDataDisksOnTermination `json:"delete_data_disks_on_termination" yaml:"delete_data_disks_on_termination"`
-	LicenseType string            `json:"license_type" yaml:"license_type"`
-	Tags        map[string]string `json:"tags" yaml:"tags"`
+	DeleteOSDiskOnTermination    bool              `json:"delete_os_disk_on_termination" yaml:"delete_os_disk_on_termination"`
+	DeleteDataDisksOnTermination bool              `json:"delete_data_disks_on_termination" yaml:"delete_data_disks_on_termination"`
+	LicenseType                  string            `json:"license_type" yaml:"license_type"`
+	Tags                         map[string]string `json:"tags" yaml:"tags"`
 }
 
 // Authentication ...
@@ -72,7 +72,7 @@ type OSProfile struct {
 
 // OSProfileWindowsConfig ...
 type OSProfileWindowsConfig struct {
-	ProvisionVMAgent         string  `json:"provision_vm_agent" yaml:"provision_vm_agent"`
+	ProvisionVMAgent         bool    `json:"provision_vm_agent" yaml:"provision_vm_agent"`
 	EnableAutomaticUpgrades  bool    `json:"enable_automatic_upgrades" yaml:"enable_automatic_upgrades"`
 	WinRM                    []WinRM `json:"winrm" yaml:"winrm"`
 	AdditionalUnattendConfig struct {

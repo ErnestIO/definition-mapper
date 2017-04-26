@@ -31,3 +31,7 @@ const (
 	SUBSCRIPTIONID   = `$(components.#[_component_id="credentials::azure"].azure_subscription_id)`
 	ENVIRONMENT      = `$(components.#[_component_id="credentials::azure"].azure_environment`
 )
+
+func templNetworkInterfaceID(iface string) string {
+	return `$(components.#[_component_id="` + TYPENETWORKINTERFACE + TYPEDELIMITER + iface + `"].id)`
+}

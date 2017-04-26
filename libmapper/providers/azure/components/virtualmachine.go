@@ -5,6 +5,8 @@
 package components
 
 import (
+	"reflect"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/virtualmachine"
 	graph "gopkg.in/r3labs/graph.v2"
@@ -79,20 +81,66 @@ func (i *VirtualMachine) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (i *VirtualMachine) Diff(c graph.Component) bool {
+	cvm, ok := c.(*VirtualMachine)
+	if ok {
+		if i.VMSize != cvm.VMSize {
+			return true
+		}
+
+		if i.StorageDataDisk.Size != cvm.StorageDataDisk.Size {
+			return true
+		}
+
+		if reflect.DeepEqual(i.NetworkInterfaces, cvm.NetworkInterfaces) != true {
+			return true
+		}
+	}
 
 	return false
 }
 
 // Update : updates the provider returned values of a component
 func (i *VirtualMachine) Update(c graph.Component) {
+	cvm, ok := c.(*VirtualMachine)
+	if ok {
+		i.ID = cvm.ID
+		// ???
+		i.StorageDataDisk.Lun = cvm.StorageDataDisk.Lun
+	}
+
+	i.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *VirtualMachine) Rebuild(g *graph.Graph) {
+	if len(i.NetworkInterfaces) > len(i.NetworkInterfaceIDs) {
+		for _, iface := range i.NetworkInterfaces {
+			i.NetworkInterfaceIDs = append(i.NetworkInterfaceIDs, templNetworkInterfaceID(iface))
+		}
+	}
+
+	if len(i.NetworkInterfaceIDs) > len(i.NetworkInterfaces) {
+		for _, id := range i.NetworkInterfaceIDs {
+			iface := g.GetComponents().ByProviderID(id)
+			if iface != nil {
+				i.NetworkInterfaces = append(i.NetworkInterfaces, iface.GetName())
+			}
+		}
+	}
+
+	i.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
 func (i *VirtualMachine) Dependencies() (deps []string) {
+	for _, iface := range i.NetworkInterfaces {
+		deps = append(deps, TYPENETWORKINTERFACE+TYPEDELIMITER+iface)
+	}
+
+	if len(deps) < 1 {
+		return []string{TYPERESOURCEGROUP + TYPEDELIMITER + i.ResourceGroupName}
+	}
+
 	return
 }
 
@@ -109,4 +157,14 @@ func (i *VirtualMachine) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *VirtualMachine) SetDefaultVariables() {
+	i.ComponentType = TYPEVIRTUALMACHINE
+	i.ComponentID = TYPEVIRTUALMACHINE + TYPEDELIMITER + i.Name
+	i.DatacenterName = DATACENTERNAME
+	i.DatacenterType = DATACENTERTYPE
+	i.DatacenterRegion = DATACENTERREGION
+	i.ClientID = CLIENTID
+	i.ClientSecret = CLIENTSECRET
+	i.TenantID = TENANTID
+	i.SubscriptionID = SUBSCRIPTIONID
+	i.Environment = ENVIRONMENT
 }
