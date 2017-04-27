@@ -29,7 +29,7 @@ const (
 	CLIENTSECRET     = `$(components.#[_component_id="credentials::azure"].azure_client_secret)`
 	TENANTID         = `$(components.#[_component_id="credentials::azure"].azure_tenant_id)`
 	SUBSCRIPTIONID   = `$(components.#[_component_id="credentials::azure"].azure_subscription_id)`
-	ENVIRONMENT      = `$(components.#[_component_id="credentials::azure"].azure_environment`
+	ENVIRONMENT      = `$(components.#[_component_id="credentials::azure"].azure_environment)`
 )
 
 func templNetworkInterfaceID(iface string) string {
