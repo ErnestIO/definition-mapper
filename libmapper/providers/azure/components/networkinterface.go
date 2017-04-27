@@ -5,6 +5,7 @@
 package components
 
 import (
+	"log"
 	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
@@ -158,6 +159,7 @@ func (i *NetworkInterface) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (i *NetworkInterface) Validate() error {
+	log.Println("Validating azure network interfaces")
 	val := event.NewValidator()
 	return val.Validate(i)
 }

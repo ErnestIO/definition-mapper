@@ -7,6 +7,7 @@ package mapper
 import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
+	"github.com/ernestio/ernestprovider/providers/azure/virtualnetwork"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
@@ -19,6 +20,14 @@ func MapVirtualNetworks(d *definition.Definition) (networks []*components.Virtua
 			cs.AddressSpace = network.AddressSpaces
 			cs.DNSServerNames = network.DNSServers
 			cs.ResourceGroupName = rg.Name
+
+			for _, subnet := range network.Subnets {
+				sn := virtualnetwork.Subnet{}
+				sn.Name = subnet.Name
+				sn.AddressPrefix = subnet.AddressPrefix
+				sn.SecurityGroup = subnet.SecurityGroup
+				cs.Subnets = append(cs.Subnets, sn)
+			}
 
 			cs.SetDefaultVariables()
 

@@ -5,6 +5,8 @@
 package components
 
 import (
+	"log"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/storagecontainer"
 	graph "gopkg.in/r3labs/graph.v2"
@@ -115,6 +117,7 @@ func (i *StorageContainer) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (i *StorageContainer) Validate() error {
+	log.Println("Validating storage containers")
 	val := event.NewValidator()
 	return val.Validate(i)
 }

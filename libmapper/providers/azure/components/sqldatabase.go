@@ -5,6 +5,8 @@
 package components
 
 import (
+	"log"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqldatabase"
 	graph "gopkg.in/r3labs/graph.v2"
@@ -139,6 +141,7 @@ func (i *SQLDatabase) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (i *SQLDatabase) Validate() error {
+	log.Println("Validating SQL databases")
 	val := event.NewValidator()
 	return val.Validate(i)
 }

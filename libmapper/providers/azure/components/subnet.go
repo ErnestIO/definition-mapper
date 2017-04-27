@@ -5,6 +5,8 @@
 package components
 
 import (
+	"log"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/subnet"
 	"gopkg.in/r3labs/graph.v2"
@@ -112,6 +114,7 @@ func (s *Subnet) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (s *Subnet) Validate() error {
+	log.Println("Validating subnets")
 	val := event.NewValidator()
 	return val.Validate(s)
 }

@@ -5,6 +5,8 @@
 package components
 
 import (
+	"log"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqlserver"
 	graph "gopkg.in/r3labs/graph.v2"
@@ -115,6 +117,7 @@ func (i *SQLServer) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (i *SQLServer) Validate() error {
+	log.Println("Validating SQL Servers")
 	val := event.NewValidator()
 	return val.Validate(i)
 }

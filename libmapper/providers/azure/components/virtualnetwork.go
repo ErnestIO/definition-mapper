@@ -5,6 +5,7 @@
 package components
 
 import (
+	"log"
 	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
@@ -111,6 +112,7 @@ func (vn *VirtualNetwork) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (vn *VirtualNetwork) Validate() error {
+	log.Println("Validating Virtual network")
 	val := event.NewValidator()
 	return val.Validate(vn)
 }
