@@ -125,6 +125,7 @@ func (i *PublicIP) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *PublicIP) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPEPUBLICIP
 	i.ComponentID = TYPEPUBLICIP + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

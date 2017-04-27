@@ -125,6 +125,7 @@ func (i *ResourceGroup) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *ResourceGroup) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPERESOURCEGROUP
 	i.ComponentID = TYPERESOURCEGROUP + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

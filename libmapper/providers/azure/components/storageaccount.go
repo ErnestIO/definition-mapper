@@ -129,6 +129,7 @@ func (i *StorageAccount) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *StorageAccount) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPESTORAGEACCOUNT
 	i.ComponentID = TYPESTORAGEACCOUNT + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

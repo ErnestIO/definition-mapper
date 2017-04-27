@@ -153,6 +153,7 @@ func (i *SQLDatabase) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *SQLDatabase) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPESQLDATABASE
 	i.ComponentID = TYPESQLDATABASE + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

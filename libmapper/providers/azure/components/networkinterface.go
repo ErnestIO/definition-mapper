@@ -171,6 +171,7 @@ func (i *NetworkInterface) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *NetworkInterface) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPENETWORKINTERFACE
 	i.ComponentID = TYPENETWORKINTERFACE + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

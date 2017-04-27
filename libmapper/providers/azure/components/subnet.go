@@ -126,6 +126,7 @@ func (s *Subnet) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (s *Subnet) SetDefaultVariables() {
+	s.ProviderType = PROVIDERTYPE
 	s.ComponentType = TYPESUBNET
 	s.ComponentID = TYPESUBNET + TYPEDELIMITER + s.Name
 	s.DatacenterName = DATACENTERNAME

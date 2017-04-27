@@ -129,6 +129,7 @@ func (i *SQLServer) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *SQLServer) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPESQLSERVER
 	i.ComponentID = TYPESQLSERVER + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

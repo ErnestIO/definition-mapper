@@ -147,6 +147,7 @@ func (i *SecurityGroup) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *SecurityGroup) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPESECURITYGROUP
 	i.ComponentID = TYPESECURITYGROUP + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME
