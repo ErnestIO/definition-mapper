@@ -210,7 +210,7 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 	credentials["_provider"] = details["type"]
 	credentials["name"] = details["name"]
 	credentials["region"] = details["region"]
-	credentials["azure_client_id"] = details["aazure_client_id"]
+	credentials["azure_client_id"] = details["azure_client_id"]
 	credentials["azure_client_secret"] = details["azure_client_secret"]
 	credentials["azure_subscription_id"] = details["azure_subscription_id"]
 	credentials["azure_tenant_id"] = details["azure_tenant_id"]
