@@ -16,6 +16,7 @@ import (
 	"github.com/ernestio/definition-mapper/libmapper"
 	"github.com/ernestio/definition-mapper/libmapper/providers"
 	aws "github.com/ernestio/definition-mapper/libmapper/providers/aws/definition"
+	azure "github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
 	ecc "github.com/ernestio/ernest-config-client"
 	"github.com/nats-io/nats"
 	"gopkg.in/r3labs/graph.v2"
@@ -277,6 +278,9 @@ func SubscribeImportComplete(body []byte) error {
 	switch provider {
 	case "aws":
 		def := d.(*aws.Definition)
+		def.Name, def.Datacenter = getDefinitionDetails(pd)
+	case "azure":
+		def := d.(*azure.Definition)
 		def.Name, def.Datacenter = getDefinitionDetails(pd)
 	}
 

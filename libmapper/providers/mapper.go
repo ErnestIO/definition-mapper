@@ -7,6 +7,7 @@ package providers
 import (
 	"github.com/ernestio/definition-mapper/libmapper"
 	aws "github.com/ernestio/definition-mapper/libmapper/providers/aws/mapper"
+	azure "github.com/ernestio/definition-mapper/libmapper/providers/azure/mapper"
 	vcloud "github.com/ernestio/definition-mapper/libmapper/providers/vcloud/mapper"
 )
 
@@ -17,6 +18,8 @@ func NewMapper(t string) (m libmapper.Mapper) {
 		m = aws.New()
 	case "vcloud", "vcloud-fake":
 		m = vcloud.New()
+	case "azure", "azure-fake":
+		m = azure.New()
 	}
 
 	return m
