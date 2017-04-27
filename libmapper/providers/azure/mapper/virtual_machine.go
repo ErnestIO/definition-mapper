@@ -46,6 +46,9 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.StorageDataDisk.VhdURI = vm.StorageDataDisk.VhdURI
 				cvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
 
+				cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
+				cvm.DeleteOSDiskOnTermination = vm.DeleteOSDiskOnTermination
+
 				cvm.BootDiagnostics = []virtualmachine.BootDiagnostic{
 					virtualmachine.BootDiagnostic{
 						Enabled: vm.BootDiagnostics.Enabled,
@@ -63,6 +66,20 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
 				cvm.OSProfile.AdminPassword = vm.Authentication.AdminUsername
 				cvm.OSProfile.AdminPassword = vm.Authentication.AdminPassword
+
+				for _, winrm := range vm.OSProfileWindowsConfig.WinRM {
+					cvm.OSProfileWindowsConfig.WinRm = append(cvm.OSProfileWindowsConfig.WinRm, virtualmachine.WinRM{
+						Protocol:       winrm.Protocol,
+						CertificateURL: winrm.CertificateURL,
+					})
+				}
+
+				cvm.OSProfileWindowsConfig.AdditionalUnattendConfig = append(cvm.OSProfileWindowsConfig.AdditionalUnattendConfig, virtualmachine.UnattendedConfig{
+					Pass:        vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass,
+					Component:   vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Component,
+					SettingName: vm.OSProfileWindowsConfig.AdditionalUnattendConfig.SettingName,
+					Content:     vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Content,
+				})
 
 				cvm.Tags = vm.Tags
 				cvm.LicenseType = vm.LicenseType
