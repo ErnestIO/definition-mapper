@@ -157,6 +157,7 @@ func (i *VirtualMachine) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *VirtualMachine) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPEVIRTUALMACHINE
 	i.ComponentID = TYPEVIRTUALMACHINE + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

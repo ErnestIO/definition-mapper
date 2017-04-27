@@ -227,6 +227,18 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 		}
 	}
 
+	for _, vn := range MapVirtualNetworks(d) {
+		if err := g.AddComponent(vn); err != nil {
+			return err
+		}
+	}
+
+	for _, subnet := range MapSubnets(d) {
+		if err := g.AddComponent(subnet); err != nil {
+			return err
+		}
+	}
+
 	for _, ni := range MapNetworkInterfaces(d) {
 		if err := g.AddComponent(ni); err != nil {
 			return err
@@ -235,12 +247,6 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 
 	for _, ip := range MapPublicIPs(d) {
 		if err := g.AddComponent(ip); err != nil {
-			return err
-		}
-	}
-
-	for _, subnet := range MapSubnets(d) {
-		if err := g.AddComponent(subnet); err != nil {
 			return err
 		}
 	}

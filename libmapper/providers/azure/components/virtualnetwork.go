@@ -5,6 +5,7 @@
 package components
 
 import (
+	"log"
 	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
@@ -111,6 +112,7 @@ func (vn *VirtualNetwork) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (vn *VirtualNetwork) Validate() error {
+	log.Println("Validating Virtual network")
 	val := event.NewValidator()
 	return val.Validate(vn)
 }
@@ -122,6 +124,7 @@ func (vn *VirtualNetwork) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (vn *VirtualNetwork) SetDefaultVariables() {
+	vn.ProviderType = PROVIDERTYPE
 	vn.ComponentType = TYPEVIRTUALNETWORK
 	vn.ComponentID = TYPEVIRTUALNETWORK + TYPEDELIMITER + vn.Name
 	vn.DatacenterName = DATACENTERNAME

@@ -5,6 +5,8 @@
 package components
 
 import (
+	"log"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqldatabase"
 	graph "gopkg.in/r3labs/graph.v2"
@@ -139,6 +141,7 @@ func (i *SQLDatabase) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (i *SQLDatabase) Validate() error {
+	log.Println("Validating SQL databases")
 	val := event.NewValidator()
 	return val.Validate(i)
 }
@@ -150,6 +153,7 @@ func (i *SQLDatabase) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *SQLDatabase) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPESQLDATABASE
 	i.ComponentID = TYPESQLDATABASE + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

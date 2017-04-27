@@ -5,6 +5,8 @@
 package components
 
 import (
+	"log"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/storageaccount"
 	graph "gopkg.in/r3labs/graph.v2"
@@ -115,6 +117,7 @@ func (i *StorageAccount) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (i *StorageAccount) Validate() error {
+	log.Println("Validating storage accounts")
 	val := event.NewValidator()
 	return val.Validate(i)
 }
@@ -126,6 +129,7 @@ func (i *StorageAccount) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *StorageAccount) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPESTORAGEACCOUNT
 	i.ComponentID = TYPESTORAGEACCOUNT + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

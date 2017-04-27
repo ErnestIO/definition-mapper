@@ -5,6 +5,8 @@
 package components
 
 import (
+	"log"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/securitygroup"
 	graph "gopkg.in/r3labs/graph.v2"
@@ -133,6 +135,7 @@ func (i *SecurityGroup) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (i *SecurityGroup) Validate() error {
+	log.Println("Validating security groups")
 	val := event.NewValidator()
 	return val.Validate(i)
 }
@@ -144,6 +147,7 @@ func (i *SecurityGroup) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *SecurityGroup) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPESECURITYGROUP
 	i.ComponentID = TYPESECURITYGROUP + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

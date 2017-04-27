@@ -20,6 +20,7 @@ func MapSQLServers(d *definition.Definition) (ips []*components.SQLServer) {
 			n.AdministratorLogin = ss.AdministratorLogin
 			n.AdministratorLoginPassword = ss.AdministratorLoginPassword
 			n.ResourceGroupName = rg.Name
+			n.Location = rg.Location
 			n.Tags = mapTags(ss.Name, d.Name)
 
 			if n.ID != "" {

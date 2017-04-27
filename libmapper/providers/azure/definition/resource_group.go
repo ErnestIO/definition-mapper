@@ -10,7 +10,7 @@ type ResourceGroup struct {
 	Name              string              `json:"name" yaml:"name"`
 	Location          string              `json:"location" yaml:"location"`
 	Tags              []map[string]string `json:"tags" yaml:"tags"`
-	VirtualNetworks   []VirtualNetwork    `json:"virtual_network" yaml:"virtual_network"`
+	VirtualNetworks   []VirtualNetwork    `json:"virtual_networks" yaml:"virtual_network"`
 	SecurityGroups    []SecurityGroup     `json:"security_groups" yaml:"security_groups"`
 	NetworkInterfaces []NetworkInterface  `json:"network_interfaces" yaml:"network_interfaces"`
 	PublicIPs         []PublicIP          `json:"public_ips" yaml:"public_ips"`

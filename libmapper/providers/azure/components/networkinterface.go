@@ -5,6 +5,7 @@
 package components
 
 import (
+	"log"
 	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
@@ -158,6 +159,7 @@ func (i *NetworkInterface) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (i *NetworkInterface) Validate() error {
+	log.Println("Validating azure network interfaces")
 	val := event.NewValidator()
 	return val.Validate(i)
 }
@@ -169,6 +171,7 @@ func (i *NetworkInterface) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *NetworkInterface) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPENETWORKINTERFACE
 	i.ComponentID = TYPENETWORKINTERFACE + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME

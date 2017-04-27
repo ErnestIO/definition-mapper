@@ -5,6 +5,8 @@
 package components
 
 import (
+	"log"
+
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/resourcegroup"
 	graph "gopkg.in/r3labs/graph.v2"
@@ -110,6 +112,8 @@ func (i *ResourceGroup) Dependencies() (deps []string) {
 
 // Validate : validates the components values
 func (i *ResourceGroup) Validate() error {
+	log.Println("Validating resource groups")
+
 	val := event.NewValidator()
 	return val.Validate(i)
 }
@@ -121,6 +125,7 @@ func (i *ResourceGroup) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (i *ResourceGroup) SetDefaultVariables() {
+	i.ProviderType = PROVIDERTYPE
 	i.ComponentType = TYPERESOURCEGROUP
 	i.ComponentID = TYPERESOURCEGROUP + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME
