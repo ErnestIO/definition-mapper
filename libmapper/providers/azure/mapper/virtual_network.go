@@ -15,7 +15,7 @@ import (
 func MapVirtualNetworks(d *definition.Definition) (networks []*components.VirtualNetwork) {
 	for _, rg := range d.ResourceGroups {
 		for _, network := range rg.VirtualNetworks {
-			cs := components.VirtualNetwork{}
+			cs := &components.VirtualNetwork{}
 			cs.Name = network.Name
 			cs.AddressSpace = network.AddressSpaces
 			cs.DNSServerNames = network.DNSServers
@@ -31,7 +31,7 @@ func MapVirtualNetworks(d *definition.Definition) (networks []*components.Virtua
 
 			cs.SetDefaultVariables()
 
-			networks = append(networks, &cs)
+			networks = append(networks, cs)
 		}
 	}
 

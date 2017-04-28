@@ -13,7 +13,7 @@ import (
 // MapResourceGroups ...
 func MapResourceGroups(d *definition.Definition) (groups []*components.ResourceGroup) {
 	for _, group := range d.ResourceGroups {
-		cv := components.ResourceGroup{}
+		cv := &components.ResourceGroup{}
 		cv.Name = group.Name
 		cv.Location = group.Location
 		cv.Tags = mapTags(group.Name, d.Name)
@@ -24,7 +24,7 @@ func MapResourceGroups(d *definition.Definition) (groups []*components.ResourceG
 
 		cv.SetDefaultVariables()
 
-		groups = append(groups, &cv)
+		groups = append(groups, cv)
 	}
 
 	return

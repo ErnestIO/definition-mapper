@@ -15,7 +15,7 @@ import (
 func MapSecurityGroups(d *definition.Definition) (sgs []*components.SecurityGroup) {
 	for _, rg := range d.ResourceGroups {
 		for _, sg := range rg.SecurityGroups {
-			n := components.SecurityGroup{}
+			n := &components.SecurityGroup{}
 			n.Name = sg.Name
 			n.ResourceGroupName = rg.Name
 			n.Tags = mapTags(sg.Name, d.Name)
@@ -38,7 +38,7 @@ func MapSecurityGroups(d *definition.Definition) (sgs []*components.SecurityGrou
 
 			n.SetDefaultVariables()
 
-			sgs = append(sgs, &n)
+			sgs = append(sgs, n)
 		}
 	}
 

@@ -15,7 +15,7 @@ func MapSQLDatabases(d *definition.Definition) (ips []*components.SQLDatabase) {
 	for _, rg := range d.ResourceGroups {
 		for _, ss := range rg.SQLServers {
 			for _, sd := range ss.Databases {
-				n := components.SQLDatabase{}
+				n := &components.SQLDatabase{}
 				n.Name = sd.Name
 				n.ResourceGroupName = rg.Name
 				n.Location = rg.Location
@@ -38,7 +38,7 @@ func MapSQLDatabases(d *definition.Definition) (ips []*components.SQLDatabase) {
 
 				n.SetDefaultVariables()
 
-				ips = append(ips, &n)
+				ips = append(ips, n)
 			}
 		}
 	}

@@ -15,7 +15,7 @@ import (
 func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.NetworkInterface) {
 	for _, rg := range d.ResourceGroups {
 		for _, ni := range rg.NetworkInterfaces {
-			cv := components.NetworkInterface{}
+			cv := &components.NetworkInterface{}
 			cv.Name = ni.Name
 			cv.NetworkSecurityGroup = ni.SecurityGroup
 			cv.DNSServers = ni.DNSServers
@@ -44,7 +44,7 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 
 			cv.SetDefaultVariables()
 
-			interfaces = append(interfaces, &cv)
+			interfaces = append(interfaces, cv)
 		}
 	}
 

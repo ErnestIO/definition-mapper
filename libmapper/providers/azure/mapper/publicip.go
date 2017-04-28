@@ -14,7 +14,7 @@ import (
 func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
 	for _, rg := range d.ResourceGroups {
 		for _, ip := range rg.PublicIPs {
-			n := components.PublicIP{}
+			n := &components.PublicIP{}
 			n.Name = ip.Name
 			n.Location = ip.Location
 			n.ResourceGroupName = rg.Name
@@ -27,7 +27,7 @@ func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
 
 			n.SetDefaultVariables()
 
-			ips = append(ips, &n)
+			ips = append(ips, n)
 		}
 	}
 

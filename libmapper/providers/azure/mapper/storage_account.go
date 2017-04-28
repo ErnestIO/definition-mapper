@@ -14,7 +14,7 @@ import (
 func MapStorageAccounts(d *definition.Definition) (ips []*components.StorageAccount) {
 	for _, rg := range d.ResourceGroups {
 		for _, sa := range rg.StorageAccounts {
-			n := components.StorageAccount{}
+			n := &components.StorageAccount{}
 			n.Name = sa.Name
 			n.ResourceGroupName = rg.Name
 			n.Location = rg.Location
@@ -29,7 +29,7 @@ func MapStorageAccounts(d *definition.Definition) (ips []*components.StorageAcco
 
 			n.SetDefaultVariables()
 
-			ips = append(ips, &n)
+			ips = append(ips, n)
 		}
 	}
 

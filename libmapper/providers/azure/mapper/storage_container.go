@@ -15,7 +15,7 @@ func MapStorageContainers(d *definition.Definition) (ips []*components.StorageCo
 	for _, rg := range d.ResourceGroups {
 		for _, ss := range rg.StorageAccounts {
 			for _, sd := range ss.Containers {
-				n := components.StorageContainer{}
+				n := &components.StorageContainer{}
 				n.Name = sd.Name
 				n.ResourceGroupName = rg.Name
 				n.StorageAccountName = ss.Name
@@ -27,7 +27,7 @@ func MapStorageContainers(d *definition.Definition) (ips []*components.StorageCo
 
 				n.SetDefaultVariables()
 
-				ips = append(ips, &n)
+				ips = append(ips, n)
 			}
 		}
 	}

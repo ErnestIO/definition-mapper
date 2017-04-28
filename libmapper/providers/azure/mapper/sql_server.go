@@ -14,7 +14,7 @@ import (
 func MapSQLServers(d *definition.Definition) (ips []*components.SQLServer) {
 	for _, rg := range d.ResourceGroups {
 		for _, ss := range rg.SQLServers {
-			n := components.SQLServer{}
+			n := &components.SQLServer{}
 			n.Name = ss.Name
 			n.Version = ss.Version
 			n.AdministratorLogin = ss.AdministratorLogin
@@ -29,7 +29,7 @@ func MapSQLServers(d *definition.Definition) (ips []*components.SQLServer) {
 
 			n.SetDefaultVariables()
 
-			ips = append(ips, &n)
+			ips = append(ips, n)
 		}
 	}
 

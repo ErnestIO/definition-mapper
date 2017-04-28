@@ -15,7 +15,7 @@ func MapSubnets(d *definition.Definition) (subnets []*components.Subnet) {
 	for _, rg := range d.ResourceGroups {
 		for _, vn := range rg.VirtualNetworks {
 			for _, subnet := range vn.Subnets {
-				cs := components.Subnet{}
+				cs := &components.Subnet{}
 				cs.Name = subnet.Name
 				cs.AddressPrefix = subnet.AddressPrefix
 				cs.NetworkSecurityGroup = subnet.SecurityGroup
@@ -24,7 +24,7 @@ func MapSubnets(d *definition.Definition) (subnets []*components.Subnet) {
 
 				cs.SetDefaultVariables()
 
-				subnets = append(subnets, &cs)
+				subnets = append(subnets, cs)
 			}
 		}
 	}
