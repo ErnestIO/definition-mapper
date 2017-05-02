@@ -5,6 +5,8 @@
 package mapper
 
 import (
+	"strings"
+
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
 	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
@@ -25,9 +27,12 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 			cv.Tags = mapTags(ni.Name, d.Name)
 
 			for _, ip := range ni.IPConfigurations {
+				subnet := strings.Split(ip.Subnet, ":")[1]
+				subnet = `$(components.#[_component_id="` + components.TYPESUBNET + `::` + subnet + `"].id)`
+
 				nIP := networkinterface.IPConfiguration{
 					Name:                       ip.Name,
-					Subnet:                     ip.Subnet,
+					Subnet:                     subnet,
 					PrivateIPAddress:           ip.PrivateIPAddress,
 					PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
 					PublicIPAddress:            ip.PublicIPAddressID,

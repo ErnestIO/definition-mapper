@@ -146,7 +146,8 @@ func (i *NetworkInterface) Dependencies() (deps []string) {
 	}
 
 	for _, config := range i.IPConfigurations {
-		subnet := strings.Split(config.Subnet, ":")[1]
+		subnet := strings.Split(config.Subnet, "::")[1]
+		subnet = strings.Split(subnet, `"]`)[0]
 		deps = append(deps, TYPESUBNET+TYPEDELIMITER+subnet)
 	}
 
