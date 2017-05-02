@@ -20,6 +20,7 @@ func MapVirtualNetworks(d *definition.Definition) (networks []*components.Virtua
 			cs.AddressSpace = network.AddressSpaces
 			cs.DNSServerNames = network.DNSServers
 			cs.ResourceGroupName = rg.Name
+			cs.Location = rg.Location
 
 			for _, subnet := range network.Subnets {
 				sn := virtualnetwork.Subnet{}
