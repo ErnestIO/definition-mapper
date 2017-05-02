@@ -6,6 +6,7 @@ package mapper
 
 import (
 	"errors"
+	"log"
 
 	"github.com/ernestio/definition-mapper/libmapper"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
@@ -58,7 +59,7 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 
 		// Build dependencies
 		for _, dep := range c.Dependencies() {
-			g.Connect(dep, c.GetID())
+			_ = g.Connect(dep, c.GetID())
 		}
 	}
 
@@ -99,6 +100,7 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 		for x := 0; x < len(d.ResourceGroups[i].VirtualNetworks); x++ {
 			d.ResourceGroups[i].VirtualNetworks[x].Subnets = MapDefinitionSubnets(g, &d.ResourceGroups[i], &d.ResourceGroups[i].VirtualNetworks[x])
 		}
+		d.ResourceGroups[i].VirtualMachines = MapDefinitionVirtualMachines(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].PublicIPs = MapDefinitionPublicIPs(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].SecurityGroups = MapDefinitionSecurityGroups(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].SQLServers = MapDefinitionSQLServers(g, &d.ResourceGroups[i])
@@ -128,7 +130,7 @@ func (m Mapper) LoadDefinition(gd map[string]interface{}) (libmapper.Definition,
 func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 	g := graph.New()
 
-	g.Load(gg)
+	_ = g.Load(gg)
 
 	for i := 0; i < len(g.Components); i++ {
 		gc := g.Components[i].(*graph.GenericComponent)
@@ -146,6 +148,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.SecurityGroup{}
 		case "virtual_network":
 			c = &components.VirtualNetwork{}
+		case "virtual_machine":
+			c = &components.VirtualMachine{}
 		case "subnet":
 			c = &components.Subnet{}
 		case "sql_server":
@@ -194,7 +198,9 @@ func (m Mapper) CreateImportGraph(params []string) *graph.Graph {
 
 	for _, ctype := range SUPPORTEDCOMPONENTS {
 		q := MapQuery(ctype+"s", filter)
-		g.AddComponent(q)
+		if err := g.AddComponent(q); err != nil {
+			log.Println(err.Error())
+		}
 	}
 
 	return g
@@ -229,6 +235,12 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 
 	for _, vn := range MapVirtualNetworks(d) {
 		if err := g.AddComponent(vn); err != nil {
+			return err
+		}
+	}
+
+	for _, vm := range MapVirtualMachines(d) {
+		if err := g.AddComponent(vm); err != nil {
 			return err
 		}
 	}

@@ -35,7 +35,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.NetworkInterfaces = vm.NetworkInterfaces
 
 				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
-				cvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
+				// cvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
 				cvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 				cvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
 				cvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI
@@ -88,6 +88,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.Tags = vm.Tags
 				cvm.LicenseType = vm.LicenseType
 				cvm.ResourceGroupName = rg.Name
+				cvm.Location = rg.Location
 
 				cvm.SetDefaultVariables()
 
@@ -120,7 +121,7 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		}
 
 		dvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
-		dvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
+		// dvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
 		dvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 		dvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
 		dvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI

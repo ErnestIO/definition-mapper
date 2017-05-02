@@ -34,7 +34,7 @@ type VirtualMachine struct {
 		Name         string `json:"name" yaml:"name"`
 		VhdURI       string `json:"vhd_uri" yaml:"vhd_uri"`
 		CreateOption string `json:"create_option" yaml:"create_option"`
-		Caching      bool   `json:"caching" yaml:"caching"`
+		Caching      string `json:"caching" yaml:"caching"`
 		ImageURI     string `json:"image_uri" yaml:"image_uri"`
 		OSType       string `json:"os_type" yaml:"os_type"`
 		DiskSizeGB   int32  `json:"disk_size_gb" yaml:"disk_size_gb"`
@@ -58,7 +58,7 @@ type StorageOSDisk struct {
 	Name         string `json:"name" yaml:"name"`
 	VHDURI       string `json:"vhd_uri" yaml:"vhd_uri"`
 	CreateOption string `json:"create_option" yaml:"create_option"`
-	Caching      bool   `json:"caching" yaml:"caching"`
+	Caching      string `json:"caching" yaml:"caching"`
 	ImageURI     string `json:"image_uri" yaml:"image_uri"`
 	OSType       string `json:"os_type" yaml:"os_type"`
 	DiskSizeGB   string `json:"disk_size_gb" yaml:"disk_size_gb"`
