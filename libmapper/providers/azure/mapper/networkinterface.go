@@ -27,7 +27,6 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 
 			for _, ip := range ni.IPConfigurations {
 				subnet := strings.Split(ip.Subnet, ":")[1]
-				subnet = `$(components.#[_component_id="` + components.TYPESUBNET + `::` + subnet + `"].id)`
 
 				nIP := components.IPConfiguration{
 					Name:                       ip.Name,
