@@ -7,16 +7,44 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/storageaccount"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // StorageAccount : A resource group a container that holds
 // related resources for an Azure solution.
 type StorageAccount struct {
-	storageaccount.Event
-	Base
+	ProviderType           string            `json:"_provider"`
+	ComponentID            string            `json:"_component_id"`
+	ComponentType          string            `json:"_component"`
+	State                  string            `json:"_state"`
+	Action                 string            `json:"_action"`
+	DatacenterName         string            `json:"datacenter_name"`
+	DatacenterType         string            `json:"datacenter_type"`
+	DatacenterRegion       string            `json:"datacenter_region"`
+	ID                     string            `json:"id"`
+	Name                   string            `json:"name" validate:"required"`
+	ResourceGroupName      string            `json:"resource_group_name" validate:"required"`
+	Location               string            `json:"location" validate:"required"`
+	AccountKind            string            `json:"account_kind"`
+	AccountType            string            `json:"account_type" validate:"required"`
+	PrimaryLocation        string            `json:"primary_location"`
+	SecondaryLocation      string            `json:"secondary_location"`
+	PrimaryBlobEndpoint    string            `json:"primary_blob_endpoint"`
+	SecondaryBlobEndpoint  string            `json:"secondary_blob_endpoint"`
+	PrimaryQueueEndpoint   string            `json:"primary_queue_endpoint"`
+	SecondaryQueueEndpoint string            `json:"secondary_queue_endpoint"`
+	PrimaryTableEndpoint   string            `json:"primary_table_endpoint"`
+	SecondaryTableEndpoint string            `json:"secondary_table_endpoint"`
+	PrimaryFileEndpoint    string            `json:"primary_file_endpoint"`
+	PrimaryAccessKey       string            `json:"primary_access_key"`
+	SecondaryAccessKey     string            `json:"secondary_access_key"`
+	EnableBlobEncryption   bool              `json:"enable_blob_encryption"`
+	Tags                   map[string]string `json:"tags"`
+	ClientID               string            `json:"azure_client_id"`
+	ClientSecret           string            `json:"azure_client_secret"`
+	TenantID               string            `json:"azure_tenant_id"`
+	SubscriptionID         string            `json:"azure_subscription_id"`
+	Environment            string            `json:"environment"`
 }
 
 // GetID : returns the component's ID
@@ -118,7 +146,7 @@ func (i *StorageAccount) Dependencies() (deps []string) {
 // Validate : validates the components values
 func (i *StorageAccount) Validate() error {
 	log.Println("Validating storage accounts")
-	val := event.NewValidator()
+	val := NewValidator()
 	return val.Validate(i)
 }
 

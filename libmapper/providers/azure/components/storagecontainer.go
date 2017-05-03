@@ -7,16 +7,31 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/storagecontainer"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // StorageContainer : A resource group a container that holds
 // related resources for an Azure solution.
 type StorageContainer struct {
-	storagecontainer.Event
-	Base
+	ProviderType        string            `json:"_provider"`
+	ComponentID         string            `json:"_component_id"`
+	ComponentType       string            `json:"_component"`
+	State               string            `json:"_state"`
+	Action              string            `json:"_action"`
+	DatacenterName      string            `json:"datacenter_name"`
+	DatacenterType      string            `json:"datacenter_type"`
+	DatacenterRegion    string            `json:"datacenter_region"`
+	ID                  string            `json:"id"`
+	Name                string            `json:"name" validate:"required"`
+	ResourceGroupName   string            `json:"resource_group_name" validate:"required"`
+	StorageAccountName  string            `json:"storage_account_name" validate:"required"`
+	ContainerAccessType string            `json:"container_access_type"`
+	Properties          map[string]string `json:"properties"`
+	ClientID            string            `json:"azure_client_id"`
+	ClientSecret        string            `json:"azure_client_secret"`
+	TenantID            string            `json:"azure_tenant_id"`
+	SubscriptionID      string            `json:"azure_subscription_id"`
+	Environment         string            `json:"environment"`
 }
 
 // GetID : returns the component's ID
@@ -118,7 +133,7 @@ func (i *StorageContainer) Dependencies() (deps []string) {
 // Validate : validates the components values
 func (i *StorageContainer) Validate() error {
 	log.Println("Validating storage containers")
-	val := event.NewValidator()
+	val := NewValidator()
 	return val.Validate(i)
 }
 
