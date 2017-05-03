@@ -13,7 +13,7 @@ import (
 // IPConfiguration : ...
 type IPConfiguration struct {
 	Name                            string   `json:"name" validate:"required"`
-	Subnet                          string   `json:"name" validate:"required"`
+	Subnet                          string   `json:"subnet" validate:"required"`
 	SubnetID                        string   `json:"subnet_id" validate:"required"`
 	PrivateIPAddress                string   `json:"private_ip_address"`
 	PrivateIPAddressAllocation      string   `json:"private_ip_address_allocation" validate:"required"`
