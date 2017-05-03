@@ -96,18 +96,6 @@ func (i *StorageContainer) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (i *StorageContainer) Diff(c graph.Component) bool {
-	cs, ok := c.(*StorageContainer)
-	if ok {
-		if i.ResourceGroupName != cs.Name {
-			return true
-		}
-		if i.StorageAccountName != cs.Name {
-			return true
-		}
-		if i.ContainerAccessType != cs.ContainerAccessType {
-			return true
-		}
-	}
 	return false
 }
 
