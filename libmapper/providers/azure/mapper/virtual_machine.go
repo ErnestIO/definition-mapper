@@ -5,7 +5,6 @@
 package mapper
 
 import (
-	"log"
 	"strconv"
 	"strings"
 
@@ -43,7 +42,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 
 				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
 				// TODO : Fix this one
-				// cvm.StorageDataDisk.Size = vm.StorageDataDisk.DiskSizeGB
+				cvm.StorageDataDisk.Size = vm.StorageDataDisk.DiskSizeGB
 				cvm.StorageDataDisk.VhdURI = vm.StorageDataDisk.VhdURI
 				cvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
 
@@ -52,11 +51,8 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				// TODO : Fix this one
 				// cvm.DeleteOSDiskOnTermination = vm.DeleteOSDiskOnTermination
 
-				log.Println(vm.BootDiagnostics)
-				log.Println(&vm.BootDiagnostics)
-				if &vm.BootDiagnostics != nil {
-					log.Println(vm.BootDiagnostics.Enabled)
-					log.Println(vm.BootDiagnostics.StorageURI)
+
+				if vm.BootDiagnostics.Enabled != false {
 					cvm.BootDiagnostics = []components.BootDiagnostic{
 						components.BootDiagnostic{
 							Enabled: vm.BootDiagnostics.Enabled,
@@ -69,12 +65,14 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.Plan.Product = vm.Plan.Product
 				cvm.Plan.Publisher = vm.Plan.Publisher
 
+				cvm.OSProfile.ComputerName = vm.OSProfile.ComputerName
+
 				cvm.OSProfileLinuxConfig.SSHKeys = mapSSHKeys(vm.Authentication.SSHKeys)
 				cvm.OSProfileLinuxConfig.DisablePasswordAuthentication = vm.Authentication.DisablePasswordAuthentication
 				// TODO : Fix this one
 				// cvm.OSProfileWindowsConfig.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
 				cvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
-				cvm.OSProfile.AdminPassword = vm.Authentication.AdminUsername
+				cvm.OSProfile.AdminUsername = vm.Authentication.AdminUsername
 				cvm.OSProfile.AdminPassword = vm.Authentication.AdminPassword
 
 				for _, winrm := range vm.OSProfileWindowsConfig.WinRM {
