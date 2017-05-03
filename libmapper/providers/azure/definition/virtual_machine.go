@@ -23,13 +23,7 @@ type VirtualMachine struct {
 	BootDiagnostics struct {
 		Enabled    bool   `json:"enabled" yaml:"enabled"`
 		StorageURI string `json:"storage_uri" yaml:"storage_uri"`
-	} `json:"boot_diagnostics" yaml:"boot_diagnostics"`
-	StorageImageReference struct {
-		Publisher string `json:"publisher" yaml:"publisher"`
-		Offer     string `json:"offer" yaml:"offer"`
-		Sku       string `json:"sku" yaml:"sku"`
-		Version   string `json:"version" yaml:"version"`
-	} `json:"storage_image_reference" yaml:"storage_image_reference"`
+	} `json:"boot_diagnostics,omitempty" yaml:"boot_diagnostics,omitempty"`
 	StorageDataDisk struct {
 		Name         string `json:"name" yaml:"name"`
 		VhdURI       string `json:"vhd_uri" yaml:"vhd_uri"`

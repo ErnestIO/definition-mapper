@@ -5,6 +5,7 @@
 package mapper
 
 import (
+	"log"
 	"strconv"
 	"strings"
 
@@ -26,10 +27,10 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.VMSize = vm.Size
 
 				if len(image) == 4 {
-					vm.StorageImageReference.Publisher = image[0]
-					vm.StorageImageReference.Offer = image[1]
-					vm.StorageImageReference.Sku = image[2]
-					vm.StorageImageReference.Version = image[3]
+					cvm.StorageImageReference.Publisher = image[0]
+					cvm.StorageImageReference.Offer = image[1]
+					cvm.StorageImageReference.Sku = image[2]
+					cvm.StorageImageReference.Version = image[3]
 				}
 
 				cvm.NetworkInterfaces = vm.NetworkInterfaces
@@ -52,11 +53,17 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				// TODO : Fix this one
 				// cvm.DeleteOSDiskOnTermination = vm.DeleteOSDiskOnTermination
 
-				cvm.BootDiagnostics = []virtualmachine.BootDiagnostic{
-					virtualmachine.BootDiagnostic{
-						Enabled: vm.BootDiagnostics.Enabled,
-						URI:     vm.BootDiagnostics.StorageURI,
-					},
+				log.Println(vm.BootDiagnostics)
+				log.Println(&vm.BootDiagnostics)
+				if &vm.BootDiagnostics != nil {
+					log.Println(vm.BootDiagnostics.Enabled)
+					log.Println(vm.BootDiagnostics.StorageURI)
+					cvm.BootDiagnostics = []virtualmachine.BootDiagnostic{
+						virtualmachine.BootDiagnostic{
+							Enabled: vm.BootDiagnostics.Enabled,
+							URI:     vm.BootDiagnostics.StorageURI,
+						},
+					}
 				}
 
 				cvm.Plan.Name = vm.Plan.Name
