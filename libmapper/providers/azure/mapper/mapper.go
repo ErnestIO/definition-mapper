@@ -156,9 +156,9 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.SQLServer{}
 		case "sql_database":
 			c = &components.SQLDatabase{}
-		case "storage_accounts":
+		case "storage_account":
 			c = &components.StorageAccount{}
-		case "storage_containers":
+		case "storage_container":
 			c = &components.StorageContainer{}
 		default:
 			continue
