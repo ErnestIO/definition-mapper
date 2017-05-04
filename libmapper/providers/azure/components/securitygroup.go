@@ -7,16 +7,45 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/securitygroup"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // SecurityGroup : A resource group a container that holds
 // related resources for an Azure solution.
 type SecurityGroup struct {
-	securitygroup.Event
-	Base
+	ProviderType      string            `json:"_provider"`
+	ComponentID       string            `json:"_component_id"`
+	ComponentType     string            `json:"_component"`
+	State             string            `json:"_state"`
+	Action            string            `json:"_action"`
+	DatacenterName    string            `json:"datacenter_name"`
+	DatacenterType    string            `json:"datacenter_type"`
+	DatacenterRegion  string            `json:"datacenter_region"`
+	ID                string            `json:"id"`
+	Name              string            `json:"name" validate:"required"`
+	Location          string            `json:"location" validate:"required"`
+	ResourceGroupName string            `json:"resource_group_name" validate:"required"`
+	SecurityRules     []SecurityRule    `json:"security_rules"`
+	Tags              map[string]string `json:"tags"`
+	ClientID          string            `json:"azure_client_id"`
+	ClientSecret      string            `json:"azure_client_secret"`
+	TenantID          string            `json:"azure_tenant_id"`
+	SubscriptionID    string            `json:"azure_subscription_id"`
+	Environment       string            `json:"environment"`
+}
+
+// SecurityRule ...
+type SecurityRule struct {
+	Name                     string `json:"name"`
+	Description              string `json:"description"`
+	Protocol                 string `json:"protocol"`
+	SourcePort               string `json:"source_port_range"`
+	DestinationPortRange     string `json:"destination_port_range"`
+	SourceAddressPrefix      string `json:"source_address_prefix"`
+	DestinationAddressPrefix string `json:"destination_address_prefix"`
+	Access                   string `json:"access"`
+	Priority                 int    `json:"priority"`
+	Direction                string `json:"direction"`
 }
 
 // GetID : returns the component's ID
@@ -136,7 +165,7 @@ func (i *SecurityGroup) Dependencies() (deps []string) {
 // Validate : validates the components values
 func (i *SecurityGroup) Validate() error {
 	log.Println("Validating security groups")
-	val := event.NewValidator()
+	val := NewValidator()
 	return val.Validate(i)
 }
 

@@ -20,7 +20,9 @@ deps:
 	go get github.com/ghodss/yaml
 	go get gopkg.in/r3labs/graph.v2
 	go get github.com/r3labs/binary-prefix
-	go get github.com/ernestio/ernestprovider
+	go get gopkg.in/go-playground/validator.v9
+	go get github.com/go-playground/universal-translator
+	go get github.com/go-playground/locales
 
 dev-deps: deps
 	go get golang.org/x/crypto/pbkdf2

@@ -35,3 +35,7 @@ const (
 func templNetworkInterfaceID(iface string) string {
 	return `$(components.#[_component_id="` + TYPENETWORKINTERFACE + TYPEDELIMITER + iface + `"].id)`
 }
+
+func templSubnetID(subnet string) string {
+	return `$(components.#[_component_id="` + TYPESUBNET + TYPEDELIMITER + subnet + `"].id)`
+}

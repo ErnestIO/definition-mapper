@@ -6,18 +6,53 @@ package components
 
 import (
 	"log"
-	"strings"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
 	graph "gopkg.in/r3labs/graph.v2"
 )
+
+// IPConfiguration : ...
+type IPConfiguration struct {
+	Name                            string   `json:"name" validate:"required"`
+	Subnet                          string   `json:"subnet" validate:"required"`
+	SubnetID                        string   `json:"subnet_id" validate:"required"`
+	PrivateIPAddress                string   `json:"private_ip_address"`
+	PrivateIPAddressAllocation      string   `json:"private_ip_address_allocation" validate:"required"`
+	PublicIPAddress                 string   `json:"public_ip_address_id"`
+	LoadBalancerBackendAddressPools []string `json:"load_balancer_backend_address_pools_ids"`
+	LoadBalancerInboundNatRules     []string `json:"load_balancer_inbound_nat_rules_ids"`
+}
 
 // NetworkInterface : A resource group a container that holds
 // related resources for an Azure solution.
 type NetworkInterface struct {
-	networkinterface.Event
-	Base
+	ProviderType         string            `json:"_provider"`
+	ComponentID          string            `json:"_component_id"`
+	ComponentType        string            `json:"_component"`
+	State                string            `json:"_state"`
+	Action               string            `json:"_action"`
+	DatacenterName       string            `json:"datacenter_name"`
+	DatacenterType       string            `json:"datacenter_type"`
+	DatacenterRegion     string            `json:"datacenter_region"`
+	ID                   string            `json:"id"`
+	Name                 string            `json:"name" validate:"required"`
+	ResourceGroupName    string            `json:"resource_group_name" validate:"required"`
+	Location             string            `json:"location" validate:"required"`
+	NetworkSecurityGroup string            `json:"network_security_group_id"`
+	MacAddress           string            `json:"mac_address"`
+	PrivateIPAddress     string            `json:"private_ip_address"`
+	VirtualMachineID     string            `json:"virtual_machine_id"`
+	IPConfigurations     []IPConfiguration `json:"ip_configuration" validate:"min=1,dive"`
+	DNSServers           []string          `json:"dns_servers" validate:"dive,ip"`
+	InternalDNSNameLabel string            `json:"internal_dns_name_label"`
+	AppliedDNSServers    []string          `json:"applied_dns_servers"`
+	InternalFQDN         string            `json:"internal_fqdn"`
+	EnableIPForwarding   bool              `json:"enable_ip_forwarding"`
+	Tags                 map[string]string `json:"tags"`
+	ClientID             string            `json:"azure_client_id"`
+	ClientSecret         string            `json:"azure_client_secret"`
+	TenantID             string            `json:"azure_tenant_id"`
+	SubscriptionID       string            `json:"azure_subscription_id"`
+	Environment          string            `json:"environment"`
 }
 
 // GetID : returns the component's ID
@@ -136,6 +171,19 @@ func (i *NetworkInterface) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *NetworkInterface) Rebuild(g *graph.Graph) {
+	for x := 0; x < len(i.IPConfigurations); x++ {
+		if i.IPConfigurations[x].Subnet == "" && i.IPConfigurations[x].SubnetID != "" {
+			s := g.GetComponents().ByProviderID(i.IPConfigurations[x].SubnetID)
+			if s != nil {
+				i.IPConfigurations[x].Subnet = s.GetName()
+			}
+		}
+
+		if i.IPConfigurations[x].SubnetID == "" && i.IPConfigurations[x].Subnet != "" {
+			i.IPConfigurations[x].SubnetID = templSubnetID(i.IPConfigurations[x].Subnet)
+		}
+	}
+
 	i.SetDefaultVariables()
 }
 
@@ -146,9 +194,9 @@ func (i *NetworkInterface) Dependencies() (deps []string) {
 	}
 
 	for _, config := range i.IPConfigurations {
-		subnet := strings.Split(config.Subnet, "::")[1]
-		subnet = strings.Split(subnet, `"]`)[0]
-		deps = append(deps, TYPESUBNET+TYPEDELIMITER+subnet)
+		if config.Subnet != "" {
+			deps = append(deps, TYPESUBNET+TYPEDELIMITER+config.Subnet)
+		}
 	}
 
 	if len(deps) < 1 {
@@ -161,7 +209,7 @@ func (i *NetworkInterface) Dependencies() (deps []string) {
 // Validate : validates the components values
 func (i *NetworkInterface) Validate() error {
 	log.Println("Validating azure network interfaces")
-	val := event.NewValidator()
+	val := NewValidator()
 	return val.Validate(i)
 }
 

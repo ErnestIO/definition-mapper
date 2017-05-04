@@ -7,7 +7,6 @@ package mapper
 import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
-	"github.com/ernestio/ernestprovider/providers/azure/securitygroup"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
@@ -21,7 +20,7 @@ func MapSecurityGroups(d *definition.Definition) (sgs []*components.SecurityGrou
 			n.Tags = mapTags(sg.Name, d.Name)
 
 			for _, rule := range sg.Rules {
-				n.SecurityRules = append(n.SecurityRules, securitygroup.SecurityRule{
+				n.SecurityRules = append(n.SecurityRules, components.SecurityRule{
 					Name:                     rule.Name,
 					Description:              rule.Description,
 					Protocol:                 rule.Protocol,

@@ -7,16 +7,34 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/sqlserver"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // SQLServer : A resource group a container that holds
 // related resources for an Azure solution.
 type SQLServer struct {
-	sqlserver.Event
-	Base
+	ProviderType               string            `json:"_provider"`
+	ComponentID                string            `json:"_component_id"`
+	ComponentType              string            `json:"_component"`
+	State                      string            `json:"_state"`
+	Action                     string            `json:"_action"`
+	DatacenterName             string            `json:"datacenter_name"`
+	DatacenterType             string            `json:"datacenter_type"`
+	DatacenterRegion           string            `json:"datacenter_region"`
+	ID                         string            `json:"id"`
+	Name                       string            `json:"name" validate:"required"`
+	Location                   string            `json:"location" validate:"required"`
+	ResourceGroupName          string            `json:"resource_group_name" validate:"required"`
+	Version                    string            `json:"version" validate:"required"`
+	AdministratorLogin         string            `json:"administrator_login" validate:"required"`
+	AdministratorLoginPassword string            `json:"administrator_login_password" validate:"required"`
+	FullyQualifiedDomainName   string            `json:"fully_qualified_domain_name"`
+	Tags                       map[string]string `json:"tags"`
+	ClientID                   string            `json:"azure_client_id"`
+	ClientSecret               string            `json:"azure_client_secret"`
+	TenantID                   string            `json:"azure_tenant_id"`
+	SubscriptionID             string            `json:"azure_subscription_id"`
+	Environment                string            `json:"environment"`
 }
 
 // GetID : returns the component's ID
@@ -118,7 +136,7 @@ func (i *SQLServer) Dependencies() (deps []string) {
 // Validate : validates the components values
 func (i *SQLServer) Validate() error {
 	log.Println("Validating SQL Servers")
-	val := event.NewValidator()
+	val := NewValidator()
 	return val.Validate(i)
 }
 

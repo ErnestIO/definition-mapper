@@ -10,7 +10,6 @@ import (
 
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
-	"github.com/ernestio/ernestprovider/providers/azure/virtualmachine"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
@@ -49,9 +48,10 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
 				cvm.DeleteOSDiskOnTermination = vm.DeleteOSDiskOnTermination
 
+
 				if vm.BootDiagnostics.Enabled != false {
-					cvm.BootDiagnostics = []virtualmachine.BootDiagnostic{
-						virtualmachine.BootDiagnostic{
+					cvm.BootDiagnostics = []components.BootDiagnostic{
+						components.BootDiagnostic{
 							Enabled: vm.BootDiagnostics.Enabled,
 							URI:     vm.BootDiagnostics.StorageURI,
 						},
@@ -72,13 +72,13 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.OSProfile.AdminPassword = vm.Authentication.AdminPassword
 
 				for _, winrm := range vm.OSProfileWindowsConfig.WinRM {
-					cvm.OSProfileWindowsConfig.WinRm = append(cvm.OSProfileWindowsConfig.WinRm, virtualmachine.WinRM{
+					cvm.OSProfileWindowsConfig.WinRm = append(cvm.OSProfileWindowsConfig.WinRm, components.WinRM{
 						Protocol:       winrm.Protocol,
 						CertificateURL: winrm.CertificateURL,
 					})
 				}
 
-				cvm.OSProfileWindowsConfig.AdditionalUnattendConfig = append(cvm.OSProfileWindowsConfig.AdditionalUnattendConfig, virtualmachine.UnattendedConfig{
+				cvm.OSProfileWindowsConfig.AdditionalUnattendConfig = append(cvm.OSProfileWindowsConfig.AdditionalUnattendConfig, components.UnattendedConfig{
 					Pass:        vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass,
 					Component:   vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Component,
 					SettingName: vm.OSProfileWindowsConfig.AdditionalUnattendConfig.SettingName,
@@ -154,9 +154,9 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 	return vms
 }
 
-func mapSSHKeys(keyList map[string]string) (keys []virtualmachine.SSHKey) {
+func mapSSHKeys(keyList map[string]string) (keys []components.SSHKey) {
 	for path, key := range keyList {
-		keys = append(keys, virtualmachine.SSHKey{
+		keys = append(keys, components.SSHKey{
 			Path:    path,
 			KeyData: key,
 		})
@@ -165,7 +165,7 @@ func mapSSHKeys(keyList map[string]string) (keys []virtualmachine.SSHKey) {
 	return
 }
 
-func mapDefinitionSSHKeys(keyList []virtualmachine.SSHKey) map[string]string {
+func mapDefinitionSSHKeys(keyList []components.SSHKey) map[string]string {
 	keys := make(map[string]string)
 	for _, key := range keyList {
 		keys[key.Path] = key.KeyData

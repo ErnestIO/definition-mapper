@@ -8,16 +8,40 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/virtualnetwork"
 	"gopkg.in/r3labs/graph.v2"
 )
 
 // VirtualNetwork : A resource group a container that holds
 // related resources for an Azure solution.
 type VirtualNetwork struct {
-	virtualnetwork.Event
-	Base
+	ProviderType      string            `json:"_provider"`
+	ComponentID       string            `json:"_component_id"`
+	ComponentType     string            `json:"_component"`
+	State             string            `json:"_state"`
+	Action            string            `json:"_action"`
+	DatacenterName    string            `json:"datacenter_name"`
+	DatacenterType    string            `json:"datacenter_type"`
+	DatacenterRegion  string            `json:"datacenter_region"`
+	ID                string            `json:"id"`
+	Name              string            `json:"name" validate:"required"`
+	AddressSpace      []string          `json:"address_space" validate:"min=1"`
+	DNSServerNames    []string          `json:"dns_server_names" validate:"dive,ip"`
+	Subnets           []VNSubnet        `json:"subnets" validate:"min=1"`
+	Location          string            `json:"location"`
+	ResourceGroupName string            `json:"resource_group_name"`
+	Tags              map[string]string `json:"tags"`
+	ClientID          string            `json:"azure_client_id"`
+	ClientSecret      string            `json:"azure_client_secret"`
+	TenantID          string            `json:"azure_tenant_id"`
+	SubscriptionID    string            `json:"azure_subscription_id"`
+	Environment       string            `json:"environment"`
+}
+
+// VNSubnet ..
+type VNSubnet struct {
+	Name          string `json:"name"`
+	AddressPrefix string `json:"address_prefix"`
+	SecurityGroup string `json:"security_group"`
 }
 
 // GetID : returns the component's ID
@@ -113,7 +137,7 @@ func (vn *VirtualNetwork) Dependencies() (deps []string) {
 // Validate : validates the components values
 func (vn *VirtualNetwork) Validate() error {
 	log.Println("Validating Virtual network")
-	val := event.NewValidator()
+	val := NewValidator()
 	return val.Validate(vn)
 }
 
