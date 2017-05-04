@@ -16,7 +16,7 @@ func MapResourceGroups(d *definition.Definition) (groups []*components.ResourceG
 		cv := &components.ResourceGroup{}
 		cv.Name = group.Name
 		cv.Location = group.Location
-		cv.Tags = mapTags(group.Name, d.Name)
+		cv.Tags = group.Tags
 
 		if group.ID != "" {
 			cv.SetAction("none")

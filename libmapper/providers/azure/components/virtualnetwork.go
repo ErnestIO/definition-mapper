@@ -102,12 +102,21 @@ func (vn *VirtualNetwork) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (vn *VirtualNetwork) Rebuild(g *graph.Graph) {
+	for x := 0; x < len(vn.Subnets); x++ {
+		if vn.Subnets[x].SecurityGroupName != "" {
+			vn.Subnets[x].SecurityGroup = `$(components.#[_component_id="` + TYPESECURITYGROUP + TYPEDELIMITER + vn.Subnets[x].SecurityGroupName + `"].id)`
+		}
+	}
 	vn.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
 func (vn *VirtualNetwork) Dependencies() (deps []string) {
-	return []string{TYPERESOURCEGROUP + TYPEDELIMITER + vn.ResourceGroupName}
+	for x := 0; x < len(vn.Subnets); x++ {
+		deps = append(deps, TYPESECURITYGROUP+TYPEDELIMITER+vn.Subnets[x].SecurityGroupName)
+	}
+	deps = append(deps, TYPERESOURCEGROUP+TYPEDELIMITER+vn.ResourceGroupName)
+	return
 }
 
 // Validate : validates the components values

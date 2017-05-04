@@ -18,12 +18,16 @@ func MapSecurityGroups(d *definition.Definition) (sgs []*components.SecurityGrou
 			n := &components.SecurityGroup{}
 			n.Name = sg.Name
 			n.ResourceGroupName = rg.Name
+			n.Location = rg.Location
 			n.Tags = mapTags(sg.Name, d.Name)
 
 			for _, rule := range sg.Rules {
 				n.SecurityRules = append(n.SecurityRules, securitygroup.SecurityRule{
 					Name:                     rule.Name,
 					Description:              rule.Description,
+					Priority:                 rule.Priority,
+					Access:                   rule.Access,
+					Direction:                rule.Direction,
 					Protocol:                 rule.Protocol,
 					SourcePort:               rule.SourcePortRange,
 					DestinationPortRange:     rule.DestinationPortRange,
@@ -64,6 +68,9 @@ func MapDefinitionSecurityGroups(g *graph.Graph, rg *definition.ResourceGroup) (
 				Name:                     rule.Name,
 				Description:              rule.Description,
 				Protocol:                 rule.Protocol,
+				Priority:                 rule.Priority,
+				Access:                   rule.Access,
+				Direction:                rule.Direction,
 				SourcePortRange:          rule.SourcePort,
 				DestinationPortRange:     rule.DestinationPortRange,
 				SourceAddressPrefix:      rule.SourceAddressPrefix,

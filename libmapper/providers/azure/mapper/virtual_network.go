@@ -26,7 +26,7 @@ func MapVirtualNetworks(d *definition.Definition) (networks []*components.Virtua
 				sn := virtualnetwork.Subnet{}
 				sn.Name = subnet.Name
 				sn.AddressPrefix = subnet.AddressPrefix
-				sn.SecurityGroup = subnet.SecurityGroup
+				sn.SecurityGroupName = subnet.SecurityGroup
 				cs.Subnets = append(cs.Subnets, sn)
 			}
 
