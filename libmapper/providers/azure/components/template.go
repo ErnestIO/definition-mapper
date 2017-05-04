@@ -39,3 +39,7 @@ func templNetworkInterfaceID(iface string) string {
 func templSubnetID(subnet string) string {
 	return `$(components.#[_component_id="` + TYPESUBNET + TYPEDELIMITER + subnet + `"].id)`
 }
+
+func templSecurityGroupID(sg string) string {
+	return `$(components.#[_component_id="` + TYPESECURITYGROUP + TYPEDELIMITER + sg + `"].id)`
+}

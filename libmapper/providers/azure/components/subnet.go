@@ -104,6 +104,17 @@ func (s *Subnet) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (s *Subnet) Rebuild(g *graph.Graph) {
+	if s.NetworkSecurityGroup == "" && s.NetworkSecurityGroupID != "" {
+		sg := g.GetComponents().ByProviderID(s.NetworkSecurityGroupID)
+		if sg != nil {
+			s.NetworkSecurityGroup = sg.GetName()
+		}
+	}
+
+	if s.NetworkSecurityGroupID == "" && s.NetworkSecurityGroup != "" {
+		s.NetworkSecurityGroupID = templSecurityGroupID(s.NetworkSecurityGroup)
+	}
+
 	s.SetDefaultVariables()
 }
 
