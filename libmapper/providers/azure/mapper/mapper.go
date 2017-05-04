@@ -174,6 +174,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 		if err != nil {
 			return g, err
 		}
+		(*gc)["Base"] = gc
+		(*gc)["Event"] = gc
 
 		err = decoder.Decode(gc)
 		if err != nil {
