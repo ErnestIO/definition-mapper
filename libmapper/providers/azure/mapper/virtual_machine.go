@@ -35,22 +35,19 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.NetworkInterfaces = vm.NetworkInterfaces
 
 				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
-				// cvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
+				cvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
 				cvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 				cvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
 				cvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI
 				cvm.StorageOSDisk.VhdURI = vm.StorageOSDisk.VHDURI
 
 				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
-				// TODO : Fix this one
 				cvm.StorageDataDisk.Size = vm.StorageDataDisk.DiskSizeGB
 				cvm.StorageDataDisk.VhdURI = vm.StorageDataDisk.VhdURI
 				cvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
 
-				// TODO : Fix this one
-				// cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
-				// TODO : Fix this one
-				// cvm.DeleteOSDiskOnTermination = vm.DeleteOSDiskOnTermination
+				cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
+				cvm.DeleteOSDiskOnTermination = vm.DeleteOSDiskOnTermination
 
 				if vm.BootDiagnostics.Enabled != false {
 					cvm.BootDiagnostics = []virtualmachine.BootDiagnostic{
@@ -69,8 +66,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 
 				cvm.OSProfileLinuxConfig.SSHKeys = mapSSHKeys(vm.Authentication.SSHKeys)
 				cvm.OSProfileLinuxConfig.DisablePasswordAuthentication = vm.Authentication.DisablePasswordAuthentication
-				// TODO : Fix this one
-				// cvm.OSProfileWindowsConfig.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
+				cvm.OSProfileWindowsConfig.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
 				cvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
 				cvm.OSProfile.AdminUsername = vm.Authentication.AdminUsername
 				cvm.OSProfile.AdminPassword = vm.Authentication.AdminPassword
@@ -125,15 +121,14 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		}
 
 		dvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
-		// dvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
+		dvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
 		dvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 		dvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
 		dvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI
 		dvm.StorageOSDisk.VHDURI = vm.StorageOSDisk.VhdURI
 
 		dvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
-		// TODO : Fix this one
-		// dvm.StorageDataDisk.DiskSizeGB = vm.StorageDataDisk.Size
+		dvm.StorageDataDisk.DiskSizeGB = vm.StorageDataDisk.Size
 		dvm.StorageDataDisk.VhdURI = vm.StorageDataDisk.VhdURI
 		dvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
 
@@ -148,8 +143,7 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 
 		dvm.Authentication.SSHKeys = mapDefinitionSSHKeys(vm.OSProfileLinuxConfig.SSHKeys)
 		dvm.Authentication.DisablePasswordAuthentication = vm.OSProfileLinuxConfig.DisablePasswordAuthentication
-		// TODO : Fix this one
-		// dvm.OSProfileWindowsConfig.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
+		dvm.OSProfileWindowsConfig.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
 		dvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
 		dvm.Authentication.AdminUsername = vm.OSProfile.AdminPassword
 		dvm.Authentication.AdminPassword = vm.OSProfile.AdminPassword
