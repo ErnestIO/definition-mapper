@@ -5,6 +5,7 @@
 package mapper
 
 import (
+	"fmt"
 	"net"
 	"strconv"
 	"strings"
@@ -23,8 +24,11 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 				var addresses []net.IP
 
 				for _, config := range ni.IPConfigurations {
+					fmt.Println(config)
 					addresses = append(addresses, net.ParseIP(config.PrivateIPAddress).To4())
 				}
+
+				fmt.Println(addresses)
 
 				for i := 1; i < vm.Count+1; i++ {
 					cv := &components.NetworkInterface{}
@@ -41,18 +45,24 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 						subnet := strings.Split(ip.Subnet, ":")[1]
 
 						nIP := networkinterface.IPConfiguration{
-							Name:                       ip.Name,
-							Subnet:                     subnet,
-							PrivateIPAddress:           addresses[x].String(),
+							Name:   ip.Name,
+							Subnet: subnet,
+
 							PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
 							PublicIPAddress:            ip.PublicIPAddressID,
 						}
 						if nIP.PrivateIPAddressAllocation == "" {
 							nIP.PrivateIPAddressAllocation = "static"
 						}
-						cv.IPConfigurations = append(cv.IPConfigurations, nIP)
 
-						addresses[x][3]++
+						fmt.Println(addresses)
+						fmt.Println(len(addresses))
+
+						if nIP.PrivateIPAddressAllocation == "static" {
+							nIP.PrivateIPAddress = addresses[x].String()
+							addresses[x][3]++
+						}
+						cv.IPConfigurations = append(cv.IPConfigurations, nIP)
 					}
 
 					if ni.ID != "" {
