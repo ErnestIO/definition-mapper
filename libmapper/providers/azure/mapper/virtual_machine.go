@@ -5,6 +5,8 @@
 package mapper
 
 import (
+	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -41,11 +43,11 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 				cvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
 				cvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI
-				cvm.StorageOSDisk.VhdURI = vm.StorageOSDisk.VHDURI
+				cvm.StorageOSDisk.VhdURI = fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s.vhd", vm.StorageOSDisk.StorageAccount, vm.StorageOSDisk.StorageContainer, vm.StorageOSDisk.Name+"-"+strconv.Itoa(i))
 
 				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
 				cvm.StorageDataDisk.Size = vm.StorageDataDisk.DiskSizeGB
-				cvm.StorageDataDisk.VhdURI = vm.StorageDataDisk.VhdURI
+				cvm.StorageDataDisk.VhdURI = fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s.vhd", vm.StorageDataDisk.StorageAccount, vm.StorageDataDisk.StorageContainer, vm.StorageDataDisk.Name+"-"+strconv.Itoa(i))
 				cvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
 
 				cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
@@ -121,17 +123,22 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 			LicenseType: vm.LicenseType,
 		}
 
+		_, osaccount, oscontainer := getStorageDetails(vm.StorageOSDisk.VhdURI)
+		_, dataaccount, datacontainer := getStorageDetails(vm.StorageDataDisk.VhdURI)
+
 		dvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
 		dvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
 		dvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 		dvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
 		dvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI
-		dvm.StorageOSDisk.VHDURI = vm.StorageOSDisk.VhdURI
+		dvm.StorageOSDisk.StorageAccount = osaccount
+		dvm.StorageOSDisk.StorageContainer = oscontainer
 
 		dvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
 		dvm.StorageDataDisk.DiskSizeGB = vm.StorageDataDisk.Size
-		dvm.StorageDataDisk.VhdURI = vm.StorageDataDisk.VhdURI
 		dvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
+		dvm.StorageDataDisk.StorageAccount = dataaccount
+		dvm.StorageDataDisk.StorageContainer = datacontainer
 
 		if len(vm.BootDiagnostics) > 0 {
 			dvm.BootDiagnostics.Enabled = vm.BootDiagnostics[0].Enabled
@@ -177,4 +184,18 @@ func mapDefinitionSSHKeys(keyList []virtualmachine.SSHKey) map[string]string {
 
 func getImageParts(image string) []string {
 	return strings.Split(image, ":")
+}
+
+func getStorageDetails(uri string) (string, string, string) {
+	var name, account, container string
+
+	u, err := url.Parse(uri)
+	if err == nil {
+		parts := strings.Split(u.Path, "/")
+		name = strings.Replace(parts[2], ".vhd", "", 1)
+		container = parts[1]
+		account = strings.Split(u.Host, ".")[0]
+	}
+
+	return name, account, container
 }
