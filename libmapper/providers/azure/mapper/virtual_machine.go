@@ -32,7 +32,9 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					cvm.StorageImageReference.Version = image[3]
 				}
 
-				cvm.NetworkInterfaces = vm.NetworkInterfaces
+				for _, ni := range vm.NetworkInterfaces {
+					cvm.NetworkInterfaces = append(cvm.NetworkInterfaces, ni.Name)
+				}
 
 				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
 				cvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
@@ -112,12 +114,11 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		image := vm.StorageImageReference
 
 		dvm := definition.VirtualMachine{
-			Name:              vm.Name,
-			Size:              vm.VMSize,
-			Image:             strings.Join([]string{image.Publisher, image.Offer, image.Sku, image.Version}, ":"),
-			NetworkInterfaces: vm.NetworkInterfaces,
-			Tags:              vm.Tags,
-			LicenseType:       vm.LicenseType,
+			Name:        vm.Name,
+			Size:        vm.VMSize,
+			Image:       strings.Join([]string{image.Publisher, image.Offer, image.Sku, image.Version}, ":"),
+			Tags:        vm.Tags,
+			LicenseType: vm.LicenseType,
 		}
 
 		dvm.StorageOSDisk.Name = vm.StorageOSDisk.Name

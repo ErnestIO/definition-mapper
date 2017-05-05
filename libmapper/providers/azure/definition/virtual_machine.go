@@ -14,7 +14,7 @@ type VirtualMachine struct {
 	StorageOSDisk          StorageOSDisk          `json:"storage_os_disk" yaml:"storage_os_disk"`
 	OSProfile              OSProfile              `json:"os_profile" yaml:"os_profile"`
 	OSProfileWindowsConfig OSProfileWindowsConfig `json:"os_profile_windows_config" yaml:"os_profile_windows_config"`
-	NetworkInterfaces      []string               `json:"network_interfaces" yaml:"network_interfaces"`
+	NetworkInterfaces      []NetworkInterface     `json:"network_interfaces" yaml:"network_interfaces"`
 	Plan                   struct {
 		Name      string `json:"name" yaml:"name"`
 		Publisher string `json:"publisher" yaml:"publisher"`

@@ -113,7 +113,9 @@ func (vn *VirtualNetwork) Rebuild(g *graph.Graph) {
 // Dependencies : returns a list of component id's upon which the component depends
 func (vn *VirtualNetwork) Dependencies() (deps []string) {
 	for x := 0; x < len(vn.Subnets); x++ {
-		deps = append(deps, TYPESECURITYGROUP+TYPEDELIMITER+vn.Subnets[x].SecurityGroupName)
+		if vn.Subnets[x].SecurityGroupName != "" {
+			deps = append(deps, TYPESECURITYGROUP+TYPEDELIMITER+vn.Subnets[x].SecurityGroupName)
+		}
 	}
 	deps = append(deps, TYPERESOURCEGROUP+TYPEDELIMITER+vn.ResourceGroupName)
 	return

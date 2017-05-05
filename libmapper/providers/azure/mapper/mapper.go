@@ -95,13 +95,22 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 	d.ResourceGroups = MapDefinitionResourceGroups(g)
 
 	for i := 0; i < len(d.ResourceGroups); i++ {
-		d.ResourceGroups[i].NetworkInterfaces = MapDefinitionNetworkInterfaces(g, &d.ResourceGroups[i])
+		// Virtual networks
 		d.ResourceGroups[i].VirtualNetworks = MapDefinitionVirtualNetworks(g, &d.ResourceGroups[i])
 		for x := 0; x < len(d.ResourceGroups[i].VirtualNetworks); x++ {
 			d.ResourceGroups[i].VirtualNetworks[x].Subnets = MapDefinitionSubnets(g, &d.ResourceGroups[i], &d.ResourceGroups[i].VirtualNetworks[x])
 		}
+
+		// Virtual machines
 		d.ResourceGroups[i].VirtualMachines = MapDefinitionVirtualMachines(g, &d.ResourceGroups[i])
+		for x := 0; x < len(d.ResourceGroups[i].VirtualMachines); x++ {
+			d.ResourceGroups[i].VirtualMachines[x].NetworkInterfaces = MapDefinitionNetworkInterfaces(g, &d.ResourceGroups[i].VirtualMachines[x])
+		}
+
+		// Public IPs
 		d.ResourceGroups[i].PublicIPs = MapDefinitionPublicIPs(g, &d.ResourceGroups[i])
+
+		// Security Groups
 		d.ResourceGroups[i].SecurityGroups = MapDefinitionSecurityGroups(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].SQLServers = MapDefinitionSQLServers(g, &d.ResourceGroups[i])
 

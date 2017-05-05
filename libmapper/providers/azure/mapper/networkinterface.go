@@ -16,39 +16,42 @@ import (
 // MapNetworkInterfaces ...
 func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.NetworkInterface) {
 	for _, rg := range d.ResourceGroups {
-		for _, ni := range rg.NetworkInterfaces {
-			cv := &components.NetworkInterface{}
-			cv.Name = ni.Name
-			cv.NetworkSecurityGroup = ni.SecurityGroup
-			cv.DNSServers = ni.DNSServers
-			cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
-			cv.ResourceGroupName = rg.Name
-			cv.Location = rg.Location
-			cv.Tags = mapTags(ni.Name, d.Name)
+		for _, vm := range rg.VirtualMachines {
+			for _, ni := range vm.NetworkInterfaces {
+				cv := &components.NetworkInterface{}
+				cv.Name = ni.Name
+				cv.NetworkSecurityGroup = ni.SecurityGroup
+				cv.DNSServers = ni.DNSServers
+				cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
+				cv.ResourceGroupName = rg.Name
+				cv.VirtualMachineID = components.TYPEVIRTUALMACHINE + components.TYPEDELIMITER + vm.Name
+				cv.Location = rg.Location
+				cv.Tags = mapTags(ni.Name, d.Name)
 
-			for _, ip := range ni.IPConfigurations {
-				subnet := strings.Split(ip.Subnet, ":")[1]
+				for _, ip := range ni.IPConfigurations {
+					subnet := strings.Split(ip.Subnet, ":")[1]
 
-				nIP := networkinterface.IPConfiguration{
-					Name:                       ip.Name,
-					Subnet:                     subnet,
-					PrivateIPAddress:           ip.PrivateIPAddress,
-					PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
-					PublicIPAddress:            ip.PublicIPAddressID,
+					nIP := networkinterface.IPConfiguration{
+						Name:                       ip.Name,
+						Subnet:                     subnet,
+						PrivateIPAddress:           ip.PrivateIPAddress,
+						PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
+						PublicIPAddress:            ip.PublicIPAddressID,
+					}
+					if nIP.PrivateIPAddressAllocation == "" {
+						nIP.PrivateIPAddressAllocation = "static"
+					}
+					cv.IPConfigurations = append(cv.IPConfigurations, nIP)
 				}
-				if nIP.PrivateIPAddressAllocation == "" {
-					nIP.PrivateIPAddressAllocation = "static"
+
+				if ni.ID != "" {
+					cv.SetAction("none")
 				}
-				cv.IPConfigurations = append(cv.IPConfigurations, nIP)
+
+				cv.SetDefaultVariables()
+
+				interfaces = append(interfaces, cv)
 			}
-
-			if ni.ID != "" {
-				cv.SetAction("none")
-			}
-
-			cv.SetDefaultVariables()
-
-			interfaces = append(interfaces, cv)
 		}
 	}
 
@@ -56,11 +59,11 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 }
 
 // MapDefinitionNetworkInterfaces : ...
-func MapDefinitionNetworkInterfaces(g *graph.Graph, rg *definition.ResourceGroup) (nis []definition.NetworkInterface) {
+func MapDefinitionNetworkInterfaces(g *graph.Graph, vm *definition.VirtualMachine) (nis []definition.NetworkInterface) {
 	for _, c := range g.GetComponents().ByType("network_interface") {
 		ni := c.(*components.NetworkInterface)
 
-		if ni.ResourceGroupName != rg.Name {
+		if ni.VirtualMachineID != components.TYPEVIRTUALMACHINE+components.TYPEDELIMITER+vm.Name {
 			continue
 		}
 
