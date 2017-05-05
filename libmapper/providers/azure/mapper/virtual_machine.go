@@ -33,7 +33,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				}
 
 				for _, ni := range vm.NetworkInterfaces {
-					cvm.NetworkInterfaces = append(cvm.NetworkInterfaces, ni.Name)
+					cvm.NetworkInterfaces = append(cvm.NetworkInterfaces, ni.Name+"-"+strconv.Itoa(i))
 				}
 
 				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name

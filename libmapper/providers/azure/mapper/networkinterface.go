@@ -5,6 +5,8 @@
 package mapper
 
 import (
+	"net"
+	"strconv"
 	"strings"
 
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
@@ -18,39 +20,49 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 	for _, rg := range d.ResourceGroups {
 		for _, vm := range rg.VirtualMachines {
 			for _, ni := range vm.NetworkInterfaces {
-				cv := &components.NetworkInterface{}
-				cv.Name = vm.Name + "_" + ni.Name
-				cv.NetworkSecurityGroup = ni.SecurityGroup
-				cv.DNSServers = ni.DNSServers
-				cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
-				cv.ResourceGroupName = rg.Name
-				cv.VirtualMachineID = components.TYPEVIRTUALMACHINE + components.TYPEDELIMITER + vm.Name
-				cv.Location = rg.Location
-				cv.Tags = mapTags(ni.Name, d.Name)
+				var addresses []net.IP
 
-				for _, ip := range ni.IPConfigurations {
-					subnet := strings.Split(ip.Subnet, ":")[1]
-
-					nIP := networkinterface.IPConfiguration{
-						Name:                       ip.Name,
-						Subnet:                     subnet,
-						PrivateIPAddress:           ip.PrivateIPAddress,
-						PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
-						PublicIPAddress:            ip.PublicIPAddressID,
-					}
-					if nIP.PrivateIPAddressAllocation == "" {
-						nIP.PrivateIPAddressAllocation = "static"
-					}
-					cv.IPConfigurations = append(cv.IPConfigurations, nIP)
+				for _, config := range ni.IPConfigurations {
+					addresses = append(addresses, net.ParseIP(config.PrivateIPAddress).To4())
 				}
 
-				if ni.ID != "" {
-					cv.SetAction("none")
+				for i := 1; i < vm.Count+1; i++ {
+					cv := &components.NetworkInterface{}
+					cv.Name = ni.Name + "-" + strconv.Itoa(i)
+					cv.NetworkSecurityGroup = ni.SecurityGroup
+					cv.DNSServers = ni.DNSServers
+					cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
+					cv.ResourceGroupName = rg.Name
+					cv.VirtualMachineID = components.TYPEVIRTUALMACHINE + components.TYPEDELIMITER + vm.Name
+					cv.Location = rg.Location
+					cv.Tags = mapTags(ni.Name, d.Name)
+
+					for x, ip := range ni.IPConfigurations {
+						subnet := strings.Split(ip.Subnet, ":")[1]
+
+						nIP := networkinterface.IPConfiguration{
+							Name:                       ip.Name,
+							Subnet:                     subnet,
+							PrivateIPAddress:           addresses[x].String(),
+							PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
+							PublicIPAddress:            ip.PublicIPAddressID,
+						}
+						if nIP.PrivateIPAddressAllocation == "" {
+							nIP.PrivateIPAddressAllocation = "static"
+						}
+						cv.IPConfigurations = append(cv.IPConfigurations, nIP)
+
+						addresses[x][3]++
+					}
+
+					if ni.ID != "" {
+						cv.SetAction("none")
+					}
+
+					cv.SetDefaultVariables()
+
+					interfaces = append(interfaces, cv)
 				}
-
-				cv.SetDefaultVariables()
-
-				interfaces = append(interfaces, cv)
 			}
 		}
 	}
