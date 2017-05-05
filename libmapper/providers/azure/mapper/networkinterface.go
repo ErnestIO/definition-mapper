@@ -19,7 +19,7 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 		for _, vm := range rg.VirtualMachines {
 			for _, ni := range vm.NetworkInterfaces {
 				cv := &components.NetworkInterface{}
-				cv.Name = ni.Name
+				cv.Name = vm.Name + "_" + ni.Name
 				cv.NetworkSecurityGroup = ni.SecurityGroup
 				cv.DNSServers = ni.DNSServers
 				cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
