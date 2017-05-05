@@ -26,7 +26,7 @@ type VirtualMachine struct {
 	} `json:"boot_diagnostics,omitempty" yaml:"boot_diagnostics,omitempty"`
 	StorageDataDisk struct {
 		Name             string `json:"name" yaml:"name"`
-		StorageAccount   string `json:"storage_acount" yaml:"storage_account"`
+		StorageAccount   string `json:"storage_account" yaml:"storage_account"`
 		StorageContainer string `json:"storage_container" yaml:"storage_container"`
 		CreateOption     string `json:"create_option" yaml:"create_option"`
 		Caching          string `json:"caching" yaml:"caching"`
@@ -51,7 +51,7 @@ type Authentication struct {
 // StorageOSDisk ...
 type StorageOSDisk struct {
 	Name             string `json:"name" yaml:"name"`
-	StorageAccount   string `json:"storage_acount" yaml:"storage_account"`
+	StorageAccount   string `json:"storage_account" yaml:"storage_account"`
 	StorageContainer string `json:"storage_container" yaml:"storage_container"`
 	CreateOption     string `json:"create_option" yaml:"create_option"`
 	Caching          string `json:"caching" yaml:"caching"`

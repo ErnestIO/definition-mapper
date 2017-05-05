@@ -38,6 +38,9 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					cvm.NetworkInterfaces = append(cvm.NetworkInterfaces, ni.Name+"-"+strconv.Itoa(i))
 				}
 
+				fmt.Println(vm.StorageOSDisk)
+				fmt.Println(vm.StorageDataDisk)
+
 				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
 				cvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
 				cvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
