@@ -90,6 +90,27 @@ func getDefinitionDetails(d map[string]interface{}) (string, string) {
 	return name, datacenter
 }
 
+func getImportFilters(m map[string]interface{}, name string, provider string) []string {
+	var filters []string
+
+	switch provider {
+	case "azure", "azure-fake":
+		d, ok := m["definition"].(map[string]interface{})
+		if !ok {
+			return filters
+		}
+
+		f, ok := d["import_filters"].([]string)
+		if ok {
+			filters = append(filters, f...)
+		}
+	default:
+		filters = append(filters, name)
+	}
+
+	return filters
+}
+
 func copyMap(m map[string]interface{}) map[string]interface{} {
 	cm := make(map[string]interface{})
 
@@ -208,7 +229,6 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 // import a provider service.
 func SubscribeImportService(body []byte) ([]byte, error) {
 	var err error
-	var filters []string
 
 	var gd map[string]interface{}
 	err = json.Unmarshal(body, &gd)
@@ -223,9 +243,9 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 
 	id, _, t, _, n := getInputDetails(body)
 
-	filters = append(filters, n)
-
 	m := providers.NewMapper(t)
+
+	filters := getImportFilters(gd, n, t)
 
 	g := m.CreateImportGraph(filters)
 	if g, err = g.Diff(graph.New()); err != nil {
