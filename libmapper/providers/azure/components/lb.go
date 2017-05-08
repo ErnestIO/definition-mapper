@@ -113,6 +113,17 @@ func (i *LB) Rebuild(g *graph.Graph) {
 		if i.FrontendIPConfigurations[x].PublicIPAddressID == "" && i.FrontendIPConfigurations[x].PublicIPAddress != "" {
 			i.FrontendIPConfigurations[x].PublicIPAddressID = templPublicIPAddressID(i.FrontendIPConfigurations[x].PublicIPAddress)
 		}
+
+		if i.FrontendIPConfigurations[x].Subnet == "" && i.FrontendIPConfigurations[x].SubnetID != "" {
+			sub := g.GetComponents().ByProviderID(i.FrontendIPConfigurations[x].SubnetID)
+			if sub != nil {
+				i.FrontendIPConfigurations[x].Subnet = sub.GetName()
+			}
+		}
+
+		if i.FrontendIPConfigurations[x].SubnetID == "" && i.FrontendIPConfigurations[x].Subnet != "" {
+			i.FrontendIPConfigurations[x].SubnetID = templSubnetID(i.FrontendIPConfigurations[x].Subnet)
+		}
 	}
 
 	i.SetDefaultVariables()
@@ -122,7 +133,12 @@ func (i *LB) Rebuild(g *graph.Graph) {
 func (i *LB) Dependencies() (deps []string) {
 	deps = append(deps, TYPERESOURCEGROUP+TYPEDELIMITER+i.ResourceGroupName)
 	for _, ip := range i.FrontendIPConfigurations {
-		deps = append(deps, TYPEPUBLICIP+TYPEDELIMITER+ip.PublicIPAddress)
+		if ip.PublicIPAddress != "" {
+			deps = append(deps, TYPEPUBLICIP+TYPEDELIMITER+ip.PublicIPAddress)
+		}
+		if ip.Subnet != "" {
+			deps = append(deps, TYPESUBNET+TYPEDELIMITER+ip.Subnet)
+		}
 	}
 	return
 }

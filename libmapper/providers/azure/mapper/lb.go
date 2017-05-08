@@ -21,9 +21,11 @@ func MapLBs(d *definition.Definition) (lbs []*components.LB) {
 			n.Location = rg.Location
 			for _, d := range lb.FrontendIPConfigurations {
 				n.FrontendIPConfigurations = append(n.FrontendIPConfigurations, ernestiolb.FrontendIPConfiguration{
-					Name:            d.Name,
-					SubnetID:        d.Subnet,
-					PublicIPAddress: d.PublicIPAddress,
+					Name:                       d.Name,
+					Subnet:                     d.Subnet,
+					PublicIPAddress:            d.PublicIPAddress,
+					PrivateIPAddress:           d.PrivateIPAddress,
+					PrivateIPAddressAllocation: d.PrivateIPAddressAllocation,
 				})
 			}
 
