@@ -137,6 +137,14 @@ func (i *VirtualMachine) Dependencies() (deps []string) {
 		deps = append(deps, TYPENETWORKINTERFACE+TYPEDELIMITER+iface)
 	}
 
+	if i.StorageOSDisk.StorageContainer != "" {
+		deps = append(deps, TYPESTORAGECONTAINER+TYPEDELIMITER+i.StorageOSDisk.StorageContainer)
+	}
+
+	if i.StorageDataDisk.StorageContainer != "" && i.StorageDataDisk.StorageContainer != i.StorageOSDisk.StorageContainer {
+		deps = append(deps, TYPESTORAGECONTAINER+TYPEDELIMITER+i.StorageDataDisk.StorageContainer)
+	}
+
 	if len(deps) < 1 {
 		return []string{TYPERESOURCEGROUP + TYPEDELIMITER + i.ResourceGroupName}
 	}
