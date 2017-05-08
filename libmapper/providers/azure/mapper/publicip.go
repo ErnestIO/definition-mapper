@@ -16,9 +16,12 @@ func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
 		for _, ip := range rg.PublicIPs {
 			n := &components.PublicIP{}
 			n.Name = ip.Name
-			n.Location = ip.Location
+			n.Location = rg.Location
 			n.ResourceGroupName = rg.Name
-			n.PublicIPAddressAllocation = ip.PublicIPAddressAllocation
+			n.PublicIPAddressAllocation = "static"
+			if ip.PublicIPAddressAllocation != "" {
+				n.PublicIPAddressAllocation = ip.PublicIPAddressAllocation
+			}
 			n.Tags = mapTags(ip.Name, d.Name)
 
 			if ip.ID != "" {

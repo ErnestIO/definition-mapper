@@ -8,6 +8,7 @@ const (
 	TYPEDELIMITER        = "::"
 	TYPENETWORKINTERFACE = "network_interface"
 	TYPEPUBLICIP         = "public_ip"
+	TYPELB               = "lb"
 	TYPERESOURCEGROUP    = "resource_group"
 	TYPESECURITYGROUP    = "security_group"
 	TYPESQLDATABASE      = "sql_database"
@@ -42,4 +43,8 @@ func templSubnetID(subnet string) string {
 
 func templSecurityGroupID(sg string) string {
 	return `$(components.#[_component_id="` + TYPESECURITYGROUP + TYPEDELIMITER + sg + `"].id)`
+}
+
+func templPublicIPAddressID(ip string) string {
+	return `$(components.#[_component_id="` + TYPEPUBLICIP + TYPEDELIMITER + ip + `"].id)`
 }

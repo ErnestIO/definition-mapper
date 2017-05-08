@@ -8,81 +8,80 @@ import (
 	"log"
 
 	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/publicip"
+	"github.com/ernestio/ernestprovider/providers/azure/lb"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
-// PublicIP : A resource group a container that holds
-// related resources for an Azure solution.
-type PublicIP struct {
+// LB : ..
+type LB struct {
 	ID string `json:"id"`
-	publicip.Event
+	lb.Event
 	Base
 }
 
 // GetID : returns the component's ID
-func (i *PublicIP) GetID() string {
+func (i *LB) GetID() string {
 	return i.ComponentID
 }
 
 // GetName returns a components name
-func (i *PublicIP) GetName() string {
+func (i *LB) GetName() string {
 	return i.Name
 }
 
 // GetProvider : returns the provider type
-func (i *PublicIP) GetProvider() string {
+func (i *LB) GetProvider() string {
 	return i.ProviderType
 }
 
 // GetProviderID returns a components provider id
-func (i *PublicIP) GetProviderID() string {
+func (i *LB) GetProviderID() string {
 	return i.ID
 }
 
 // GetType : returns the type of the component
-func (i *PublicIP) GetType() string {
+func (i *LB) GetType() string {
 	return i.ComponentType
 }
 
 // GetState : returns the state of the component
-func (i *PublicIP) GetState() string {
+func (i *LB) GetState() string {
 	return i.State
 }
 
 // SetState : sets the state of the component
-func (i *PublicIP) SetState(s string) {
+func (i *LB) SetState(s string) {
 	i.State = s
 }
 
 // GetAction : returns the action of the component
-func (i *PublicIP) GetAction() string {
+func (i *LB) GetAction() string {
 	return i.Action
 }
 
 // SetAction : Sets the action of the component
-func (i *PublicIP) SetAction(s string) {
+func (i *LB) SetAction(s string) {
 	i.Action = s
 }
 
 // GetGroup : returns the components group
-func (i *PublicIP) GetGroup() string {
+func (i *LB) GetGroup() string {
 	return ""
 }
 
 // GetTags returns a components tags
-func (i *PublicIP) GetTags() map[string]string {
+func (i *LB) GetTags() map[string]string {
 	return i.Tags
 }
 
 // GetTag returns a components tag
-func (i *PublicIP) GetTag(tag string) string {
+func (i *LB) GetTag(tag string) string {
 	return ""
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *PublicIP) Diff(c graph.Component) bool {
-	cs, ok := c.(*PublicIP)
+func (i *LB) Diff(c graph.Component) bool {
+	cs, ok := c.(*LB)
 	if ok {
 		if i.Location != cs.Location {
 			return true
@@ -93,8 +92,8 @@ func (i *PublicIP) Diff(c graph.Component) bool {
 }
 
 // Update : updates the provider returned values of a component
-func (i *PublicIP) Update(c graph.Component) {
-	cs, ok := c.(*PublicIP)
+func (i *LB) Update(c graph.Component) {
+	cs, ok := c.(*LB)
 	if ok {
 		i.ID = cs.ID
 	}
@@ -102,34 +101,49 @@ func (i *PublicIP) Update(c graph.Component) {
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
-func (i *PublicIP) Rebuild(g *graph.Graph) {
+func (i *LB) Rebuild(g *graph.Graph) {
+	for x := 0; x < len(i.FrontendIPConfigurations); x++ {
+		if i.FrontendIPConfigurations[x].PublicIPAddress == "" && i.FrontendIPConfigurations[x].PublicIPAddressID != "" {
+			ip := g.GetComponents().ByProviderID(i.FrontendIPConfigurations[x].PublicIPAddressID)
+			if ip != nil {
+				i.FrontendIPConfigurations[x].PublicIPAddress = ip.GetName()
+			}
+		}
+
+		if i.FrontendIPConfigurations[x].PublicIPAddressID == "" && i.FrontendIPConfigurations[x].PublicIPAddress != "" {
+			i.FrontendIPConfigurations[x].PublicIPAddressID = templPublicIPAddressID(i.FrontendIPConfigurations[x].PublicIPAddress)
+		}
+	}
+
 	i.SetDefaultVariables()
 }
 
 // Dependencies : returns a list of component id's upon which the component depends
-func (i *PublicIP) Dependencies() (deps []string) {
+func (i *LB) Dependencies() (deps []string) {
 	deps = append(deps, TYPERESOURCEGROUP+TYPEDELIMITER+i.ResourceGroupName)
-
+	for _, ip := range i.FrontendIPConfigurations {
+		deps = append(deps, TYPEPUBLICIP+TYPEDELIMITER+ip.PublicIPAddress)
+	}
 	return
 }
 
 // Validate : validates the components values
-func (i *PublicIP) Validate() error {
-	log.Println("Validating public IP")
+func (i *LB) Validate() error {
+	log.Println("Validating LB")
 	val := event.NewValidator()
 	return val.Validate(i)
 }
 
 // IsStateful : returns true if the component needs to be actioned to be removed.
-func (i *PublicIP) IsStateful() bool {
+func (i *LB) IsStateful() bool {
 	return true
 }
 
 // SetDefaultVariables : sets up the default template variables for a component
-func (i *PublicIP) SetDefaultVariables() {
+func (i *LB) SetDefaultVariables() {
 	i.ProviderType = PROVIDERTYPE
-	i.ComponentType = TYPEPUBLICIP
-	i.ComponentID = TYPEPUBLICIP + TYPEDELIMITER + i.Name
+	i.ComponentType = TYPELB
+	i.ComponentID = TYPELB + TYPEDELIMITER + i.Name
 	i.DatacenterName = DATACENTERNAME
 	i.DatacenterType = DATACENTERTYPE
 	i.DatacenterRegion = DATACENTERREGION

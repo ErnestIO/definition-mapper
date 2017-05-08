@@ -16,7 +16,7 @@ import (
 )
 
 // SUPPORTEDCOMPONENTS represents all component types supported by ernest
-var SUPPORTEDCOMPONENTS = []string{"network_interface", "public_ip", "resource_group", "security_group", "sql_database", "sql_server", "storage_account", "storage_container", "subnet", "virtual_machine", "virtual_network"}
+var SUPPORTEDCOMPONENTS = []string{"network_interface", "public_ip", "resource_group", "security_group", "sql_database", "sql_server", "storage_account", "storage_container", "subnet", "virtual_machine", "virtual_network", "lb"}
 
 // Mapper : implements the generic mapper structure
 type Mapper struct{}
@@ -110,6 +110,9 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 		// Public IPs
 		d.ResourceGroups[i].PublicIPs = MapDefinitionPublicIPs(g, &d.ResourceGroups[i])
 
+		// LBs
+		d.ResourceGroups[i].LBs = MapDefinitionLBs(g, &d.ResourceGroups[i])
+
 		// Security Groups
 		d.ResourceGroups[i].SecurityGroups = MapDefinitionSecurityGroups(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].SQLServers = MapDefinitionSQLServers(g, &d.ResourceGroups[i])
@@ -153,6 +156,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.NetworkInterface{}
 		case "public_ip":
 			c = &components.PublicIP{}
+		case "lb":
+			c = &components.LB{}
 		case "security_group":
 			c = &components.SecurityGroup{}
 		case "virtual_network":
@@ -270,6 +275,12 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 
 	for _, ip := range MapPublicIPs(d) {
 		if err := g.AddComponent(ip); err != nil {
+			return err
+		}
+	}
+
+	for _, lb := range MapLBs(d) {
+		if err := g.AddComponent(lb); err != nil {
 			return err
 		}
 	}
