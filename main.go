@@ -95,14 +95,18 @@ func getImportFilters(m map[string]interface{}, name string, provider string) []
 
 	switch provider {
 	case "azure", "azure-fake":
-		d, ok := m["definition"].(map[string]interface{})
+		d, ok := m["service"].(map[string]interface{})
 		if !ok {
 			return filters
 		}
 
-		f, ok := d["import_filters"].([]string)
-		if ok {
-			filters = append(filters, f...)
+		f, ok := d["import_filters"].([]interface{})
+		if !ok {
+			return filters
+		}
+		for _, filter := range f {
+			fil := filter.(string)
+			filters = append(filters, fil)
 		}
 	default:
 		filters = append(filters, name)

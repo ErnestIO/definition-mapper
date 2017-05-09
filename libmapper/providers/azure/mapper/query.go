@@ -7,11 +7,11 @@ package mapper
 import "github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 
 // MapQuery returns a new query
-func MapQuery(ctype string, values map[string]string) *components.Query {
+func MapQuery(ctype string, rg string) *components.Query {
 	q := &components.Query{
-		ComponentType: ctype,
-		Action:        "find",
-		Tags:          values,
+		ComponentType:     ctype,
+		Action:            "find",
+		ResourceGroupName: rg,
 	}
 
 	q.SetDefaultVariables()

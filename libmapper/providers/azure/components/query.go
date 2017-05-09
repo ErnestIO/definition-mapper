@@ -10,20 +10,22 @@ import (
 
 // Query : mapping of an query component
 type Query struct {
-	ProviderType     string            `json:"_provider"`
-	ComponentType    string            `json:"_component"`
-	ComponentID      string            `json:"_component_id"`
-	State            string            `json:"_state"`
-	Action           string            `json:"_action"`
-	Tags             map[string]string `json:"tags"`
-	DatacenterType   string            `json:"datacenter_type,omitempty"`
-	DatacenterName   string            `json:"datacenter_name,omitempty"`
-	DatacenterRegion string            `json:"datacenter_region"`
-	ClientID         string            `json:"azure_client_id"`
-	ClientSecret     string            `json:"azure_client_secret"`
-	TenantID         string            `json:"azure_tenant_id"`
-	SubscriptionID   string            `json:"azure_subscription_id"`
-	Environment      string            `json:"environment"`
+	ID                string            `json:"id"`
+	ProviderType      string            `json:"_provider"`
+	ComponentType     string            `json:"_component"`
+	ComponentID       string            `json:"_component_id"`
+	State             string            `json:"_state"`
+	Action            string            `json:"_action"`
+	ResourceGroupName string            `json:"resource_group_name"`
+	Tags              map[string]string `json:"tags"`
+	DatacenterType    string            `json:"datacenter_type,omitempty"`
+	DatacenterName    string            `json:"datacenter_name,omitempty"`
+	DatacenterRegion  string            `json:"datacenter_region"`
+	ClientID          string            `json:"azure_client_id"`
+	ClientSecret      string            `json:"azure_client_secret"`
+	TenantID          string            `json:"azure_tenant_id"`
+	SubscriptionID    string            `json:"azure_subscription_id"`
+	Environment       string            `json:"environment"`
 }
 
 // GetID : returns the component's ID
@@ -118,7 +120,7 @@ func (q *Query) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (q *Query) SetDefaultVariables() {
-	q.ComponentID = q.ComponentType + TYPEDELIMITER + "query"
+	q.ComponentID = q.ComponentType + TYPEDELIMITER + "query" + q.ResourceGroupName
 	q.ProviderType = PROVIDERTYPE
 	q.DatacenterType = DATACENTERTYPE
 	q.DatacenterRegion = DATACENTERREGION
