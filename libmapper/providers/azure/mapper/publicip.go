@@ -57,26 +57,3 @@ func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
 
 	return
 }
-
-// MapDefinitionPublicIPs : ...
-/*
-func MapDefinitionPublicIPs(g *graph.Graph, rg *definition.ResourceGroup) (ips []definition.PublicIP) {
-	for _, c := range g.GetComponents().ByType("public_ip") {
-		ip := c.(*components.PublicIP)
-
-		if ip.ResourceGroupName != rg.Name {
-			continue
-		}
-
-		nIP := definition.PublicIP{
-			ID:       ip.GetProviderID(),
-			Name:     ip.Name,
-			Location: ip.Location,
-		}
-
-		ips = append(ips, nIP)
-	}
-
-	return
-}
-*/
