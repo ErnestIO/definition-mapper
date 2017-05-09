@@ -54,6 +54,22 @@ func MapDefinitionVirtualNetworks(g *graph.Graph, rg *definition.ResourceGroup) 
 			DNSServers:    n.DNSServerNames,
 		}
 
+		for _, c := range g.GetComponents().ByType("subnet") {
+			s := c.(*components.Subnet)
+
+			if s.ResourceGroupName != rg.Name && s.VirtualNetworkName != dn.Name {
+				continue
+			}
+
+			ds := definition.Subnet{
+				Name:          s.Name,
+				SecurityGroup: s.NetworkSecurityGroup,
+				AddressPrefix: s.AddressPrefix,
+			}
+
+			dn.Subnets = append(dn.Subnets, ds)
+		}
+
 		networks = append(networks, dn)
 	}
 

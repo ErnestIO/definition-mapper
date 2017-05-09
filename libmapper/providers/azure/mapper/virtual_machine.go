@@ -38,20 +38,21 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					cvm.NetworkInterfaces = append(cvm.NetworkInterfaces, ni.Name+"-"+strconv.Itoa(i))
 				}
 
-				fmt.Println(vm.StorageOSDisk)
-				fmt.Println(vm.StorageDataDisk)
-
 				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
 				cvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
 				cvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 				cvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
 				cvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI
 				cvm.StorageOSDisk.VhdURI = fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s.vhd", vm.StorageOSDisk.StorageAccount, vm.StorageOSDisk.StorageContainer, vm.StorageOSDisk.Name+"-"+strconv.Itoa(i))
+				cvm.StorageOSDisk.StorageAccount = vm.StorageOSDisk.StorageAccount
+				cvm.StorageOSDisk.StorageContainer = vm.StorageOSDisk.StorageContainer
 
 				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
 				cvm.StorageDataDisk.Size = vm.StorageDataDisk.DiskSizeGB
-				cvm.StorageDataDisk.VhdURI = fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s.vhd", vm.StorageDataDisk.StorageAccount, vm.StorageDataDisk.StorageContainer, vm.StorageDataDisk.Name+"-"+strconv.Itoa(i))
 				cvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
+				cvm.StorageDataDisk.VhdURI = fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s.vhd", vm.StorageDataDisk.StorageAccount, vm.StorageDataDisk.StorageContainer, vm.StorageDataDisk.Name+"-"+strconv.Itoa(i))
+				cvm.StorageDataDisk.StorageAccount = vm.StorageDataDisk.StorageAccount
+				cvm.StorageDataDisk.StorageContainer = vm.StorageDataDisk.StorageContainer
 
 				cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
 				cvm.DeleteOSDiskOnTermination = vm.DeleteOSDiskOnTermination
@@ -158,6 +159,41 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		dvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
 		dvm.Authentication.AdminUsername = vm.OSProfile.AdminPassword
 		dvm.Authentication.AdminPassword = vm.OSProfile.AdminPassword
+
+		for _, cn := range g.GetComponents().ByType("network_interface") {
+			ni := cn.(*components.NetworkInterface)
+
+			if ni.VirtualMachineID != vm.ID {
+				continue
+			}
+
+			nNi := definition.NetworkInterface{
+				ID:                   ni.GetProviderID(),
+				Name:                 ni.Name,
+				SecurityGroup:        ni.NetworkSecurityGroup,
+				DNSServers:           ni.DNSServers,
+				InternalDNSNameLabel: ni.InternalDNSNameLabel,
+			}
+
+			for _, ip := range ni.IPConfigurations {
+				nIP := definition.IPConfiguration{
+					Name:                       ip.Name,
+					Subnet:                     ip.Subnet,
+					PrivateIPAddress:           ip.PrivateIPAddress,
+					PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
+				}
+				if ip.PublicIPAddressID != "" {
+					cpip := g.GetComponents().ByProviderID(ip.PublicIPAddress)
+					if cpip != nil {
+						pip := cpip.(*components.PublicIP)
+						nIP.PublicIPAddressAllocation = pip.PublicIPAddressAllocation
+					}
+				}
+				nNi.IPConfigurations = append(nNi.IPConfigurations, nIP)
+			}
+
+			dvm.NetworkInterfaces = append(dvm.NetworkInterfaces, nNi)
+		}
 
 		vms = append(vms, dvm)
 	}

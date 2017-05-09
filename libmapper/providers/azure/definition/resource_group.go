@@ -12,7 +12,6 @@ type ResourceGroup struct {
 	Tags            map[string]string `json:"tags" yaml:"tags"`
 	VirtualNetworks []VirtualNetwork  `json:"virtual_networks" yaml:"virtual_network"`
 	SecurityGroups  []SecurityGroup   `json:"security_groups" yaml:"security_groups"`
-	PublicIPs       []PublicIP        `json:"public_ips" yaml:"public_ips"`
 	LBs             []LB              `json:"loadbalancers" yaml:"loadbalancers"`
 	VirtualMachines []VirtualMachine  `json:"virtual_machines" yaml:"virtual_machines"`
 	StorageAccounts []StorageAccount  `json:"storage_accounts" yaml:"storage_accounts"`

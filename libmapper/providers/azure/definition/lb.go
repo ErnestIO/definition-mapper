@@ -17,7 +17,6 @@ type LB struct {
 type FrontendIPConfiguration struct {
 	Name                       string `json:"name" validate:"required" yaml:"name"`
 	Subnet                     string `json:"subnet" yaml:"subnet"`
-	PublicIPAddress            string `json:"public_ip_address" yaml:"public_ip_address"`
 	PublicIPAddressAllocation  string `json:"public_ip_address_allocation" yaml:"public_ip_address_allocation"`
 	PrivateIPAddress           string `json:"private_ip_address" yaml:"private_ip_address"`
 	PrivateIPAddressAllocation string `json:"private_ip_address_allocation" yaml:"private_ip_address_allocation"`

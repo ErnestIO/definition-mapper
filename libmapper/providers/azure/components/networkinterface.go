@@ -135,7 +135,6 @@ func (i *NetworkInterface) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *NetworkInterface) Rebuild(g *graph.Graph) {
-
 	for x := 0; x < len(i.IPConfigurations); x++ {
 		if i.IPConfigurations[x].Subnet == "" && i.IPConfigurations[x].SubnetID != "" {
 			s := g.GetComponents().ByProviderID(i.IPConfigurations[x].SubnetID)
@@ -146,6 +145,17 @@ func (i *NetworkInterface) Rebuild(g *graph.Graph) {
 
 		if i.IPConfigurations[x].SubnetID == "" && i.IPConfigurations[x].Subnet != "" {
 			i.IPConfigurations[x].SubnetID = templSubnetID(i.IPConfigurations[x].Subnet)
+		}
+
+		if i.IPConfigurations[x].PublicIPAddress == "" && i.IPConfigurations[x].PublicIPAddressID != "" {
+			ip := g.GetComponents().ByProviderID(i.IPConfigurations[x].SubnetID)
+			if ip != nil {
+				i.IPConfigurations[x].PublicIPAddress = ip.GetName()
+			}
+		}
+
+		if i.IPConfigurations[x].PublicIPAddressID == "" && i.IPConfigurations[x].PublicIPAddress != "" {
+			i.IPConfigurations[x].PublicIPAddressID = templPublicIPAddressID(i.IPConfigurations[x].PublicIPAddress)
 		}
 	}
 
@@ -161,6 +171,9 @@ func (i *NetworkInterface) Dependencies() (deps []string) {
 	for _, config := range i.IPConfigurations {
 		if config.Subnet != "" {
 			deps = append(deps, TYPESUBNET+TYPEDELIMITER+config.Subnet)
+		}
+		if config.PublicIPAddress != "" {
+			deps = append(deps, TYPEPUBLICIP+TYPEDELIMITER+config.PublicIPAddress)
 		}
 	}
 

@@ -7,7 +7,6 @@ package mapper
 import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
-	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // MapSQLDatabases ...
@@ -41,36 +40,6 @@ func MapSQLDatabases(d *definition.Definition) (ips []*components.SQLDatabase) {
 				ips = append(ips, n)
 			}
 		}
-	}
-
-	return
-}
-
-// MapDefinitionSQLDatabases : ...
-func MapDefinitionSQLDatabases(g *graph.Graph, rg *definition.ResourceGroup, server *definition.SQLServer) (ss []definition.SQLDatabase) {
-	for _, c := range g.GetComponents().ByType("sql_server") {
-		sql := c.(*components.SQLDatabase)
-
-		if sql.ResourceGroupName != rg.Name && sql.ServerName != server.Name {
-			continue
-		}
-
-		n := definition.SQLDatabase{
-			ID:                            sql.GetProviderID(),
-			Name:                          sql.Name,
-			CreateMode:                    sql.CreateMode,
-			SourceDatabaseID:              sql.SourceDatabaseID,
-			RestorePointInTime:            sql.RestorePointInTime,
-			Edition:                       sql.Edition,
-			Collation:                     sql.Collation,
-			MaxSizeBytes:                  sql.MaxSizeBytes,
-			RequestedServiceObjectiveID:   sql.RequestedServiceObjectiveID,
-			RequestedServiceObjectiveName: sql.RequestedServiceObjectiveName,
-			SourceDatabaseDeletionData:    sql.SourceDatabaseDeletionData,
-			ElasticPoolName:               sql.ElasticPoolName,
-		}
-
-		ss = append(ss, n)
 	}
 
 	return

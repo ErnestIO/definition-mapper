@@ -20,7 +20,7 @@ type NetworkInterface struct {
 type IPConfiguration struct {
 	Name                       string `json:"name" yaml:"name"`
 	Subnet                     string `json:"subnet" yaml:"subnet"`
+	PublicIPAddressAllocation  string `json:"public_ip_address_allocation" yaml:"public_ip_address_allocation"`
 	PrivateIPAddressAllocation string `json:"private_ip_address_allocation" yaml:"private_ip_address_allocation"`
 	PrivateIPAddress           string `json:"private_ip_address" yaml:"private_ip_address"`
-	PublicIPAddressID          string `json:"public_ip_address_id" yaml:"public_ip_address_id"`
 }

@@ -5,7 +5,6 @@
 package mapper
 
 import (
-	"fmt"
 	"net"
 	"strconv"
 	"strings"
@@ -13,7 +12,6 @@ import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
 	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
-	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // MapNetworkInterfaces ...
@@ -24,11 +22,8 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 				var addresses []net.IP
 
 				for _, config := range ni.IPConfigurations {
-					fmt.Println(config)
 					addresses = append(addresses, net.ParseIP(config.PrivateIPAddress).To4())
 				}
-
-				fmt.Println(addresses)
 
 				for i := 1; i < vm.Count+1; i++ {
 					cv := &components.NetworkInterface{}
@@ -47,16 +42,11 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 						nIP := networkinterface.IPConfiguration{
 							Name:   ip.Name,
 							Subnet: subnet,
-
 							PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
-							PublicIPAddress:            ip.PublicIPAddressID,
 						}
 						if nIP.PrivateIPAddressAllocation == "" {
 							nIP.PrivateIPAddressAllocation = "static"
 						}
-
-						fmt.Println(addresses)
-						fmt.Println(len(addresses))
 
 						if nIP.PrivateIPAddressAllocation == "static" {
 							nIP.PrivateIPAddress = addresses[x].String()
@@ -75,40 +65,6 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 				}
 			}
 		}
-	}
-
-	return
-}
-
-// MapDefinitionNetworkInterfaces : ...
-func MapDefinitionNetworkInterfaces(g *graph.Graph, vm *definition.VirtualMachine) (nis []definition.NetworkInterface) {
-	for _, c := range g.GetComponents().ByType("network_interface") {
-		ni := c.(*components.NetworkInterface)
-
-		if ni.VirtualMachineID != components.TYPEVIRTUALMACHINE+components.TYPEDELIMITER+vm.Name {
-			continue
-		}
-
-		nNi := definition.NetworkInterface{
-			ID:                   ni.GetProviderID(),
-			Name:                 ni.Name,
-			SecurityGroup:        ni.NetworkSecurityGroup,
-			DNSServers:           ni.DNSServers,
-			InternalDNSNameLabel: ni.InternalDNSNameLabel,
-		}
-
-		for _, ip := range ni.IPConfigurations {
-			nIP := definition.IPConfiguration{
-				Name:                       ip.Name,
-				Subnet:                     ip.Subnet,
-				PrivateIPAddress:           ip.PrivateIPAddress,
-				PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
-				PublicIPAddressID:          ip.PublicIPAddress,
-			}
-			nNi.IPConfigurations = append(nNi.IPConfigurations, nIP)
-		}
-
-		nis = append(nis, nNi)
 	}
 
 	return
