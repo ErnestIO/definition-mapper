@@ -39,21 +39,46 @@ func MapSQLServers(d *definition.Definition) (ips []*components.SQLServer) {
 // MapDefinitionSQLServers : ...
 func MapDefinitionSQLServers(g *graph.Graph, rg *definition.ResourceGroup) (ss []definition.SQLServer) {
 	for _, c := range g.GetComponents().ByType("sql_server") {
-		sql := c.(*components.SQLServer)
+		sqls := c.(*components.SQLServer)
 
-		if sql.ResourceGroupName != rg.Name {
+		if sqls.ResourceGroupName != rg.Name {
 			continue
 		}
 
-		n := definition.SQLServer{
-			ID:                         sql.GetProviderID(),
-			Name:                       sql.Name,
-			Version:                    sql.Version,
-			AdministratorLogin:         sql.AdministratorLogin,
-			AdministratorLoginPassword: sql.AdministratorLoginPassword,
+		dsqls := definition.SQLServer{
+			ID:                         sqls.GetProviderID(),
+			Name:                       sqls.Name,
+			Version:                    sqls.Version,
+			AdministratorLogin:         sqls.AdministratorLogin,
+			AdministratorLoginPassword: sqls.AdministratorLoginPassword,
 		}
 
-		ss = append(ss, n)
+		for _, cd := range g.GetComponents().ByType("sql_database") {
+			sqld := cd.(*components.SQLDatabase)
+
+			if sqld.ResourceGroupName != rg.Name && sqld.ServerName != dsqls.Name {
+				continue
+			}
+
+			dsqld := definition.SQLDatabase{
+				ID:                            sqld.GetProviderID(),
+				Name:                          sqld.Name,
+				CreateMode:                    sqld.CreateMode,
+				SourceDatabaseID:              sqld.SourceDatabaseID,
+				RestorePointInTime:            sqld.RestorePointInTime,
+				Edition:                       sqld.Edition,
+				Collation:                     sqld.Collation,
+				MaxSizeBytes:                  sqld.MaxSizeBytes,
+				RequestedServiceObjectiveID:   sqld.RequestedServiceObjectiveID,
+				RequestedServiceObjectiveName: sqld.RequestedServiceObjectiveName,
+				SourceDatabaseDeletionData:    sqld.SourceDatabaseDeletionData,
+				ElasticPoolName:               sqld.ElasticPoolName,
+			}
+
+			dsqls.Databases = append(dsqls.Databases, dsqld)
+		}
+
+		ss = append(ss, dsqls)
 	}
 
 	return

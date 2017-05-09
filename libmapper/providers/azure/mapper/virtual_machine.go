@@ -160,6 +160,41 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		dvm.Authentication.AdminUsername = vm.OSProfile.AdminPassword
 		dvm.Authentication.AdminPassword = vm.OSProfile.AdminPassword
 
+		for _, cn := range g.GetComponents().ByType("network_interface") {
+			ni := cn.(*components.NetworkInterface)
+
+			if ni.VirtualMachineID != vm.ID {
+				continue
+			}
+
+			nNi := definition.NetworkInterface{
+				ID:                   ni.GetProviderID(),
+				Name:                 ni.Name,
+				SecurityGroup:        ni.NetworkSecurityGroup,
+				DNSServers:           ni.DNSServers,
+				InternalDNSNameLabel: ni.InternalDNSNameLabel,
+			}
+
+			for _, ip := range ni.IPConfigurations {
+				nIP := definition.IPConfiguration{
+					Name:                       ip.Name,
+					Subnet:                     ip.Subnet,
+					PrivateIPAddress:           ip.PrivateIPAddress,
+					PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
+				}
+				if ip.PublicIPAddressID != "" {
+					cpip := g.GetComponents().ByProviderID(ip.PublicIPAddress)
+					if cpip != nil {
+						pip := cpip.(*components.PublicIP)
+						nIP.PublicIPAddressAllocation = pip.PublicIPAddressAllocation
+					}
+				}
+				nNi.IPConfigurations = append(nNi.IPConfigurations, nIP)
+			}
+
+			dvm.NetworkInterfaces = append(dvm.NetworkInterfaces, nNi)
+		}
+
 		vms = append(vms, dvm)
 	}
 

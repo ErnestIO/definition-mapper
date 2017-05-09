@@ -5,32 +5,53 @@
 package mapper
 
 import (
+	"strconv"
+
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
-	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // MapPublicIPs ...
 func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
 	for _, rg := range d.ResourceGroups {
-		for _, ip := range rg.PublicIPs {
-			n := &components.PublicIP{}
-			n.Name = ip.Name
-			n.Location = rg.Location
-			n.ResourceGroupName = rg.Name
-			n.PublicIPAddressAllocation = "static"
-			if ip.PublicIPAddressAllocation != "" {
-				n.PublicIPAddressAllocation = ip.PublicIPAddressAllocation
+		for i, vm := range rg.VirtualMachines {
+			for _, iface := range vm.NetworkInterfaces {
+				for _, config := range iface.IPConfigurations {
+					if config.PublicIPAddressAllocation == "" {
+						continue
+					}
+
+					n := &components.PublicIP{}
+					n.Name = config.Name + "-" + strconv.Itoa(i)
+					n.Location = rg.Location
+					n.ResourceGroupName = rg.Name
+					n.PublicIPAddressAllocation = config.PublicIPAddressAllocation
+					n.Tags = mapTags(n.Name, d.Name)
+
+					n.SetDefaultVariables()
+
+					ips = append(ips, n)
+				}
 			}
-			n.Tags = mapTags(ip.Name, d.Name)
+		}
 
-			if ip.ID != "" {
-				n.SetAction("none")
+		for _, lb := range rg.LBs {
+			for _, config := range lb.FrontendIPConfigurations {
+				if config.PublicIPAddressAllocation == "" {
+					continue
+				}
+
+				n := &components.PublicIP{}
+				n.Name = lb.Name
+				n.Location = rg.Location
+				n.ResourceGroupName = rg.Name
+				n.PublicIPAddressAllocation = config.PublicIPAddressAllocation
+				n.Tags = mapTags(config.Name, d.Name)
+
+				n.SetDefaultVariables()
+
+				ips = append(ips, n)
 			}
-
-			n.SetDefaultVariables()
-
-			ips = append(ips, n)
 		}
 	}
 
@@ -38,6 +59,7 @@ func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
 }
 
 // MapDefinitionPublicIPs : ...
+/*
 func MapDefinitionPublicIPs(g *graph.Graph, rg *definition.ResourceGroup) (ips []definition.PublicIP) {
 	for _, c := range g.GetComponents().ByType("public_ip") {
 		ip := c.(*components.PublicIP)
@@ -57,3 +79,4 @@ func MapDefinitionPublicIPs(g *graph.Graph, rg *definition.ResourceGroup) (ips [
 
 	return
 }
+*/

@@ -7,7 +7,6 @@ package mapper
 import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
-	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // MapSubnets ...
@@ -27,27 +26,6 @@ func MapSubnets(d *definition.Definition) (subnets []*components.Subnet) {
 				subnets = append(subnets, cs)
 			}
 		}
-	}
-
-	return subnets
-}
-
-// MapDefinitionSubnets : ...
-func MapDefinitionSubnets(g *graph.Graph, rg *definition.ResourceGroup, vn *definition.VirtualNetwork) (subnets []definition.Subnet) {
-	for _, c := range g.GetComponents().ByType("subnet") {
-		s := c.(*components.Subnet)
-
-		if s.ResourceGroupName != rg.Name && s.VirtualNetworkName != vn.Name {
-			continue
-		}
-
-		ds := definition.Subnet{
-			Name:          s.Name,
-			SecurityGroup: s.NetworkSecurityGroup,
-			AddressPrefix: s.AddressPrefix,
-		}
-
-		subnets = append(subnets, ds)
 	}
 
 	return subnets

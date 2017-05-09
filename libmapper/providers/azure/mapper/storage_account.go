@@ -39,21 +39,37 @@ func MapStorageAccounts(d *definition.Definition) (ips []*components.StorageAcco
 // MapDefinitionStorageAccounts : ...
 func MapDefinitionStorageAccounts(g *graph.Graph, rg *definition.ResourceGroup) (sa []definition.StorageAccount) {
 	for _, c := range g.GetComponents().ByType("storage_account") {
-		n := c.(*components.StorageAccount)
+		ca := c.(*components.StorageAccount)
 
-		if n.ResourceGroupName != rg.Name {
+		if ca.ResourceGroupName != rg.Name {
 			continue
 		}
 
-		new := definition.StorageAccount{
-			ID:                   n.GetProviderID(),
-			Name:                 n.Name,
-			AccountKind:          n.AccountKind,
-			AccountType:          n.AccountType,
-			EnableBlobEncryption: n.EnableBlobEncryption,
+		daccount := definition.StorageAccount{
+			ID:                   ca.GetProviderID(),
+			Name:                 ca.Name,
+			AccountKind:          ca.AccountKind,
+			AccountType:          ca.AccountType,
+			EnableBlobEncryption: ca.EnableBlobEncryption,
 		}
 
-		sa = append(sa, new)
+		for _, cx := range g.GetComponents().ByType("storage_container") {
+			cc := cx.(*components.StorageContainer)
+
+			if cc.ResourceGroupName != rg.Name && cc.StorageAccountName != daccount.Name {
+				continue
+			}
+
+			dcontainer := definition.StorageContainer{
+				ID:         cc.GetProviderID(),
+				Name:       cc.Name,
+				AccessType: cc.ContainerAccessType,
+			}
+
+			daccount.Containers = append(daccount.Containers, dcontainer)
+		}
+
+		sa = append(sa, daccount)
 	}
 
 	return

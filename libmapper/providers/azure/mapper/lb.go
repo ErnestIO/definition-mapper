@@ -23,7 +23,6 @@ func MapLBs(d *definition.Definition) (lbs []*components.LB) {
 				n.FrontendIPConfigurations = append(n.FrontendIPConfigurations, ernestiolb.FrontendIPConfiguration{
 					Name:                       d.Name,
 					Subnet:                     d.Subnet,
-					PublicIPAddress:            d.PublicIPAddress,
 					PrivateIPAddress:           d.PrivateIPAddress,
 					PrivateIPAddressAllocation: d.PrivateIPAddressAllocation,
 				})
@@ -52,13 +51,30 @@ func MapDefinitionLBs(g *graph.Graph, rg *definition.ResourceGroup) (lbs []defin
 			continue
 		}
 
-		nLB := definition.LB{
+		dlb := definition.LB{
 			ID:       lb.GetProviderID(),
 			Name:     lb.Name,
 			Location: lb.Location,
 		}
 
-		lbs = append(lbs, nLB)
+		for _, config := range lb.FrontendIPConfigurations {
+			dconfig := definition.FrontendIPConfiguration{
+				Name:                       config.Name,
+				PrivateIPAddress:           config.PrivateIPAddress,
+				PrivateIPAddressAllocation: config.PrivateIPAddressAllocation,
+				Subnet: config.Subnet,
+			}
+			if config.PublicIPAddressID != "" {
+				cpip := g.GetComponents().ByProviderID(config.PublicIPAddress)
+				if cpip != nil {
+					pip := cpip.(*components.PublicIP)
+					dconfig.PublicIPAddressAllocation = pip.PublicIPAddressAllocation
+				}
+			}
+			dlb.FrontendIPConfigurations = append(dlb.FrontendIPConfigurations, dconfig)
+		}
+
+		lbs = append(lbs, dlb)
 	}
 
 	return
