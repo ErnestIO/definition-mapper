@@ -120,7 +120,7 @@ func (q *Query) IsStateful() bool {
 
 // SetDefaultVariables : sets up the default template variables for a component
 func (q *Query) SetDefaultVariables() {
-	q.ComponentID = q.ComponentType + TYPEDELIMITER + "query" + q.ResourceGroupName
+	q.ComponentID = q.ComponentType[0:len(q.ComponentType)-1] + TYPEDELIMITER + "query" + q.ResourceGroupName
 	q.ProviderType = PROVIDERTYPE
 	q.DatacenterType = DATACENTERTYPE
 	q.DatacenterRegion = DATACENTERREGION
