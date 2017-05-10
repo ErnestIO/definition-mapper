@@ -231,6 +231,9 @@ func getStorageDetails(uri string) (string, string, string) {
 	u, err := url.Parse(uri)
 	if err == nil {
 		parts := strings.Split(u.Path, "/")
+		if len(parts) < 3 {
+			return name, account, container
+		}
 		name = strings.Replace(parts[2], ".vhd", "", 1)
 		container = parts[1]
 		account = strings.Split(u.Host, ".")[0]
