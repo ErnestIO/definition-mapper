@@ -14,23 +14,25 @@ import (
 // MapPublicIPs ...
 func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
 	for _, rg := range d.ResourceGroups {
-		for i, vm := range rg.VirtualMachines {
+		for _, vm := range rg.VirtualMachines {
 			for _, iface := range vm.NetworkInterfaces {
-				for _, config := range iface.IPConfigurations {
+				for x, config := range iface.IPConfigurations {
 					if config.PublicIPAddressAllocation == "" {
 						continue
 					}
 
-					n := &components.PublicIP{}
-					n.Name = config.Name + "-" + strconv.Itoa(i)
-					n.Location = rg.Location
-					n.ResourceGroupName = rg.Name
-					n.PublicIPAddressAllocation = config.PublicIPAddressAllocation
-					n.Tags = mapTags(n.Name, d.Name)
+					for i := 1; i < vm.Count+1; i++ {
+						n := &components.PublicIP{}
+						n.Name = iface.Name + "-" + strconv.Itoa(i) + "-" + strconv.Itoa(x+1)
+						n.Location = rg.Location
+						n.ResourceGroupName = rg.Name
+						n.PublicIPAddressAllocation = config.PublicIPAddressAllocation
+						n.Tags = mapTags(n.Name, d.Name)
 
-					n.SetDefaultVariables()
+						n.SetDefaultVariables()
 
-					ips = append(ips, n)
+						ips = append(ips, n)
+					}
 				}
 			}
 		}

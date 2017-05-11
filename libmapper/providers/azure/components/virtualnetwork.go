@@ -117,7 +117,9 @@ func (vn *VirtualNetwork) Dependencies() (deps []string) {
 			deps = append(deps, TYPESECURITYGROUP+TYPEDELIMITER+vn.Subnets[x].SecurityGroupName)
 		}
 	}
-	deps = append(deps, TYPERESOURCEGROUP+TYPEDELIMITER+vn.ResourceGroupName)
+	if len(deps) < 1 {
+		deps = append(deps, TYPERESOURCEGROUP+TYPEDELIMITER+vn.ResourceGroupName)
+	}
 	return
 }
 
