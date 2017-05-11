@@ -54,7 +54,7 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 						}
 
 						if ip.PublicIPAddressAllocation != "" {
-							nIP.PublicIPAddress = cv.Name + "-" + strconv.Itoa(x+1)
+							nIP.PublicIPAddress = cv.Name + "-" + ip.Name
 						}
 
 						cv.IPConfigurations = append(cv.IPConfigurations, nIP)
