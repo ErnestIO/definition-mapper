@@ -43,7 +43,7 @@ type VirtualMachine struct {
 // Authentication ...
 type Authentication struct {
 	AdminUsername                 string            `json:"admin_username" yaml:"admin_username"`
-	AdminPassword                 string            `json:"admin_password" yaml:"ssh_keys"`
+	AdminPassword                 string            `json:"admin_password" yaml:"admin_password"`
 	SSHKeys                       map[string]string `json:"ssh_keys" yaml:"ssh_keys"`
 	DisablePasswordAuthentication bool              `json:"disable_password_authentication" yaml:"disable_password_authentication"`
 }
