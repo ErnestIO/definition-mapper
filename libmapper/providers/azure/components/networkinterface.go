@@ -135,6 +135,17 @@ func (i *NetworkInterface) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *NetworkInterface) Rebuild(g *graph.Graph) {
+	if i.NetworkSecurityGroup == "" && i.NetworkSecurityGroupID != "" {
+		sg := g.GetComponents().ByProviderID(i.NetworkSecurityGroupID)
+		if sg != nil {
+			i.NetworkSecurityGroup = sg.GetName()
+		}
+	}
+
+	if i.NetworkSecurityGroupID == "" && i.NetworkSecurityGroup != "" {
+		i.NetworkSecurityGroupID = templSecurityGroupID(i.NetworkSecurityGroup)
+	}
+
 	for x := 0; x < len(i.IPConfigurations); x++ {
 		if i.IPConfigurations[x].Subnet == "" && i.IPConfigurations[x].SubnetID != "" {
 			s := g.GetComponents().ByProviderID(i.IPConfigurations[x].SubnetID)
