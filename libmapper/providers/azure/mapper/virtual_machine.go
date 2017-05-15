@@ -191,7 +191,7 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 					PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
 				}
 				if ip.PublicIPAddressID != "" {
-					cpip := g.GetComponents().ByProviderID(ip.PublicIPAddress)
+					cpip := g.GetComponents().ByProviderID(ip.PublicIPAddressID)
 					if cpip != nil {
 						pip := cpip.(*components.PublicIP)
 						nIP.PublicIPAddressAllocation = pip.PublicIPAddressAllocation

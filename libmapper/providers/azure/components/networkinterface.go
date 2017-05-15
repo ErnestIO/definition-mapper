@@ -159,7 +159,7 @@ func (i *NetworkInterface) Rebuild(g *graph.Graph) {
 		}
 
 		if i.IPConfigurations[x].PublicIPAddress == "" && i.IPConfigurations[x].PublicIPAddressID != "" {
-			ip := g.GetComponents().ByProviderID(i.IPConfigurations[x].SubnetID)
+			ip := g.GetComponents().ByProviderID(i.IPConfigurations[x].PublicIPAddressID)
 			if ip != nil {
 				i.IPConfigurations[x].PublicIPAddress = ip.GetName()
 			}

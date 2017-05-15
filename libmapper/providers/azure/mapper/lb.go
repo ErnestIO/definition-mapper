@@ -65,7 +65,7 @@ func MapDefinitionLBs(g *graph.Graph, rg *definition.ResourceGroup) (lbs []defin
 				Subnet: config.Subnet,
 			}
 			if config.PublicIPAddressID != "" {
-				cpip := g.GetComponents().ByProviderID(config.PublicIPAddress)
+				cpip := g.GetComponents().ByProviderID(config.PublicIPAddressID)
 				if cpip != nil {
 					pip := cpip.(*components.PublicIP)
 					dconfig.PublicIPAddressAllocation = pip.PublicIPAddressAllocation
