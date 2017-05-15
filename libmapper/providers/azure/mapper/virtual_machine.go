@@ -93,7 +93,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					Content:     vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Content,
 				})
 
-				cvm.Tags = vm.Tags
+				cvm.Tags = mapVMTags(vm.Name, d.Name, vm.Tags)
 				cvm.LicenseType = vm.LicenseType
 				cvm.ResourceGroupName = rg.Name
 				cvm.Location = rg.Location
@@ -110,60 +110,68 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 
 // MapDefinitionVirtualMachines : ...
 func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) (vms []definition.VirtualMachine) {
-	for _, c := range g.GetComponents().ByType("virtual_machine") {
-		vm := c.(*components.VirtualMachine)
+	ci := g.GetComponents().ByType("virtual_machine")
 
-		if vm.ResourceGroupName != rg.Name {
+	for _, ig := range ci.TagValues("ernest.instance_group") {
+		is := ci.ByGroup("ernest.instance_group", ig)
+
+		if len(is) < 1 {
 			continue
 		}
 
-		image := vm.StorageImageReference
-
-		dvm := definition.VirtualMachine{
-			Name:        vm.Name,
-			Size:        vm.VMSize,
-			Image:       strings.Join([]string{image.Publisher, image.Offer, image.Sku, image.Version}, ":"),
-			Tags:        vm.Tags,
-			LicenseType: vm.LicenseType,
+		firstInstance := is[0].(*components.VirtualMachine)
+		if firstInstance.ResourceGroupName != rg.Name {
+			continue
 		}
 
-		_, osaccount, oscontainer := getStorageDetails(vm.StorageOSDisk.VhdURI)
-		_, dataaccount, datacontainer := getStorageDetails(vm.StorageDataDisk.VhdURI)
+		image := firstInstance.StorageImageReference
 
-		dvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
-		dvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
-		dvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
-		dvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
-		dvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI
+		dvm := definition.VirtualMachine{
+			Name:        firstInstance.Name,
+			Size:        firstInstance.VMSize,
+			Image:       strings.Join([]string{image.Publisher, image.Offer, image.Sku, image.Version}, ":"),
+			Count:       len(is),
+			Tags:        firstInstance.Tags,
+			LicenseType: firstInstance.LicenseType,
+		}
+
+		_, osaccount, oscontainer := getStorageDetails(firstInstance.StorageOSDisk.VhdURI)
+		_, dataaccount, datacontainer := getStorageDetails(firstInstance.StorageDataDisk.VhdURI)
+
+		dvm.StorageOSDisk.Name = firstInstance.StorageOSDisk.Name
+		dvm.StorageOSDisk.Caching = firstInstance.StorageOSDisk.Caching
+		dvm.StorageOSDisk.OSType = firstInstance.StorageOSDisk.OSType
+		dvm.StorageOSDisk.CreateOption = firstInstance.StorageOSDisk.CreateOption
+		dvm.StorageOSDisk.ImageURI = firstInstance.StorageOSDisk.ImageURI
 		dvm.StorageOSDisk.StorageAccount = osaccount
 		dvm.StorageOSDisk.StorageContainer = oscontainer
 
-		dvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
-		dvm.StorageDataDisk.DiskSizeGB = vm.StorageDataDisk.Size
-		dvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
+		dvm.StorageDataDisk.Name = firstInstance.StorageDataDisk.Name
+		dvm.StorageDataDisk.DiskSizeGB = firstInstance.StorageDataDisk.Size
+		dvm.StorageDataDisk.CreateOption = firstInstance.StorageDataDisk.CreateOption
 		dvm.StorageDataDisk.StorageAccount = dataaccount
 		dvm.StorageDataDisk.StorageContainer = datacontainer
 
-		if len(vm.BootDiagnostics) > 0 {
-			dvm.BootDiagnostics.Enabled = vm.BootDiagnostics[0].Enabled
-			dvm.BootDiagnostics.StorageURI = vm.BootDiagnostics[0].URI
+		if len(firstInstance.BootDiagnostics) > 0 {
+			dvm.BootDiagnostics.Enabled = firstInstance.BootDiagnostics[0].Enabled
+			dvm.BootDiagnostics.StorageURI = firstInstance.BootDiagnostics[0].URI
 		}
 
-		dvm.Plan.Name = vm.Plan.Name
-		dvm.Plan.Product = vm.Plan.Product
-		dvm.Plan.Publisher = vm.Plan.Publisher
+		dvm.Plan.Name = firstInstance.Plan.Name
+		dvm.Plan.Product = firstInstance.Plan.Product
+		dvm.Plan.Publisher = firstInstance.Plan.Publisher
 
-		dvm.Authentication.SSHKeys = mapDefinitionSSHKeys(vm.OSProfileLinuxConfig.SSHKeys)
-		dvm.Authentication.DisablePasswordAuthentication = vm.OSProfileLinuxConfig.DisablePasswordAuthentication
-		dvm.OSProfileWindowsConfig.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
-		dvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
-		dvm.Authentication.AdminUsername = vm.OSProfile.AdminPassword
-		dvm.Authentication.AdminPassword = vm.OSProfile.AdminPassword
+		dvm.Authentication.SSHKeys = mapDefinitionSSHKeys(firstInstance.OSProfileLinuxConfig.SSHKeys)
+		dvm.Authentication.DisablePasswordAuthentication = firstInstance.OSProfileLinuxConfig.DisablePasswordAuthentication
+		dvm.OSProfileWindowsConfig.ProvisionVMAgent = firstInstance.OSProfileWindowsConfig.ProvisionVMAgent
+		dvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = firstInstance.OSProfileWindowsConfig.EnableAutomaticUpgrades
+		dvm.Authentication.AdminUsername = firstInstance.OSProfile.AdminPassword
+		dvm.Authentication.AdminPassword = firstInstance.OSProfile.AdminPassword
 
 		for _, cn := range g.GetComponents().ByType("network_interface") {
 			ni := cn.(*components.NetworkInterface)
 
-			if ni.VirtualMachineID != vm.ID {
+			if ni.VirtualMachineID != firstInstance.ID {
 				continue
 			}
 
@@ -240,4 +248,11 @@ func getStorageDetails(uri string) (string, string, string) {
 	}
 
 	return name, account, container
+}
+
+func mapVMTags(group, service string, tags map[string]string) map[string]string {
+	tags["ernest.service"] = service
+	tags["ernest.instance_group"] = group
+
+	return tags
 }
