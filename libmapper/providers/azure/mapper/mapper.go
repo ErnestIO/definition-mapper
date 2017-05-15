@@ -16,7 +16,7 @@ import (
 )
 
 // SUPPORTEDCOMPONENTS represents all component types supported by ernest
-var SUPPORTEDCOMPONENTS = []string{"network_interface", "public_ip", "resource_group", "security_group", "sql_database", "sql_server", "storage_account", "storage_container", "subnet", "virtual_machine", "virtual_network", "lb"}
+var SUPPORTEDCOMPONENTS = []string{"network_interface", "public_ip", "resource_group", "security_group", "sql_firewall_rule", "sql_database", "sql_server", "storage_account", "storage_container", "subnet", "virtual_machine", "virtual_network", "lb"}
 
 // Mapper : implements the generic mapper structure
 type Mapper struct{}
@@ -152,6 +152,10 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.SQLServer{}
 		case "sql_database":
 			c = &components.SQLDatabase{}
+		case "sql_firewall_rules":
+			c = &components.SQLFirewallRule{}
+		case "sql_firewall_rule":
+			c = &components.SQLFirewallRule{}
 		case "storage_account":
 			c = &components.StorageAccount{}
 		case "storage_container":
@@ -275,6 +279,12 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 	}
 
 	for _, sd := range MapSQLDatabases(d) {
+		if err := g.AddComponent(sd); err != nil {
+			return err
+		}
+	}
+
+	for _, sd := range MapSQLFirewallRules(d) {
 		if err := g.AddComponent(sd); err != nil {
 			return err
 		}

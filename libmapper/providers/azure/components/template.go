@@ -12,6 +12,7 @@ const (
 	TYPERESOURCEGROUP    = "resource_group"
 	TYPESECURITYGROUP    = "security_group"
 	TYPESQLDATABASE      = "sql_database"
+	TYPESQLFIREWALLRULE  = "sql_firewall_rule"
 	TYPESQLSERVER        = "sql_server"
 	TYPESTORAGEACCOUNT   = "storage_account"
 	TYPESTORAGECONTAINER = "storage_container"

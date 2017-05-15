@@ -13,4 +13,5 @@ type SQLServer struct {
 	AdministratorLoginPassword string            `json:"administrator_login_password" yaml:"administrator_login_password"`
 	Tags                       map[string]string `json:"tags" yaml:"tags"`
 	Databases                  []SQLDatabase     `json:"databases" yaml:"databases"`
+	FirewallRules              []SQLFirewallRule `json:"rules" yaml:"rules"`
 }
