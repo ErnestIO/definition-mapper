@@ -7,29 +7,35 @@ package mapper
 import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
-	ernestiolb "github.com/ernestio/ernestprovider/providers/azure/lb"
+	lb "github.com/ernestio/ernestprovider/providers/azure/lb"
 	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // MapLBs ...
 func MapLBs(d *definition.Definition) (lbs []*components.LB) {
 	for _, rg := range d.ResourceGroups {
-		for _, lb := range rg.LBs {
+		for _, loadbalancer := range rg.LBs {
 			n := &components.LB{}
-			n.Name = lb.Name
+			n.Name = loadbalancer.Name
 			n.ResourceGroupName = rg.Name
 			n.Location = rg.Location
-			for _, d := range lb.FrontendIPConfigurations {
-				n.FrontendIPConfigurations = append(n.FrontendIPConfigurations, ernestiolb.FrontendIPConfiguration{
+			for _, d := range loadbalancer.FrontendIPConfigurations {
+				lbconfig := lb.FrontendIPConfiguration{
 					Name:                       d.Name,
 					Subnet:                     d.Subnet,
 					PrivateIPAddress:           d.PrivateIPAddress,
 					PrivateIPAddressAllocation: d.PrivateIPAddressAllocation,
-				})
+				}
+
+				if d.PublicIPAddressAllocation != "" {
+					lbconfig.PublicIPAddress = n.Name + "-" + d.Name
+				}
+
+				n.FrontendIPConfigurations = append(n.FrontendIPConfigurations, lbconfig)
 			}
 
-			n.Tags = mapTags(lb.Name, d.Name)
-			if lb.ID != "" {
+			n.Tags = mapTags(loadbalancer.Name, d.Name)
+			if loadbalancer.ID != "" {
 				n.SetAction("none")
 			}
 

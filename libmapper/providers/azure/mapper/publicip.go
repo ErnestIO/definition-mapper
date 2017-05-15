@@ -44,7 +44,7 @@ func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
 				}
 
 				n := &components.PublicIP{}
-				n.Name = lb.Name
+				n.Name = lb.Name + "-" + config.Name
 				n.Location = rg.Location
 				n.ResourceGroupName = rg.Name
 				n.PublicIPAddressAllocation = config.PublicIPAddressAllocation
