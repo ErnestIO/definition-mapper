@@ -93,7 +93,11 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					Content:     vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Content,
 				})
 
-				cvm.Tags = mapVMTags(vm.Name, d.Name, vm.Tags)
+				tags := make(map[string]string)
+				if vm.Tags != nil {
+					tags = vm.Tags
+				}
+				cvm.Tags = mapVMTags(vm.Name, d.Name, tags)
 				cvm.LicenseType = vm.LicenseType
 				cvm.ResourceGroupName = rg.Name
 				cvm.Location = rg.Location
