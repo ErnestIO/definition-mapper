@@ -6,6 +6,7 @@ package components
 
 import (
 	"log"
+	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/storageaccount"
@@ -90,6 +91,9 @@ func (i *StorageAccount) Diff(c graph.Component) bool {
 			return true
 		}
 		if i.EnableBlobEncryption != cs.EnableBlobEncryption {
+			return true
+		}
+		if reflect.DeepEqual(i.Tags, cs.Tags) != true {
 			return true
 		}
 	}

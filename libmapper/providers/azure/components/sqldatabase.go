@@ -6,6 +6,7 @@ package components
 
 import (
 	"log"
+	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqldatabase"
@@ -114,6 +115,9 @@ func (i *SQLDatabase) Diff(c graph.Component) bool {
 			return true
 		}
 		if i.ElasticPoolName != cv.ElasticPoolName {
+			return true
+		}
+		if reflect.DeepEqual(i.Tags, cv.Tags) != true {
 			return true
 		}
 	}
