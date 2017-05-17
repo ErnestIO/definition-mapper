@@ -11,7 +11,6 @@ import (
 	"log"
 	"os"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/ernestio/definition-mapper/libmapper"
@@ -404,9 +403,15 @@ func ManageDefinitions() {
 			}
 		} else {
 			log.Println(err.Error())
-			body := strings.Replace(err.Error(), `"`, `'`, -1)
-			body = strings.Replace(body, "\n", " ", -1)
-			if err = n.Publish(m.Reply, []byte(`{"error":"`+body+`"}`)); err != nil {
+			var errorMessage struct {
+				Message string `json:"error"`
+			}
+			errorMessage.Message = err.Error()
+			body, err := json.Marshal(errorMessage)
+			if err != nil {
+				log.Println(err.Error())
+			}
+			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println("Error trying to respond through nats : " + err.Error())
 			}
 		}
