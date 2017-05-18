@@ -6,6 +6,7 @@ package components
 
 import (
 	"log"
+	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/lb"
@@ -83,8 +84,31 @@ func (i *LB) GetTag(tag string) string {
 func (i *LB) Diff(c graph.Component) bool {
 	cs, ok := c.(*LB)
 	if ok {
+		if reflect.DeepEqual(i.Tags, cs.Tags) != true {
+			return true
+		}
 		if i.Location != cs.Location {
 			return true
+		}
+		if len(i.FrontendIPConfigurations) != len(cs.FrontendIPConfigurations) {
+			return true
+		}
+		for x, cfg := range i.FrontendIPConfigurations {
+			if cfg.Name != cs.FrontendIPConfigurations[x].Name {
+				return true
+			}
+			if cfg.PrivateIPAddress != cs.FrontendIPConfigurations[x].PrivateIPAddress {
+				return true
+			}
+			if cfg.PrivateIPAddressAllocation != cs.FrontendIPConfigurations[x].PrivateIPAddressAllocation {
+				return true
+			}
+			if cfg.PublicIPAddress != cs.FrontendIPConfigurations[x].PublicIPAddress {
+				return true
+			}
+			if cfg.Subnet != cs.FrontendIPConfigurations[x].Subnet {
+				return true
+			}
 		}
 	}
 

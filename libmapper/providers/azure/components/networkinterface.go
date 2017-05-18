@@ -6,6 +6,7 @@ package components
 
 import (
 	"log"
+	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
@@ -99,6 +100,9 @@ func (i *NetworkInterface) Diff(c graph.Component) bool {
 			return true
 		}
 		if len(i.DNSServers) != len(cs.DNSServers) {
+			return true
+		}
+		if reflect.DeepEqual(i.Tags, cs.Tags) != true {
 			return true
 		}
 		for j := range i.DNSServers {

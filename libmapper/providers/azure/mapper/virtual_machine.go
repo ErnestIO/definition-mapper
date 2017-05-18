@@ -70,7 +70,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.Plan.Product = vm.Plan.Product
 				cvm.Plan.Publisher = vm.Plan.Publisher
 
-				cvm.OSProfile.ComputerName = vm.OSProfile.ComputerName
+				cvm.OSProfile.ComputerName = vm.OSProfile.ComputerName + "-" + strconv.Itoa(i)
 
 				cvm.OSProfileLinuxConfig.SSHKeys = mapSSHKeys(vm.Authentication.SSHKeys)
 				cvm.OSProfileLinuxConfig.DisablePasswordAuthentication = vm.Authentication.DisablePasswordAuthentication

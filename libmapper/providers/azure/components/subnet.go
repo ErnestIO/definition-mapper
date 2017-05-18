@@ -120,7 +120,11 @@ func (s *Subnet) Rebuild(g *graph.Graph) {
 
 // Dependencies : returns a list of component id's upon which the component depends
 func (s *Subnet) Dependencies() (deps []string) {
-	return []string{TYPEVIRTUALNETWORK + TYPEDELIMITER + s.VirtualNetworkName}
+	if s.NetworkSecurityGroup != "" {
+		deps = append(deps, TYPESECURITYGROUP+TYPEDELIMITER+s.NetworkSecurityGroup)
+	}
+
+	return append(deps, TYPEVIRTUALNETWORK+TYPEDELIMITER+s.VirtualNetworkName)
 }
 
 // Validate : validates the components values

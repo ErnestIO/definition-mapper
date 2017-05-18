@@ -66,7 +66,7 @@ func (i *VirtualMachine) SetAction(s string) {
 
 // GetGroup : returns the components group
 func (i *VirtualMachine) GetGroup() string {
-	return ""
+	return i.Tags["ernest.instance_group"]
 }
 
 // GetTags returns a components tags
@@ -92,6 +92,10 @@ func (i *VirtualMachine) Diff(c graph.Component) bool {
 		}
 
 		if reflect.DeepEqual(i.NetworkInterfaces, cvm.NetworkInterfaces) != true {
+			return true
+		}
+
+		if reflect.DeepEqual(i.Tags, cvm.Tags) != true {
 			return true
 		}
 	}

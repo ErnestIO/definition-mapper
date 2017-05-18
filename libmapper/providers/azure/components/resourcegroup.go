@@ -6,6 +6,7 @@ package components
 
 import (
 	"log"
+	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/resourcegroup"
@@ -85,6 +86,10 @@ func (i *ResourceGroup) Diff(c graph.Component) bool {
 	cs, ok := c.(*ResourceGroup)
 	if ok {
 		if i.Location != cs.Location {
+			return true
+		}
+
+		if reflect.DeepEqual(i.Tags, cs.Tags) != true {
 			return true
 		}
 	}

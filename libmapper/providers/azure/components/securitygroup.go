@@ -6,6 +6,7 @@ package components
 
 import (
 	"log"
+	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/securitygroup"
@@ -83,6 +84,9 @@ func (i *SecurityGroup) GetTag(tag string) string {
 func (i *SecurityGroup) Diff(c graph.Component) bool {
 	cs, ok := c.(*SecurityGroup)
 	if ok {
+		if reflect.DeepEqual(i.Tags, cs.Tags) != true {
+			return true
+		}
 		if len(i.SecurityRules) != len(cs.SecurityRules) {
 			return true
 		}
@@ -106,6 +110,15 @@ func (i *SecurityGroup) Diff(c graph.Component) bool {
 				return true
 			}
 			if i.SecurityRules[j].DestinationAddressPrefix != cs.SecurityRules[j].DestinationAddressPrefix {
+				return true
+			}
+			if i.SecurityRules[j].Direction != cs.SecurityRules[j].Direction {
+				return true
+			}
+			if i.SecurityRules[j].Access != cs.SecurityRules[j].Access {
+				return true
+			}
+			for i.SecurityRules[j].Priority != cs.SecurityRules[j].Priority {
 				return true
 			}
 		}
