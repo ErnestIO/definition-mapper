@@ -20,6 +20,9 @@ func MapSecurityGroups(d *definition.Definition) (sgs []*components.SecurityGrou
 			n.ResourceGroupName = rg.Name
 			n.Location = rg.Location
 			n.Tags = mapTags(sg.Name, d.Name)
+			for k, v := range sg.Tags {
+				n.Tags[k] = v
+			}
 
 			for _, rule := range sg.Rules {
 				n.SecurityRules = append(n.SecurityRules, securitygroup.SecurityRule{

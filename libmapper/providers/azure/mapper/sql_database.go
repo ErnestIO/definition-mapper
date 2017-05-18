@@ -30,6 +30,9 @@ func MapSQLDatabases(d *definition.Definition) (ips []*components.SQLDatabase) {
 				n.SourceDatabaseDeletionData = sd.SourceDatabaseDeletionData
 				n.ElasticPoolName = sd.ElasticPoolName
 				n.Tags = mapTags(sd.Name, d.Name)
+				for k, v := range sd.Tags {
+					n.Tags[k] = v
+				}
 
 				if n.ID != "" {
 					n.SetAction("none")
