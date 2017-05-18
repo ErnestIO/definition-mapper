@@ -22,6 +22,9 @@ func MapSQLServers(d *definition.Definition) (ips []*components.SQLServer) {
 			n.ResourceGroupName = rg.Name
 			n.Location = rg.Location
 			n.Tags = mapTags(ss.Name, d.Name)
+			for k, v := range ss.Tags {
+				n.Tags[k] = v
+			}
 
 			if n.ID != "" {
 				n.SetAction("none")
