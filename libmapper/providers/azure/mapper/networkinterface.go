@@ -42,7 +42,8 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 						nIP := networkinterface.IPConfiguration{
 							Name:   ip.Name,
 							Subnet: subnet,
-							PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
+							PrivateIPAddressAllocation:      ip.PrivateIPAddressAllocation,
+							LoadBalancerBackendAddressPools: ip.LoadBalancerBackendAddressPools,
 						}
 						if nIP.PrivateIPAddressAllocation == "" {
 							nIP.PrivateIPAddressAllocation = "static"

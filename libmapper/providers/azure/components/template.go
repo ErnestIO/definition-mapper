@@ -5,20 +5,23 @@
 package components
 
 const (
-	TYPEDELIMITER        = "::"
-	TYPENETWORKINTERFACE = "network_interface"
-	TYPEPUBLICIP         = "public_ip"
-	TYPELB               = "lb"
-	TYPERESOURCEGROUP    = "resource_group"
-	TYPESECURITYGROUP    = "security_group"
-	TYPESQLDATABASE      = "sql_database"
-	TYPESQLFIREWALLRULE  = "sql_firewall_rule"
-	TYPESQLSERVER        = "sql_server"
-	TYPESTORAGEACCOUNT   = "storage_account"
-	TYPESTORAGECONTAINER = "storage_container"
-	TYPESUBNET           = "subnet"
-	TYPEVIRTUALMACHINE   = "virtual_machine"
-	TYPEVIRTUALNETWORK   = "virtual_network"
+	TYPEDELIMITER            = "::"
+	TYPENETWORKINTERFACE     = "network_interface"
+	TYPEPUBLICIP             = "public_ip"
+	TYPELB                   = "lb"
+	TYPELBRULE               = "lb_rule"
+	TYPELBPROBE              = "lb_probe"
+	TYPELBBACKENDADDRESSPOOL = "lb_backend_address_pool"
+	TYPERESOURCEGROUP        = "resource_group"
+	TYPESECURITYGROUP        = "security_group"
+	TYPESQLDATABASE          = "sql_database"
+	TYPESQLFIREWALLRULE      = "sql_firewall_rule"
+	TYPESQLSERVER            = "sql_server"
+	TYPESTORAGEACCOUNT       = "storage_account"
+	TYPESTORAGECONTAINER     = "storage_container"
+	TYPESUBNET               = "subnet"
+	TYPEVIRTUALMACHINE       = "virtual_machine"
+	TYPEVIRTUALNETWORK       = "virtual_network"
 
 	GROUPINSTANCE  = "ernest.instance_group"
 	GROUPEBSVOLUME = "ernest.volume_group"
@@ -48,4 +51,16 @@ func templSecurityGroupID(sg string) string {
 
 func templPublicIPAddressID(ip string) string {
 	return `$(components.#[_component_id="` + TYPEPUBLICIP + TYPEDELIMITER + ip + `"].id)`
+}
+
+func templLoadbalancerID(lb string) string {
+	return `$(components.#[_component_id="` + TYPELB + TYPEDELIMITER + lb + `"].id)`
+}
+
+func templLoadbalancerProbeID(probe string) string {
+	return `$(components.#[_component_id="` + TYPELBPROBE + TYPEDELIMITER + probe + `"].id)`
+}
+
+func templLoadbalancerBackendAddressPoolID(ap string) string {
+	return `$(components.#[_component_id="` + TYPELBBACKENDADDRESSPOOL + TYPEDELIMITER + ap + `"].id)`
 }

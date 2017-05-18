@@ -172,6 +172,23 @@ func (i *NetworkInterface) Rebuild(g *graph.Graph) {
 		if i.IPConfigurations[x].PublicIPAddressID == "" && i.IPConfigurations[x].PublicIPAddress != "" {
 			i.IPConfigurations[x].PublicIPAddressID = templPublicIPAddressID(i.IPConfigurations[x].PublicIPAddress)
 		}
+
+		if len(i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs) > len(i.IPConfigurations[x].LoadBalancerBackendAddressPools) {
+			i.IPConfigurations[x].LoadBalancerBackendAddressPools = []string{}
+			for _, ap := range i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs {
+				ap := g.GetComponents().ByProviderID(ap)
+				if ap != nil {
+					i.IPConfigurations[x].LoadBalancerBackendAddressPools = append(i.IPConfigurations[x].LoadBalancerBackendAddressPools, ap.GetName())
+				}
+			}
+		}
+
+		if len(i.IPConfigurations[x].LoadBalancerBackendAddressPools) > len(i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs) {
+			i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs = []string{}
+			for _, ap := range i.IPConfigurations[x].LoadBalancerBackendAddressPools {
+				i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs = append(i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs, templLoadbalancerBackendAddressPoolID(ap))
+			}
+		}
 	}
 
 	i.SetDefaultVariables()
@@ -189,6 +206,9 @@ func (i *NetworkInterface) Dependencies() (deps []string) {
 		}
 		if config.PublicIPAddress != "" {
 			deps = append(deps, TYPEPUBLICIP+TYPEDELIMITER+config.PublicIPAddress)
+		}
+		for _, ap := range config.LoadBalancerBackendAddressPools {
+			deps = append(deps, TYPELBBACKENDADDRESSPOOL+TYPEDELIMITER+ap)
 		}
 	}
 

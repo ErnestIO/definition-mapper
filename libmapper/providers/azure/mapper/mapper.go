@@ -140,6 +140,12 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.PublicIP{}
 		case "lb":
 			c = &components.LB{}
+		case "lb_rule":
+			c = &components.LBRule{}
+		case "lb_probe":
+			c = &components.LBProbe{}
+		case "lb_backend_address_pool":
+			c = &components.LBBackendAddressPool{}
 		case "security_group":
 			c = &components.SecurityGroup{}
 		case "virtual_network":
@@ -262,6 +268,24 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 
 	for _, lb := range MapLBs(d) {
 		if err := g.AddComponent(lb); err != nil {
+			return err
+		}
+	}
+
+	for _, rule := range MapLBRules(d) {
+		if err := g.AddComponent(rule); err != nil {
+			return err
+		}
+	}
+
+	for _, probe := range MapLBProbes(d) {
+		if err := g.AddComponent(probe); err != nil {
+			return err
+		}
+	}
+
+	for _, ap := range MapLBBackendAddressPools(d) {
+		if err := g.AddComponent(ap); err != nil {
 			return err
 		}
 	}
