@@ -6,14 +6,14 @@ package definition
 
 // NetworkInterface ...
 type NetworkInterface struct {
-	ID                   string              `json:"id" yaml:"id"`
-	Name                 string              `json:"name" yaml:"name"`
-	SecurityGroup        string              `json:"security_group" yaml:"security_group"`
-	InternalDNSNameLabel string              `json:"internal_dns_name_label" yaml:"internal_dns_name_label"`
-	EnableIPForwarding   string              `json:"enable_ip_forwarding" yaml:"enable_ip_forwarding"`
-	DNSServers           []string            `json:"dns_servers" yaml:"dns_servers"`
-	IPConfigurations     []IPConfiguration   `json:"ip_configurations" yaml:"ip_configurations"`
-	Tags                 []map[string]string `json:"tags" yaml:"tags"`
+	ID                   string            `json:"id" yaml:"id"`
+	Name                 string            `json:"name" yaml:"name"`
+	SecurityGroup        string            `json:"security_group" yaml:"security_group"`
+	InternalDNSNameLabel string            `json:"internal_dns_name_label" yaml:"internal_dns_name_label"`
+	EnableIPForwarding   string            `json:"enable_ip_forwarding" yaml:"enable_ip_forwarding"`
+	DNSServers           []string          `json:"dns_servers" yaml:"dns_servers"`
+	IPConfigurations     []IPConfiguration `json:"ip_configurations" yaml:"ip_configurations"`
+	Tags                 map[string]string `json:"tags" yaml:"tags"`
 }
 
 // IPConfiguration ...
