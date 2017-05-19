@@ -32,7 +32,7 @@ type VirtualMachine struct {
 		Caching          string `json:"caching" yaml:"caching"`
 		ImageURI         string `json:"image_uri" yaml:"image_uri"`
 		OSType           string `json:"os_type" yaml:"os_type"`
-		DiskSizeGB       int32  `json:"disk_size_gb" yaml:"disk_size_gb"`
+		DiskSizeGB       *int32 `json:"disk_size_gb" yaml:"disk_size_gb"`
 	} `json:"storage_data_disk" yaml:"storage_data_disk"`
 	DeleteOSDiskOnTermination    bool              `json:"delete_os_disk_on_termination" yaml:"delete_os_disk_on_termination"`
 	DeleteDataDisksOnTermination bool              `json:"delete_data_disks_on_termination" yaml:"delete_data_disks_on_termination"`
