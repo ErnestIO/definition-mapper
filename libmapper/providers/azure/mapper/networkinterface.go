@@ -35,6 +35,9 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 					cv.VirtualMachineID = components.TYPEVIRTUALMACHINE + components.TYPEDELIMITER + vm.Name
 					cv.Location = rg.Location
 					cv.Tags = mapTags(ni.Name, d.Name)
+					for k, v := range ni.Tags {
+						cv.Tags[k] = v
+					}
 
 					for x, ip := range ni.IPConfigurations {
 						subnet := strings.Split(ip.Subnet, ":")[1]
