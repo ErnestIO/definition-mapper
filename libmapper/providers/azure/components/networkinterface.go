@@ -173,19 +173,19 @@ func (i *NetworkInterface) Rebuild(g *graph.Graph) {
 			i.IPConfigurations[x].PublicIPAddressID = templPublicIPAddressID(i.IPConfigurations[x].PublicIPAddress)
 		}
 
-		if len(i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs) > len(i.IPConfigurations[x].LoadbalancerBackendAddressPools) {
-			i.IPConfigurations[x].LoadbalancerBackendAddressPools = []string{}
+		if len(i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs) > len(i.IPConfigurations[x].LoadBalancerBackendAddressPools) {
+			i.IPConfigurations[x].LoadBalancerBackendAddressPools = []string{}
 			for _, ap := range i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs {
 				ap := g.GetComponents().ByProviderID(ap)
 				if ap != nil {
-					i.IPConfigurations[x].LoadbalancerBackendAddressPools = append(i.IPConfigurations[x].LoadbalancerBackendAddressPools, ap.GetName())
+					i.IPConfigurations[x].LoadBalancerBackendAddressPools = append(i.IPConfigurations[x].LoadBalancerBackendAddressPools, ap.GetName())
 				}
 			}
 		}
 
-		if len(i.IPConfigurations[x].LoadbalancerBackendAddressPools) > len(i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs) {
+		if len(i.IPConfigurations[x].LoadBalancerBackendAddressPools) > len(i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs) {
 			i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs = []string{}
-			for _, ap := range i.IPConfigurations[x].LoadbalancerBackendAddressPools {
+			for _, ap := range i.IPConfigurations[x].LoadBalancerBackendAddressPools {
 				i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs = append(i.IPConfigurations[x].LoadBalancerBackendAddressPoolIDs, templLoadbalancerBackendAddressPoolID(ap))
 			}
 		}
@@ -207,7 +207,7 @@ func (i *NetworkInterface) Dependencies() (deps []string) {
 		if config.PublicIPAddress != "" {
 			deps = append(deps, TYPEPUBLICIP+TYPEDELIMITER+config.PublicIPAddress)
 		}
-		for _, ap := range config.LoadbalancerBackendAddressPools {
+		for _, ap := range config.LoadBalancerBackendAddressPools {
 			deps = append(deps, TYPELBBACKENDADDRESSPOOL+TYPEDELIMITER+ap)
 		}
 	}
