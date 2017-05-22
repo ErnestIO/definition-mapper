@@ -17,6 +17,5 @@ type SQLDatabase struct {
 	RequestedServiceObjectiveID   string            `json:"requested_service_objective_id" yaml:"requested_service_objective_id"`
 	RequestedServiceObjectiveName string            `json:"requested_service_objective_name" yaml:"requested_service_objective_name"`
 	SourceDatabaseDeletionData    string            `json:"source_database_deletion_date" yaml:"source_database_deletion_date"`
-	ElasticPoolName               string            `json:"elastic_pool_name" yaml:"elastic_pool_name"`
 	Tags                          map[string]string `json:"tags" yaml:"tags"`
 }

@@ -75,7 +75,6 @@ func MapDefinitionSQLServers(g *graph.Graph, rg *definition.ResourceGroup) (ss [
 				RequestedServiceObjectiveID:   sqld.RequestedServiceObjectiveID,
 				RequestedServiceObjectiveName: sqld.RequestedServiceObjectiveName,
 				SourceDatabaseDeletionData:    sqld.SourceDatabaseDeletionData,
-				ElasticPoolName:               sqld.ElasticPoolName,
 			}
 
 			dsqls.Databases = append(dsqls.Databases, dsqld)

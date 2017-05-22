@@ -114,9 +114,6 @@ func (i *SQLDatabase) Diff(c graph.Component) bool {
 		if i.SourceDatabaseDeletionData != cv.SourceDatabaseDeletionData {
 			return true
 		}
-		if i.ElasticPoolName != cv.ElasticPoolName {
-			return true
-		}
 		if reflect.DeepEqual(i.Tags, cv.Tags) != true {
 			return true
 		}

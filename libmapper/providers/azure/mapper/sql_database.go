@@ -28,7 +28,6 @@ func MapSQLDatabases(d *definition.Definition) (ips []*components.SQLDatabase) {
 				n.RequestedServiceObjectiveID = sd.RequestedServiceObjectiveID
 				n.RequestedServiceObjectiveName = sd.RequestedServiceObjectiveName
 				n.SourceDatabaseDeletionData = sd.SourceDatabaseDeletionData
-				n.ElasticPoolName = sd.ElasticPoolName
 				n.Tags = mapTags(sd.Name, d.Name)
 				for k, v := range sd.Tags {
 					n.Tags[k] = v
