@@ -24,6 +24,7 @@ func MapLBRules(d *definition.Definition) (rules []*components.LBRule) {
 					n.EnableFloatingIP = rule.FloatingIP
 					n.IdleTimeoutInMinutes = rule.IdleTimeout
 					n.LoadDistribution = rule.LoadDistribution
+					n.BackendAddressPool = rule.BackendAddressPool
 					n.Loadbalancer = loadbalancer.Name
 					n.ResourceGroupName = rg.Name
 					n.FrontendIPConfigurationName = config.Name
