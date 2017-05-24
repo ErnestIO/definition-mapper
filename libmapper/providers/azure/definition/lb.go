@@ -12,7 +12,7 @@ type LB struct {
 	FrontendIPConfigurations []FrontendIPConfiguration `json:"frontend_ip_configurations" yaml:"frontend_ip_configurations" validate:"required"`
 	Probes                   []LoadbalancerProbe       `json:"probes" yaml:"probes"`
 	BackendAddressPools      []string                  `json:"backend_address_pools" yaml:"backend_address_pools"`
-	Tags                     []map[string]string       `json:"tags" yaml:"tags"`
+	Tags                     map[string]string         `json:"tags" yaml:"tags"`
 }
 
 // FrontendIPConfiguration : ..
