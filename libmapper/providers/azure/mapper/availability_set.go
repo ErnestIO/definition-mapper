@@ -17,8 +17,8 @@ func MapAvailabilitySets(d *definition.Definition) (sets []*components.Availabil
 			s.Name = set.Name
 			s.PlatformFaultDomainCount = set.FaultDomainCount
 			s.PlatformUpdateDomainCount = set.UpdateDomainCount
-			s.Managed = set.Managed
 			s.ResourceGroupName = rg.Name
+			s.Location = rg.Location
 
 			s.SetDefaultVariables()
 

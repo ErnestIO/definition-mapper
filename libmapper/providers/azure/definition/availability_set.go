@@ -9,5 +9,4 @@ type AvailabilitySet struct {
 	Name              string `json:"name" yaml:"name"`
 	FaultDomainCount  int    `json:"fault_domain_count" yaml:"fault_domain_count"`
 	UpdateDomainCount int    `json:"update_domain_count" yaml:"update_domain_count"`
-	Managed           bool   `json:"managed" yaml:"managed"`
 }
