@@ -35,6 +35,11 @@ func MapLBs(d *definition.Definition) (lbs []*components.LB) {
 			}
 
 			n.Tags = mapTags(loadbalancer.Name, d.Name)
+
+			for k, v := range loadbalancer.Tags {
+				n.Tags[k] = v
+			}
+
 			if loadbalancer.ID != "" {
 				n.SetAction("none")
 			}
