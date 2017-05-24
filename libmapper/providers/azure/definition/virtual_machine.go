@@ -10,6 +10,7 @@ type VirtualMachine struct {
 	Count                  int                    `json:"count" yaml:"count"`
 	Size                   string                 `json:"size" yaml:"size"`
 	Image                  string                 `json:"image" yaml:"image"`
+	AvailabilitySet        string                 `json:"availability_set" yaml:"availability_set"`
 	Authentication         Authentication         `json:"authentication" yaml:"authentication"`
 	StorageOSDisk          StorageOSDisk          `json:"storage_os_disk" yaml:"storage_os_disk"`
 	OSProfile              OSProfile              `json:"os_profile" yaml:"os_profile"`

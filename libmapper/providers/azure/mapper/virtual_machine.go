@@ -27,6 +27,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm := &components.VirtualMachine{}
 				cvm.Name = vm.Name + "-" + strconv.Itoa(i)
 				cvm.VMSize = vm.Size
+				cvm.AvailabilitySet = vm.AvailabilitySet
 
 				if len(image) == 4 {
 					cvm.StorageImageReference.Publisher = image[0]

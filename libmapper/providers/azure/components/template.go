@@ -65,3 +65,7 @@ func templLoadbalancerProbeID(probe string) string {
 func templLoadbalancerBackendAddressPoolID(ap string) string {
 	return `$(components.#[_component_id="` + TYPELBBACKENDADDRESSPOOL + TYPEDELIMITER + ap + `"].id)`
 }
+
+func templAvailabilitySetID(as string) string {
+	return `$(components.#[_component_id="` + TYPEAVAILABILITYSET + TYPEDELIMITER + as + `"].id)`
+}

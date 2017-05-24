@@ -132,6 +132,17 @@ func (i *VirtualMachine) Rebuild(g *graph.Graph) {
 		}
 	}
 
+	if i.AvailabilitySet == "" && i.AvailabilitySetID != "" {
+		as := g.GetComponents().ByProviderID(i.AvailabilitySetID)
+		if as != nil {
+			i.AvailabilitySet = as.GetName()
+		}
+	}
+
+	if i.AvailabilitySetID == "" && i.AvailabilitySet != "" {
+		i.AvailabilitySetID = templAvailabilitySetID(i.AvailabilitySet)
+	}
+
 	i.SetDefaultVariables()
 }
 
@@ -147,6 +158,10 @@ func (i *VirtualMachine) Dependencies() (deps []string) {
 
 	if i.StorageDataDisk.StorageContainer != "" && i.StorageDataDisk.StorageContainer != i.StorageOSDisk.StorageContainer {
 		deps = append(deps, TYPESTORAGECONTAINER+TYPEDELIMITER+i.StorageDataDisk.StorageContainer)
+	}
+
+	if i.AvailabilitySet != "" {
+		deps = append(deps, TYPEAVAILABILITYSET+TYPEDELIMITER+i.AvailabilitySet)
 	}
 
 	if len(deps) < 1 {
