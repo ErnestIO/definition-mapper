@@ -23,6 +23,7 @@ const (
 	TYPEVIRTUALMACHINE       = "virtual_machine"
 	TYPEVIRTUALNETWORK       = "virtual_network"
 	TYPEAVAILABILITYSET      = "availability_set"
+	TYPEMANAGEDDISK          = "managed_disk"
 
 	GROUPINSTANCE  = "ernest.instance_group"
 	GROUPEBSVOLUME = "ernest.volume_group"

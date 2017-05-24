@@ -45,6 +45,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 				cvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
 				cvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI
+				cvm.StorageOSDisk.StorageAccountType = vm.StorageOSDisk.StorageAccountType
 				if vm.StorageOSDisk.StorageAccount != "" && vm.StorageOSDisk.StorageContainer != "" {
 					cvm.StorageOSDisk.VhdURI = fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s.vhd", vm.StorageOSDisk.StorageAccount, vm.StorageOSDisk.StorageContainer, vm.StorageOSDisk.Name+"-"+strconv.Itoa(i))
 				}
@@ -59,6 +60,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				}
 				cvm.StorageDataDisk.StorageAccount = vm.StorageDataDisk.StorageAccount
 				cvm.StorageDataDisk.StorageContainer = vm.StorageDataDisk.StorageContainer
+				cvm.StorageDataDisk.StorageAccountType = vm.StorageDataDisk.StorageAccountType
 
 				cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
 				cvm.DeleteOSDiskOnTermination = vm.DeleteOSDiskOnTermination

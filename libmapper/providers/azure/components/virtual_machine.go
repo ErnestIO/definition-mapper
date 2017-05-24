@@ -154,6 +154,8 @@ func (i *VirtualMachine) Dependencies() (deps []string) {
 
 	if i.StorageOSDisk.StorageContainer != "" {
 		deps = append(deps, TYPESTORAGECONTAINER+TYPEDELIMITER+i.StorageOSDisk.StorageContainer)
+	} else {
+		deps = append(deps, TYPEMANAGEDDISK+TYPEDELIMITER+i.StorageOSDisk.Name+"-"+i.Name)
 	}
 
 	if i.StorageDataDisk.StorageContainer != "" && i.StorageDataDisk.StorageContainer != i.StorageOSDisk.StorageContainer {
