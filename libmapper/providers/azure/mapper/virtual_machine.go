@@ -5,6 +5,7 @@
 package mapper
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -77,7 +78,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				if vm.OSProfile.ComputerName != "" {
 					cvm.OSProfile.ComputerName = vm.OSProfile.ComputerName + "-" + strconv.Itoa(i)
 				}
-				cvm.OSProfile.CustomData = vm.OSProfile.CustomData
+				cvm.OSProfile.CustomData = base64.StdEncoding.EncodeToString([]byte(vm.OSProfile.CustomData))
 
 				cvm.OSProfileLinuxConfig.SSHKeys = mapSSHKeys(vm.Authentication.SSHKeys)
 				cvm.OSProfileLinuxConfig.DisablePasswordAuthentication = vm.Authentication.DisablePasswordAuthentication
