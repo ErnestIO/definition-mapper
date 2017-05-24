@@ -6,14 +6,15 @@ package definition
 
 // ResourceGroup ...
 type ResourceGroup struct {
-	ID              string            `json:"id" yaml:"id"`
-	Name            string            `json:"name" yaml:"name"`
-	Location        string            `json:"location" yaml:"location"`
-	Tags            map[string]string `json:"tags" yaml:"tags"`
-	VirtualNetworks []VirtualNetwork  `json:"virtual_networks" yaml:"virtual_networks"`
-	SecurityGroups  []SecurityGroup   `json:"security_groups" yaml:"security_groups"`
-	LBs             []LB              `json:"loadbalancers" yaml:"loadbalancers"`
-	VirtualMachines []VirtualMachine  `json:"virtual_machines" yaml:"virtual_machines"`
-	StorageAccounts []StorageAccount  `json:"storage_accounts" yaml:"storage_accounts"`
-	SQLServers      []SQLServer       `json:"sql_servers" yaml:"sql_servers"`
+	ID               string            `json:"id" yaml:"id"`
+	Name             string            `json:"name" yaml:"name"`
+	Location         string            `json:"location" yaml:"location"`
+	Tags             map[string]string `json:"tags" yaml:"tags"`
+	VirtualNetworks  []VirtualNetwork  `json:"virtual_networks" yaml:"virtual_networks"`
+	SecurityGroups   []SecurityGroup   `json:"security_groups" yaml:"security_groups"`
+	LBs              []LB              `json:"loadbalancers" yaml:"loadbalancers"`
+	VirtualMachines  []VirtualMachine  `json:"virtual_machines" yaml:"virtual_machines"`
+	AvailabilitySets []AvailabilitySet `json:"availability_sets" yaml:"availability_sets"`
+	StorageAccounts  []StorageAccount  `json:"storage_accounts" yaml:"storage_accounts"`
+	SQLServers       []SQLServer       `json:"sql_servers" yaml:"sql_servers"`
 }
