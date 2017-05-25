@@ -143,6 +143,28 @@ func (i *VirtualMachine) Rebuild(g *graph.Graph) {
 		i.AvailabilitySetID = templAvailabilitySetID(i.AvailabilitySet)
 	}
 
+	if i.StorageOSDisk.ManagedDisk == "" && i.StorageOSDisk.ManagedDiskID != "" {
+		as := g.GetComponents().ByProviderID(i.StorageOSDisk.ManagedDiskID)
+		if as != nil {
+			i.StorageOSDisk.ManagedDisk = as.GetName()
+		}
+	}
+
+	if i.StorageOSDisk.ManagedDiskID == "" && i.StorageOSDisk.ManagedDisk != "" {
+		i.StorageOSDisk.ManagedDiskID = templAvailabilitySetID(i.StorageOSDisk.ManagedDisk)
+	}
+
+	if i.StorageDataDisk.ManagedDisk == "" && i.StorageDataDisk.ManagedDiskID != "" {
+		as := g.GetComponents().ByProviderID(i.StorageDataDisk.ManagedDiskID)
+		if as != nil {
+			i.StorageDataDisk.ManagedDisk = as.GetName()
+		}
+	}
+
+	if i.StorageDataDisk.ManagedDiskID == "" && i.StorageDataDisk.ManagedDisk != "" {
+		i.StorageDataDisk.ManagedDiskID = templAvailabilitySetID(i.StorageDataDisk.ManagedDisk)
+	}
+
 	i.SetDefaultVariables()
 }
 
@@ -160,6 +182,8 @@ func (i *VirtualMachine) Dependencies() (deps []string) {
 
 	if i.StorageDataDisk.StorageContainer != "" && i.StorageDataDisk.StorageContainer != i.StorageOSDisk.StorageContainer {
 		deps = append(deps, TYPESTORAGECONTAINER+TYPEDELIMITER+i.StorageDataDisk.StorageContainer)
+	} else {
+		deps = append(deps, TYPEMANAGEDDISK+TYPEDELIMITER+i.StorageDataDisk.Name+"-"+i.Name)
 	}
 
 	if i.AvailabilitySet != "" {
