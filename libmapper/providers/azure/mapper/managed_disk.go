@@ -15,7 +15,7 @@ import (
 func MapManagedDisks(d *definition.Definition) (mds []*components.ManagedDisk) {
 	for _, rg := range d.ResourceGroups {
 		for _, vm := range rg.VirtualMachines {
-			if vm.StorageOSDisk.StorageAccount == "" {
+			if vm.StorageOSDisk.ManagedDiskType != "" {
 				for i := 1; i < vm.Count+1; i++ {
 					md := &components.ManagedDisk{}
 					md.Name = vm.Name + "-" + strconv.Itoa(i) + "-" + vm.StorageOSDisk.Name
@@ -41,7 +41,7 @@ func MapManagedDisks(d *definition.Definition) (mds []*components.ManagedDisk) {
 				}
 			}
 
-			if vm.StorageDataDisk.StorageAccount == "" {
+			if vm.StorageDataDisk.ManagedDiskType != "" {
 				for i := 1; i < vm.Count+1; i++ {
 					md := &components.ManagedDisk{}
 					md.Name = vm.Name + "-" + strconv.Itoa(i) + "-" + vm.StorageDataDisk.Name

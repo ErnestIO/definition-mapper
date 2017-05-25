@@ -52,7 +52,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.StorageOSDisk.StorageAccount = vm.StorageOSDisk.StorageAccount
 				cvm.StorageOSDisk.StorageContainer = vm.StorageOSDisk.StorageContainer
 				if vm.StorageOSDisk.ManagedDiskType != "" {
-					cvm.StorageOSDisk.ManagedDisk = vm.Name + "-" + strconv.Itoa(i) + vm.StorageOSDisk.Name
+					cvm.StorageOSDisk.ManagedDisk = vm.Name + "-" + strconv.Itoa(i) + "-" + vm.StorageOSDisk.Name
 				}
 
 				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
@@ -65,7 +65,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.StorageDataDisk.StorageContainer = vm.StorageDataDisk.StorageContainer
 				cvm.StorageDataDisk.StorageAccountType = vm.StorageDataDisk.ManagedDiskType
 				if vm.StorageDataDisk.ManagedDiskType != "" {
-					cvm.StorageDataDisk.ManagedDisk = vm.Name + "-" + strconv.Itoa(i) + vm.StorageDataDisk.Name
+					cvm.StorageDataDisk.ManagedDisk = vm.Name + "-" + strconv.Itoa(i) + "-" + vm.StorageDataDisk.Name
 				}
 
 				cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
