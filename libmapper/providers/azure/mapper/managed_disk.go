@@ -18,10 +18,10 @@ func MapManagedDisks(d *definition.Definition) (mds []*components.ManagedDisk) {
 			if vm.StorageOSDisk.StorageAccount == "" {
 				for i := 1; i < vm.Count+1; i++ {
 					md := &components.ManagedDisk{}
-					md.Name = vm.StorageOSDisk.Name + "-" + vm.Name + "-" + strconv.Itoa(i)
+					md.Name = vm.Name + "-" + strconv.Itoa(i) + "-" + vm.StorageOSDisk.Name
 					md.ResourceGroupName = rg.Name
 					md.Location = rg.Location
-					md.StorageAccountType = vm.StorageOSDisk.StorageAccountType
+					md.StorageAccountType = vm.StorageOSDisk.ManagedDiskType
 					md.CreateOption = vm.StorageOSDisk.CreateOption
 					md.SourceURI = vm.StorageOSDisk.ImageURI
 					md.OSType = vm.StorageOSDisk.OSType
@@ -44,10 +44,10 @@ func MapManagedDisks(d *definition.Definition) (mds []*components.ManagedDisk) {
 			if vm.StorageDataDisk.StorageAccount == "" {
 				for i := 1; i < vm.Count+1; i++ {
 					md := &components.ManagedDisk{}
-					md.Name = vm.StorageDataDisk.Name + "-" + vm.Name + "-" + strconv.Itoa(i)
+					md.Name = vm.Name + "-" + strconv.Itoa(i) + "-" + vm.StorageDataDisk.Name
 					md.ResourceGroupName = rg.Name
 					md.Location = rg.Location
-					md.StorageAccountType = vm.StorageDataDisk.StorageAccountType
+					md.StorageAccountType = vm.StorageDataDisk.ManagedDiskType
 					md.CreateOption = vm.StorageDataDisk.CreateOption
 					md.SourceURI = vm.StorageDataDisk.ImageURI
 					md.SourceResourceID = vm.StorageDataDisk.StorageSourceResourceID

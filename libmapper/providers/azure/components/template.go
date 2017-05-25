@@ -70,3 +70,7 @@ func templLoadbalancerBackendAddressPoolID(ap string) string {
 func templAvailabilitySetID(as string) string {
 	return `$(components.#[_component_id="` + TYPEAVAILABILITYSET + TYPEDELIMITER + as + `"].id)`
 }
+
+func templManagedDiskID(md string) string {
+	return `$(components.#[_component_id="` + TYPEMANAGEDDISK + TYPEDELIMITER + md + `"].id)`
+}

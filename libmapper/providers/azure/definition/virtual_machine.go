@@ -28,8 +28,8 @@ type VirtualMachine struct {
 	StorageDataDisk struct {
 		Name                    string `json:"name" yaml:"name"`
 		StorageAccount          string `json:"storage_account" yaml:"storage_account"`
-		StorageAccountType      string `json:"managed_disk_type" yaml:"managed_disk_type"`
 		StorageContainer        string `json:"storage_container" yaml:"storage_container"`
+		ManagedDiskType         string `json:"managed_disk_type" yaml:"managed_disk_type"`
 		CreateOption            string `json:"create_option" yaml:"create_option"`
 		Caching                 string `json:"caching" yaml:"caching"`
 		ImageURI                string `json:"image_uri" yaml:"image_uri"`
@@ -53,15 +53,15 @@ type Authentication struct {
 
 // StorageOSDisk ...
 type StorageOSDisk struct {
-	Name               string `json:"name" yaml:"name"`
-	StorageAccount     string `json:"storage_account" yaml:"storage_account"`
-	StorageContainer   string `json:"storage_container" yaml:"storage_container"`
-	CreateOption       string `json:"create_option" yaml:"create_option"`
-	Caching            string `json:"caching" yaml:"caching"`
-	ImageURI           string `json:"image_uri" yaml:"image_uri"`
-	OSType             string `json:"os_type" yaml:"os_type"`
-	DiskSizeGB         int32  `json:"disk_size_gb" yaml:"disk_size_gb"`
-	StorageAccountType string `json:"managed_disk_type" yaml:"managed_disk_type"`
+	Name             string `json:"name" yaml:"name"`
+	StorageAccount   string `json:"storage_account" yaml:"storage_account"`
+	StorageContainer string `json:"storage_container" yaml:"storage_container"`
+	CreateOption     string `json:"create_option" yaml:"create_option"`
+	Caching          string `json:"caching" yaml:"caching"`
+	ImageURI         string `json:"image_uri" yaml:"image_uri"`
+	OSType           string `json:"os_type" yaml:"os_type"`
+	DiskSizeGB       int32  `json:"disk_size_gb" yaml:"disk_size_gb"`
+	ManagedDiskType  string `json:"managed_disk_type" yaml:"managed_disk_type"`
 }
 
 // OSProfile ...
