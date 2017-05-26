@@ -40,18 +40,22 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					cvm.NetworkInterfaces = append(cvm.NetworkInterfaces, ni.Name+"-"+strconv.Itoa(i))
 				}
 
-				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
+				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name + "-" + vm.Name
 				cvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
 				cvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 				cvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
 				cvm.StorageOSDisk.ImageURI = vm.StorageOSDisk.ImageURI
+				cvm.StorageOSDisk.StorageAccountType = vm.StorageOSDisk.ManagedDiskType
 				if vm.StorageOSDisk.StorageAccount != "" && vm.StorageOSDisk.StorageContainer != "" {
 					cvm.StorageOSDisk.VhdURI = fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s.vhd", vm.StorageOSDisk.StorageAccount, vm.StorageOSDisk.StorageContainer, vm.StorageOSDisk.Name+"-"+strconv.Itoa(i))
 				}
 				cvm.StorageOSDisk.StorageAccount = vm.StorageOSDisk.StorageAccount
 				cvm.StorageOSDisk.StorageContainer = vm.StorageOSDisk.StorageContainer
+				if vm.StorageOSDisk.ManagedDiskType != "" {
+					cvm.StorageOSDisk.ManagedDisk = vm.Name + "-" + strconv.Itoa(i) + "-" + vm.StorageOSDisk.Name
+				}
 
-				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
+				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name + "-" + vm.Name
 				cvm.StorageDataDisk.Size = vm.StorageDataDisk.DiskSizeGB
 				cvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
 				if vm.StorageDataDisk.StorageAccount != "" && vm.StorageDataDisk.StorageContainer != "" {
@@ -59,6 +63,10 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				}
 				cvm.StorageDataDisk.StorageAccount = vm.StorageDataDisk.StorageAccount
 				cvm.StorageDataDisk.StorageContainer = vm.StorageDataDisk.StorageContainer
+				cvm.StorageDataDisk.StorageAccountType = vm.StorageDataDisk.ManagedDiskType
+				if vm.StorageDataDisk.ManagedDiskType != "" {
+					cvm.StorageDataDisk.ManagedDisk = vm.Name + "-" + strconv.Itoa(i) + "-" + vm.StorageDataDisk.Name
+				}
 
 				cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
 				cvm.DeleteOSDiskOnTermination = vm.DeleteOSDiskOnTermination

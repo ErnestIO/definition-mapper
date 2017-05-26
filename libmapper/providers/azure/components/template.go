@@ -23,6 +23,7 @@ const (
 	TYPEVIRTUALMACHINE       = "virtual_machine"
 	TYPEVIRTUALNETWORK       = "virtual_network"
 	TYPEAVAILABILITYSET      = "availability_set"
+	TYPEMANAGEDDISK          = "managed_disk"
 
 	GROUPINSTANCE  = "ernest.instance_group"
 	GROUPEBSVOLUME = "ernest.volume_group"
@@ -68,4 +69,8 @@ func templLoadbalancerBackendAddressPoolID(ap string) string {
 
 func templAvailabilitySetID(as string) string {
 	return `$(components.#[_component_id="` + TYPEAVAILABILITYSET + TYPEDELIMITER + as + `"].id)`
+}
+
+func templManagedDiskID(md string) string {
+	return `$(components.#[_component_id="` + TYPEMANAGEDDISK + TYPEDELIMITER + md + `"].id)`
 }
