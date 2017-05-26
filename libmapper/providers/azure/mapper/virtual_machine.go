@@ -40,7 +40,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					cvm.NetworkInterfaces = append(cvm.NetworkInterfaces, ni.Name+"-"+strconv.Itoa(i))
 				}
 
-				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name
+				cvm.StorageOSDisk.Name = vm.StorageOSDisk.Name + "-" + vm.Name
 				cvm.StorageOSDisk.Caching = vm.StorageOSDisk.Caching
 				cvm.StorageOSDisk.OSType = vm.StorageOSDisk.OSType
 				cvm.StorageOSDisk.CreateOption = vm.StorageOSDisk.CreateOption
@@ -55,7 +55,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					cvm.StorageOSDisk.ManagedDisk = vm.Name + "-" + strconv.Itoa(i) + "-" + vm.StorageOSDisk.Name
 				}
 
-				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name
+				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name + "-" + vm.Name
 				cvm.StorageDataDisk.Size = vm.StorageDataDisk.DiskSizeGB
 				cvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
 				if vm.StorageDataDisk.StorageAccount != "" && vm.StorageDataDisk.StorageContainer != "" {

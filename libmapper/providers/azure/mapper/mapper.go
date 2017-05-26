@@ -257,13 +257,13 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 			return err
 		}
 	}
-
-	for _, ni := range MapManagedDisks(d) {
-		if err := g.AddComponent(ni); err != nil {
-			return err
+	/*
+		for _, ni := range MapManagedDisks(d) {
+			if err := g.AddComponent(ni); err != nil {
+				return err
+			}
 		}
-	}
-
+	*/
 	for _, ni := range MapNetworkInterfaces(d) {
 		if err := g.AddComponent(ni); err != nil {
 			return err
