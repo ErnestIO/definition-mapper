@@ -22,6 +22,9 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 	for _, rg := range d.ResourceGroups {
 		for _, vm := range rg.VirtualMachines {
 			image := getImageParts(vm.Image)
+			if vm.Count == 0 {
+				vm.Count = 1
+			}
 
 			for i := 1; i < vm.Count+1; i++ {
 				cvm := &components.VirtualMachine{}

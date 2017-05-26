@@ -25,6 +25,10 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 					addresses = append(addresses, net.ParseIP(config.PrivateIPAddress).To4())
 				}
 
+				if vm.Count == 0 {
+					vm.Count = 1
+				}
+
 				for i := 1; i < vm.Count+1; i++ {
 					cv := &components.NetworkInterface{}
 					cv.Name = ni.Name + "-" + strconv.Itoa(i)

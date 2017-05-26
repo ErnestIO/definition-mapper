@@ -15,6 +15,9 @@ import (
 func MapManagedDisks(d *definition.Definition) (mds []*components.ManagedDisk) {
 	for _, rg := range d.ResourceGroups {
 		for _, vm := range rg.VirtualMachines {
+			if vm.Count == 0 {
+				vm.Count = 1
+			}
 			if vm.StorageOSDisk.ManagedDiskType != "" {
 				for i := 1; i < vm.Count+1; i++ {
 					md := &components.ManagedDisk{}

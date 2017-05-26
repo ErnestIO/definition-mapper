@@ -21,6 +21,10 @@ func MapPublicIPs(d *definition.Definition) (ips []*components.PublicIP) {
 						continue
 					}
 
+					if vm.Count == 0 {
+						vm.Count = 1
+					}
+
 					for i := 1; i < vm.Count+1; i++ {
 						n := &components.PublicIP{}
 						n.Name = iface.Name + "-" + strconv.Itoa(i) + "-" + config.Name
