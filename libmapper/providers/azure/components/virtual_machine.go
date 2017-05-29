@@ -108,8 +108,9 @@ func (i *VirtualMachine) Update(c graph.Component) {
 	cvm, ok := c.(*VirtualMachine)
 	if ok {
 		i.ID = cvm.ID
-		// ???
 		i.StorageDataDisk.Lun = cvm.StorageDataDisk.Lun
+		i.StorageDataDisk.ManagedDiskID = cvm.StorageDataDisk.ManagedDiskID
+		i.StorageOSDisk.ManagedDiskID = cvm.StorageOSDisk.ManagedDiskID
 	}
 
 	i.SetDefaultVariables()
