@@ -84,8 +84,10 @@ func (i *SecurityGroup) GetTag(tag string) string {
 func (i *SecurityGroup) Diff(c graph.Component) bool {
 	cs, ok := c.(*SecurityGroup)
 	if ok {
-		if reflect.DeepEqual(i.Tags, cs.Tags) != true {
-			return true
+		if len(i.Tags) != 0 && len(cs.Tags) != 0 {
+			if !reflect.DeepEqual(i.Tags, cs.Tags) {
+				return true
+			}
 		}
 		if len(i.SecurityRules) != len(cs.SecurityRules) {
 			return true

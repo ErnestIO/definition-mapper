@@ -84,11 +84,15 @@ func (vn *VirtualNetwork) GetTag(tag string) string {
 func (vn *VirtualNetwork) Diff(c graph.Component) bool {
 	cvn, ok := c.(*VirtualNetwork)
 	if ok {
-		if !reflect.DeepEqual(vn.Tags, cvn.Tags) {
-			return true
+		if len(vn.Tags) != 0 && len(cvn.Tags) != 0 {
+			if !reflect.DeepEqual(vn.Tags, cvn.Tags) {
+				return true
+			}
 		}
 
-		return !reflect.DeepEqual(vn.DNSServerNames, cvn.DNSServerNames)
+		if len(vn.DNSServerNames) != 0 && len(cvn.DNSServerNames) != 0 {
+			return !reflect.DeepEqual(vn.DNSServerNames, cvn.DNSServerNames)
+		}
 	}
 
 	return false

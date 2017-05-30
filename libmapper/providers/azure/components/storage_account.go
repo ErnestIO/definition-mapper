@@ -93,8 +93,10 @@ func (i *StorageAccount) Diff(c graph.Component) bool {
 		if i.EnableBlobEncryption != cs.EnableBlobEncryption {
 			return true
 		}
-		if reflect.DeepEqual(i.Tags, cs.Tags) != true {
-			return true
+		if len(i.Tags) != 0 && len(cs.Tags) != 0 {
+			if !reflect.DeepEqual(i.Tags, cs.Tags) {
+				return true
+			}
 		}
 	}
 	return false

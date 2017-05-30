@@ -84,8 +84,10 @@ func (i *LB) GetTag(tag string) string {
 func (i *LB) Diff(c graph.Component) bool {
 	cs, ok := c.(*LB)
 	if ok {
-		if reflect.DeepEqual(i.Tags, cs.Tags) != true {
-			return true
+		if len(i.Tags) != 0 && len(cs.Tags) != 0 {
+			if !reflect.DeepEqual(i.Tags, cs.Tags) {
+				return true
+			}
 		}
 		if i.Location != cs.Location {
 			return true

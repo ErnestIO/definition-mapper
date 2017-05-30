@@ -114,8 +114,10 @@ func (i *SQLDatabase) Diff(c graph.Component) bool {
 		if i.SourceDatabaseDeletionData != cv.SourceDatabaseDeletionData {
 			return true
 		}
-		if reflect.DeepEqual(i.Tags, cv.Tags) != true {
-			return true
+		if len(i.Tags) != 0 && len(cv.Tags) != 0 {
+			if !reflect.DeepEqual(i.Tags, cv.Tags) {
+				return true
+			}
 		}
 	}
 	return false

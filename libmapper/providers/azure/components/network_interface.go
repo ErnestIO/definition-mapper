@@ -7,6 +7,7 @@ package components
 import (
 	"log"
 	"reflect"
+	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
@@ -96,13 +97,12 @@ func (i *NetworkInterface) Diff(c graph.Component) bool {
 		if i.ResourceGroupName != cs.ResourceGroupName {
 			return true
 		}
-		if len(i.IPConfigurations) != len(cs.IPConfigurations) {
-			return true
+		if len(i.Tags) != 0 && len(cs.Tags) != 0 {
+			if !reflect.DeepEqual(i.Tags, cs.Tags) {
+				return true
+			}
 		}
 		if len(i.DNSServers) != len(cs.DNSServers) {
-			return true
-		}
-		if reflect.DeepEqual(i.Tags, cs.Tags) != true {
 			return true
 		}
 		for j := range i.DNSServers {
@@ -110,14 +110,17 @@ func (i *NetworkInterface) Diff(c graph.Component) bool {
 				return true
 			}
 		}
+		if len(i.IPConfigurations) != len(cs.IPConfigurations) {
+			return true
+		}
 		for j := range i.IPConfigurations {
 			if i.IPConfigurations[j].Name != cs.IPConfigurations[j].Name {
 				return true
 			}
-			if i.IPConfigurations[j].PrivateIPAddress != cs.IPConfigurations[j].PrivateIPAddress {
+			if i.IPConfigurations[j].PrivateIPAddress != cs.IPConfigurations[j].PrivateIPAddress && strings.ToLower(i.IPConfigurations[j].PrivateIPAddressAllocation) == "static" {
 				return true
 			}
-			if i.IPConfigurations[j].PrivateIPAddressAllocation != cs.IPConfigurations[j].PrivateIPAddressAllocation {
+			if strings.ToLower(i.IPConfigurations[j].PrivateIPAddressAllocation) != strings.ToLower(cs.IPConfigurations[j].PrivateIPAddressAllocation) {
 				return true
 			}
 			if i.IPConfigurations[j].PublicIPAddress != cs.IPConfigurations[j].PublicIPAddress {

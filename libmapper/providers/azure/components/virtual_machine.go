@@ -95,8 +95,10 @@ func (i *VirtualMachine) Diff(c graph.Component) bool {
 			return true
 		}
 
-		if reflect.DeepEqual(i.Tags, cvm.Tags) != true {
-			return true
+		if len(i.Tags) != 0 && len(cvm.Tags) != 0 {
+			if !reflect.DeepEqual(i.Tags, cvm.Tags) {
+				return true
+			}
 		}
 	}
 
