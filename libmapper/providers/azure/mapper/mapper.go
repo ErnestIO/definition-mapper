@@ -195,6 +195,11 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 		g.Components[i] = c
 	}
 
+	for i := len(g.Components) - 1; i >= 0; i-- {
+		c := g.Components[i]
+		c.Rebuild(g)
+	}
+
 	return g, nil
 }
 
