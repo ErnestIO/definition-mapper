@@ -106,12 +106,14 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					})
 				}
 
-				cvm.OSProfileWindowsConfig.AdditionalUnattendConfig = append(cvm.OSProfileWindowsConfig.AdditionalUnattendConfig, virtualmachine.UnattendedConfig{
-					Pass:        vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass,
-					Component:   vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Component,
-					SettingName: vm.OSProfileWindowsConfig.AdditionalUnattendConfig.SettingName,
-					Content:     vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Content,
-				})
+				if vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass != "" {
+					cvm.OSProfileWindowsConfig.AdditionalUnattendConfig = append(cvm.OSProfileWindowsConfig.AdditionalUnattendConfig, virtualmachine.UnattendedConfig{
+						Pass:        vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass,
+						Component:   vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Component,
+						SettingName: vm.OSProfileWindowsConfig.AdditionalUnattendConfig.SettingName,
+						Content:     vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Content,
+					})
+				}
 
 				tags := make(map[string]string)
 				if vm.Tags != nil {

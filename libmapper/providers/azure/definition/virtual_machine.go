@@ -80,7 +80,7 @@ type OSProfileWindowsConfig struct {
 		Component   string `json:"component" yaml:"component"`
 		SettingName string `json:"setting_name" yaml:"setting_name"`
 		Content     string `json:"content" yaml:"content"`
-	} `json:"additional_unattend_config" yaml:"additional_unattend_config"`
+	} `json:"additional_unattend_config,omitempty" yaml:"additional_unattend_config,omitempty"`
 }
 
 // WinRM ...
