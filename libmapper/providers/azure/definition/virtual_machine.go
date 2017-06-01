@@ -6,16 +6,16 @@ package definition
 
 // VirtualMachine ...
 type VirtualMachine struct {
-	Name                   string                 `json:"name" yaml:"name"`
-	Count                  int                    `json:"count" yaml:"count"`
-	Size                   string                 `json:"size" yaml:"size"`
-	Image                  string                 `json:"image" yaml:"image"`
-	AvailabilitySet        string                 `json:"availability_set" yaml:"availability_set"`
-	Authentication         Authentication         `json:"authentication" yaml:"authentication"`
-	StorageOSDisk          StorageOSDisk          `json:"storage_os_disk" yaml:"storage_os_disk"`
-	OSProfile              OSProfile              `json:"os_profile" yaml:"os_profile"`
-	OSProfileWindowsConfig OSProfileWindowsConfig `json:"os_profile_windows_config" yaml:"os_profile_windows_config"`
-	NetworkInterfaces      []NetworkInterface     `json:"network_interfaces" yaml:"network_interfaces"`
+	Name                   string                  `json:"name" yaml:"name"`
+	Count                  int                     `json:"count" yaml:"count"`
+	Size                   string                  `json:"size" yaml:"size"`
+	Image                  string                  `json:"image" yaml:"image"`
+	AvailabilitySet        string                  `json:"availability_set" yaml:"availability_set"`
+	Authentication         Authentication          `json:"authentication" yaml:"authentication"`
+	StorageOSDisk          StorageOSDisk           `json:"storage_os_disk" yaml:"storage_os_disk"`
+	OSProfile              OSProfile               `json:"os_profile" yaml:"os_profile"`
+	OSProfileWindowsConfig *OSProfileWindowsConfig `json:"os_profile_windows_config,omitempty" yaml:"os_profile_windows_config,omitempty"`
+	NetworkInterfaces      []NetworkInterface      `json:"network_interfaces" yaml:"network_interfaces"`
 	Plan                   struct {
 		Name      string `json:"name" yaml:"name"`
 		Publisher string `json:"publisher" yaml:"publisher"`

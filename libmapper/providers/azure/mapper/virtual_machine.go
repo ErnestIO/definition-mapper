@@ -94,25 +94,27 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 
 				cvm.OSProfileLinuxConfig.SSHKeys = mapSSHKeys(vm.Authentication.SSHKeys)
 				cvm.OSProfileLinuxConfig.DisablePasswordAuthentication = vm.Authentication.DisablePasswordAuthentication
-				cvm.OSProfileWindowsConfig.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
-				cvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
 				cvm.OSProfile.AdminUsername = vm.Authentication.AdminUsername
 				cvm.OSProfile.AdminPassword = vm.Authentication.AdminPassword
 
-				for _, winrm := range vm.OSProfileWindowsConfig.WinRM {
-					cvm.OSProfileWindowsConfig.WinRm = append(cvm.OSProfileWindowsConfig.WinRm, virtualmachine.WinRM{
-						Protocol:       winrm.Protocol,
-						CertificateURL: winrm.CertificateURL,
-					})
-				}
+				if vm.OSProfileWindowsConfig != nil {
+					cvm.OSProfileWindowsConfig.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
+					cvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
+					for _, winrm := range vm.OSProfileWindowsConfig.WinRM {
+						cvm.OSProfileWindowsConfig.WinRm = append(cvm.OSProfileWindowsConfig.WinRm, virtualmachine.WinRM{
+							Protocol:       winrm.Protocol,
+							CertificateURL: winrm.CertificateURL,
+						})
+					}
 
-				if vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass != "" {
-					cvm.OSProfileWindowsConfig.AdditionalUnattendConfig = append(cvm.OSProfileWindowsConfig.AdditionalUnattendConfig, virtualmachine.UnattendedConfig{
-						Pass:        vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass,
-						Component:   vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Component,
-						SettingName: vm.OSProfileWindowsConfig.AdditionalUnattendConfig.SettingName,
-						Content:     vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Content,
-					})
+					if vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass != "" {
+						cvm.OSProfileWindowsConfig.AdditionalUnattendConfig = append(cvm.OSProfileWindowsConfig.AdditionalUnattendConfig, virtualmachine.UnattendedConfig{
+							Pass:        vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass,
+							Component:   vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Component,
+							SettingName: vm.OSProfileWindowsConfig.AdditionalUnattendConfig.SettingName,
+							Content:     vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Content,
+						})
+					}
 				}
 
 				tags := make(map[string]string)
