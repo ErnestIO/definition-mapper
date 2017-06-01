@@ -32,12 +32,14 @@ func MapNetworkInterfaces(d *definition.Definition) (interfaces []*components.Ne
 				for i := 1; i < vm.Count+1; i++ {
 					cv := &components.NetworkInterface{}
 					cv.Name = ni.Name + "-" + strconv.Itoa(i)
+					cv.EnableIPForwarding = ni.EnableIPForwarding
 					cv.NetworkSecurityGroup = ni.SecurityGroup
 					cv.DNSServers = ni.DNSServers
 					cv.InternalDNSNameLabel = ni.InternalDNSNameLabel
 					cv.ResourceGroupName = rg.Name
 					cv.VirtualMachineID = components.TYPEVIRTUALMACHINE + components.TYPEDELIMITER + vm.Name
 					cv.Location = rg.Location
+
 					cv.Tags = mapTags(ni.Name, d.Name)
 					for k, v := range ni.Tags {
 						cv.Tags[k] = v
