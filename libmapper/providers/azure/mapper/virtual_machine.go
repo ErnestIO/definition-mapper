@@ -98,23 +98,25 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				cvm.OSProfile.AdminPassword = vm.Authentication.AdminPassword
 
 				if vm.OSProfileWindowsConfig != nil {
-					cvm.OSProfileWindowsConfig.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
-					cvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
+					config := virtualmachine.OSProfileWindowsConfig{}
+					config.ProvisionVMAgent = vm.OSProfileWindowsConfig.ProvisionVMAgent
+					config.EnableAutomaticUpgrades = vm.OSProfileWindowsConfig.EnableAutomaticUpgrades
 					for _, winrm := range vm.OSProfileWindowsConfig.WinRM {
-						cvm.OSProfileWindowsConfig.WinRm = append(cvm.OSProfileWindowsConfig.WinRm, virtualmachine.WinRM{
+						config.WinRm = append(config.WinRm, virtualmachine.WinRM{
 							Protocol:       winrm.Protocol,
 							CertificateURL: winrm.CertificateURL,
 						})
 					}
 
 					if vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass != "" {
-						cvm.OSProfileWindowsConfig.AdditionalUnattendConfig = append(cvm.OSProfileWindowsConfig.AdditionalUnattendConfig, virtualmachine.UnattendedConfig{
+						config.AdditionalUnattendConfig = append(cvm.OSProfileWindowsConfig.AdditionalUnattendConfig, virtualmachine.UnattendedConfig{
 							Pass:        vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Pass,
 							Component:   vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Component,
 							SettingName: vm.OSProfileWindowsConfig.AdditionalUnattendConfig.SettingName,
 							Content:     vm.OSProfileWindowsConfig.AdditionalUnattendConfig.Content,
 						})
 					}
+					cvm.OSProfileWindowsConfig = &config
 				}
 
 				tags := make(map[string]string)
