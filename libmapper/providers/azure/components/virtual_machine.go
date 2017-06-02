@@ -111,8 +111,12 @@ func (i *VirtualMachine) Update(c graph.Component) {
 	if ok {
 		i.ID = cvm.ID
 		i.StorageDataDisk.Lun = cvm.StorageDataDisk.Lun
-		i.StorageDataDisk.ManagedDiskID = cvm.StorageDataDisk.ManagedDiskID
-		i.StorageOSDisk.ManagedDiskID = cvm.StorageOSDisk.ManagedDiskID
+		if cvm.StorageDataDisk.StorageAccount != "" {
+			i.StorageDataDisk.ManagedDiskID = cvm.StorageDataDisk.ManagedDiskID
+		}
+		if cvm.StorageOSDisk.StorageAccount != "" {
+			i.StorageOSDisk.ManagedDiskID = cvm.StorageOSDisk.ManagedDiskID
+		}
 	}
 
 	i.SetDefaultVariables()
@@ -146,30 +150,6 @@ func (i *VirtualMachine) Rebuild(g *graph.Graph) {
 		i.AvailabilitySetID = templAvailabilitySetID(i.AvailabilitySet)
 	}
 
-	/*
-		if i.StorageOSDisk.ManagedDisk == "" && i.StorageOSDisk.ManagedDiskID != "" {
-			md := g.GetComponents().ByProviderID(i.StorageOSDisk.ManagedDiskID)
-			if md != nil {
-				i.StorageOSDisk.ManagedDisk = md.GetName()
-			}
-		}
-
-		if i.StorageOSDisk.ManagedDiskID == "" && i.StorageOSDisk.ManagedDisk != "" {
-			i.StorageOSDisk.ManagedDiskID = templManagedDiskID(i.StorageOSDisk.ManagedDisk)
-		}
-
-		if i.StorageDataDisk.ManagedDisk == "" && i.StorageDataDisk.ManagedDiskID != "" {
-			md := g.GetComponents().ByProviderID(i.StorageDataDisk.ManagedDiskID)
-			if md != nil {
-				i.StorageDataDisk.ManagedDisk = md.GetName()
-			}
-		}
-
-		if i.StorageDataDisk.ManagedDiskID == "" && i.StorageDataDisk.ManagedDisk != "" {
-			i.StorageDataDisk.ManagedDiskID = templManagedDiskID(i.StorageDataDisk.ManagedDisk)
-		}
-	*/
-
 	i.SetDefaultVariables()
 }
 
@@ -183,21 +163,9 @@ func (i *VirtualMachine) Dependencies() (deps []string) {
 		deps = append(deps, TYPESTORAGECONTAINER+TYPEDELIMITER+i.StorageOSDisk.StorageContainer)
 	}
 
-	/*
-		if i.StorageOSDisk.ManagedDisk != "" {
-			deps = append(deps, TYPEMANAGEDDISK+TYPEDELIMITER+i.StorageOSDisk.ManagedDisk)
-		}
-	*/
-
 	if i.StorageDataDisk.StorageContainer != "" && i.StorageDataDisk.StorageContainer != i.StorageOSDisk.StorageContainer {
 		deps = append(deps, TYPESTORAGECONTAINER+TYPEDELIMITER+i.StorageDataDisk.StorageContainer)
 	}
-
-	/*
-		if i.StorageDataDisk.ManagedDisk != "" {
-			deps = append(deps, TYPEMANAGEDDISK+TYPEDELIMITER+i.StorageDataDisk.ManagedDisk)
-		}
-	*/
 
 	if i.AvailabilitySet != "" {
 		deps = append(deps, TYPEAVAILABILITYSET+TYPEDELIMITER+i.AvailabilitySet)
