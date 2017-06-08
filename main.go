@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"strconv"
 	"time"
 
 	"github.com/ernestio/definition-mapper/libmapper"
@@ -30,6 +31,7 @@ type service struct {
 	Name       string `json:"name"`
 	Previous   string `json:"previous_id"`
 	Datacenter struct {
+		ID   int    `json:"id"`
 		Type string `json:"type"`
 	} `json:"datacenter"`
 	Definition struct {
@@ -344,7 +346,15 @@ func SubscribeImportComplete(body []byte) error {
 // For a given existing service will generate a valid internal
 // service with a workflow to delete all its components
 func SubscribeDeleteService(body []byte) ([]byte, error) {
-	_, _, t, p, _ := getInputDetails(body)
+	var s service
+	if err := json.Unmarshal(body, &s); err != nil {
+		log.Panic(err)
+	}
+
+	t := s.Datacenter.Type
+	dID := strconv.Itoa(s.Datacenter.ID)
+	p := s.Previous
+
 	m := providers.NewMapper(t)
 
 	oMsg, rerr := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
@@ -357,6 +367,22 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 		return body, merr
 	}
 
+	oMsg, rerr = n.Request("datacenter.get", []byte(`{"id":`+dID+`}`), time.Second)
+	if rerr != nil {
+		return body, rerr
+	}
+	var datacenterDetails map[string]interface{}
+	if err := json.Unmarshal(oMsg.Data, &datacenterDetails); err != nil {
+		return body, err
+	}
+
+	creds := m.ProviderCredentials(datacenterDetails)
+	original.UpdateComponent(creds)
+	for i := range original.Components {
+		original.Components[i].Rebuild(original)
+	}
+
+	original.UpdateComponent(creds)
 	empty := graph.New()
 
 	g, err := empty.Diff(original)
