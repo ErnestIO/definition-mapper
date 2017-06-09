@@ -382,7 +382,6 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 		original.Components[i].Rebuild(original)
 	}
 
-	original.UpdateComponent(creds)
 	empty := graph.New()
 
 	g, err := empty.Diff(original)
