@@ -128,6 +128,18 @@ func (i *SQLDatabase) Update(c graph.Component) {
 	cs, ok := c.(*SQLDatabase)
 	if ok {
 		i.ID = cs.ID
+		i.CreateMode = cs.CreateMode
+		i.SourceDatabaseID = cs.SourceDatabaseID
+		i.RestorePointInTime = cs.RestorePointInTime
+		i.Edition = cs.Edition
+		i.Collation = cs.Collation
+		i.MaxSizeBytes = cs.MaxSizeBytes
+		i.RequestedServiceObjectiveID = cs.RequestedServiceObjectiveID
+		i.RequestedServiceObjectiveName = cs.RequestedServiceObjectiveName
+		i.SourceDatabaseDeletionData = cs.SourceDatabaseDeletionData
+
+		i.CreationDate = cs.CreationDate
+		i.DefaultSecondaryLocation = cs.DefaultSecondaryLocation
 	}
 	i.SetDefaultVariables()
 }
