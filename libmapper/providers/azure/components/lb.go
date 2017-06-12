@@ -122,6 +122,7 @@ func (i *LB) Update(c graph.Component) {
 	cs, ok := c.(*LB)
 	if ok {
 		i.ID = cs.ID
+		i.FrontendIPConfigurations = cs.FrontendIPConfigurations
 	}
 	i.SetDefaultVariables()
 }
