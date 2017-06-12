@@ -107,6 +107,21 @@ func (i *StorageAccount) Update(c graph.Component) {
 	cs, ok := c.(*StorageAccount)
 	if ok {
 		i.ID = cs.ID
+		i.AccountKind = cs.AccountKind
+		i.AccountType = cs.AccountType
+		i.EnableBlobEncryption = cs.EnableBlobEncryption
+		i.PrimaryLocation = cs.PrimaryLocation
+		i.SecondaryLocation = cs.SecondaryLocation
+		i.PrimaryBlobEndpoint = cs.PrimaryBlobEndpoint
+		i.SecondaryBlobEndpoint = cs.SecondaryBlobEndpoint
+		i.PrimaryQueueEndpoint = cs.PrimaryQueueEndpoint
+		i.SecondaryQueueEndpoint = cs.SecondaryQueueEndpoint
+		i.PrimaryTableEndpoint = cs.PrimaryTableEndpoint
+		i.SecondaryTableEndpoint = cs.SecondaryTableEndpoint
+		i.PrimaryFileEndpoint = cs.PrimaryFileEndpoint
+		i.PrimaryAccessKey = cs.PrimaryAccessKey
+		i.SecondaryAccessKey = cs.SecondaryAccessKey
+		i.EnableBlobEncryption = cs.EnableBlobEncryption
 	}
 	i.SetDefaultVariables()
 }
