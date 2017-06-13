@@ -87,7 +87,7 @@ func (i *LBRule) Diff(c graph.Component) bool {
 		if i.FrontendIPConfigurationName != cs.FrontendIPConfigurationName {
 			return true
 		}
-		if strings.EqualFold(i.Protocol, cs.Protocol) {
+		if strings.EqualFold(i.Protocol, cs.Protocol) == false {
 			return true
 		}
 		if i.FrontendPort != cs.FrontendPort {

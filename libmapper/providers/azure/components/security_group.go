@@ -7,6 +7,7 @@ package components
 import (
 	"log"
 	"reflect"
+	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/securitygroup"
@@ -99,7 +100,7 @@ func (i *SecurityGroup) Diff(c graph.Component) bool {
 			if i.SecurityRules[j].Description != cs.SecurityRules[j].Description {
 				return true
 			}
-			if i.SecurityRules[j].Protocol != cs.SecurityRules[j].Protocol {
+			if strings.EqualFold(i.SecurityRules[j].Protocol, cs.SecurityRules[j].Protocol) == false {
 				return true
 			}
 			if i.SecurityRules[j].SourcePort != cs.SecurityRules[j].SourcePort {
