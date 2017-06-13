@@ -6,6 +6,7 @@ package components
 
 import (
 	"log"
+	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/lbrule"
@@ -86,7 +87,7 @@ func (i *LBRule) Diff(c graph.Component) bool {
 		if i.FrontendIPConfigurationName != cs.FrontendIPConfigurationName {
 			return true
 		}
-		if i.Protocol != cs.Protocol {
+		if strings.EqualFold(i.Protocol, cs.Protocol) {
 			return true
 		}
 		if i.FrontendPort != cs.FrontendPort {
