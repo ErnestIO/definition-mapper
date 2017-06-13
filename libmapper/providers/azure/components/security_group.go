@@ -94,35 +94,36 @@ func (i *SecurityGroup) Diff(c graph.Component) bool {
 			return true
 		}
 		for j := range cs.SecurityRules {
-			if i.SecurityRules[j].Name != cs.SecurityRules[j].Name {
-				return true
-			}
-			if i.SecurityRules[j].Description != cs.SecurityRules[j].Description {
-				return true
-			}
-			if strings.EqualFold(i.SecurityRules[j].Protocol, cs.SecurityRules[j].Protocol) == false {
-				return true
-			}
-			if i.SecurityRules[j].SourcePort != cs.SecurityRules[j].SourcePort {
-				return true
-			}
-			if i.SecurityRules[j].DestinationPortRange != cs.SecurityRules[j].DestinationPortRange {
-				return true
-			}
-			if i.SecurityRules[j].SourceAddressPrefix != cs.SecurityRules[j].SourceAddressPrefix {
-				return true
-			}
-			if i.SecurityRules[j].DestinationAddressPrefix != cs.SecurityRules[j].DestinationAddressPrefix {
-				return true
-			}
-			if i.SecurityRules[j].Direction != cs.SecurityRules[j].Direction {
-				return true
-			}
-			if i.SecurityRules[j].Access != cs.SecurityRules[j].Access {
-				return true
-			}
-			for i.SecurityRules[j].Priority != cs.SecurityRules[j].Priority {
-				return true
+			for k := range i.SecurityRules {
+				if i.SecurityRules[k].Name == cs.SecurityRules[j].Name {
+					if i.SecurityRules[k].Description != cs.SecurityRules[j].Description {
+						return true
+					}
+					if strings.EqualFold(i.SecurityRules[k].Protocol, cs.SecurityRules[j].Protocol) == false {
+						return true
+					}
+					if i.SecurityRules[k].SourcePort != cs.SecurityRules[j].SourcePort {
+						return true
+					}
+					if i.SecurityRules[k].DestinationPortRange != cs.SecurityRules[j].DestinationPortRange {
+						return true
+					}
+					if i.SecurityRules[k].SourceAddressPrefix != cs.SecurityRules[j].SourceAddressPrefix {
+						return true
+					}
+					if i.SecurityRules[k].DestinationAddressPrefix != cs.SecurityRules[j].DestinationAddressPrefix {
+						return true
+					}
+					if i.SecurityRules[k].Direction != cs.SecurityRules[j].Direction {
+						return true
+					}
+					if i.SecurityRules[k].Access != cs.SecurityRules[j].Access {
+						return true
+					}
+					for i.SecurityRules[k].Priority != cs.SecurityRules[j].Priority {
+						return true
+					}
+				}
 			}
 		}
 	}
