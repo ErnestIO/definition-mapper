@@ -58,17 +58,19 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 					cvm.StorageOSDisk.ManagedDisk = cvm.StorageOSDisk.Name
 				}
 
-				cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name + "-" + cvm.Name
-				cvm.StorageDataDisk.Size = vm.StorageDataDisk.DiskSizeGB
-				cvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
-				if vm.StorageDataDisk.StorageAccount != "" && vm.StorageDataDisk.StorageContainer != "" {
-					cvm.StorageDataDisk.VhdURI = fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s.vhd", vm.StorageDataDisk.StorageAccount, vm.StorageDataDisk.StorageContainer, vm.StorageDataDisk.Name+"-"+strconv.Itoa(i))
-				}
-				cvm.StorageDataDisk.StorageAccount = vm.StorageDataDisk.StorageAccount
-				cvm.StorageDataDisk.StorageContainer = vm.StorageDataDisk.StorageContainer
-				cvm.StorageDataDisk.StorageAccountType = vm.StorageDataDisk.ManagedDiskType
-				if vm.StorageDataDisk.ManagedDiskType != "" {
-					cvm.StorageDataDisk.ManagedDisk = cvm.StorageDataDisk.Name
+				if vm.StorageDataDisk.Name != "" {
+					cvm.StorageDataDisk.Name = vm.StorageDataDisk.Name + "-" + cvm.Name
+					cvm.StorageDataDisk.Size = vm.StorageDataDisk.DiskSizeGB
+					cvm.StorageDataDisk.CreateOption = vm.StorageDataDisk.CreateOption
+					if vm.StorageDataDisk.StorageAccount != "" && vm.StorageDataDisk.StorageContainer != "" {
+						cvm.StorageDataDisk.VhdURI = fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s.vhd", vm.StorageDataDisk.StorageAccount, vm.StorageDataDisk.StorageContainer, vm.StorageDataDisk.Name+"-"+strconv.Itoa(i))
+					}
+					cvm.StorageDataDisk.StorageAccount = vm.StorageDataDisk.StorageAccount
+					cvm.StorageDataDisk.StorageContainer = vm.StorageDataDisk.StorageContainer
+					cvm.StorageDataDisk.StorageAccountType = vm.StorageDataDisk.ManagedDiskType
+					if vm.StorageDataDisk.ManagedDiskType != "" {
+						cvm.StorageDataDisk.ManagedDisk = cvm.StorageDataDisk.Name
+					}
 				}
 
 				cvm.DeleteDataDisksOnTermination = vm.DeleteDataDisksOnTermination
