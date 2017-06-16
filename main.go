@@ -149,6 +149,11 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 		return nil, errors.New("could not find service id")
 	}
 
+	name, ok := gd["name"].(string)
+	if ok != true {
+		return nil, errors.New("could not find service name")
+	}
+
 	d, err := m.LoadDefinition(definition)
 	if err != nil {
 		return nil, err
@@ -161,6 +166,7 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 
 	// set graph ID and credentials
 	g.ID = sid
+	g.Name = name
 	err = g.AddComponent(m.ProviderCredentials(credentials))
 	if err != nil {
 		return nil, err
