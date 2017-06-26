@@ -190,7 +190,7 @@ func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 // and necessary workflow to create the environment on the
 // provider
 func SubscribeCreateService(body []byte) ([]byte, error) {
-	id, _, t, p, _ := getInputDetails(body)
+	id, name, t, p, _ := getInputDetails(body)
 
 	m := providers.NewMapper(t)
 	if m == nil {
@@ -232,6 +232,7 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 	}
 
 	g.ID = id
+	g.Name = name
 
 	return g.ToJSON()
 }
@@ -253,7 +254,7 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 		return nil, errors.New("could not find datacenter credentials")
 	}
 
-	id, _, t, _, n := getInputDetails(body)
+	id, name, t, _, n := getInputDetails(body)
 
 	m := providers.NewMapper(t)
 
@@ -265,6 +266,7 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 	}
 
 	g.ID = id
+	g.Name = name
 	err = g.AddComponent(m.ProviderCredentials(credentials))
 	if err != nil {
 		return nil, err
