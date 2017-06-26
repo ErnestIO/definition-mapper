@@ -149,7 +149,7 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 		return nil, errors.New("could not find service id")
 	}
 
-	name, ok := gd["name"].(string)
+	name, ok := definition["name"].(string)
 	if ok != true {
 		return nil, errors.New("could not find service name")
 	}
