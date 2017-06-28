@@ -49,24 +49,24 @@ func getInputDetails(body []byte) (string, string, string, string, string) {
 	return s.ID, s.Name, s.Datacenter.Type, s.Previous, s.Definition.Name
 }
 
-func getGraphDetails(body []byte) (string, string) {
+func getGraphDetails(body []byte) (string, string, string) {
 	var gg map[string]interface{}
 	err := json.Unmarshal(body, &gg)
 	if err != nil {
 		log.Println("could not process graph")
-		return "", ""
+		return "", "", ""
 	}
 
 	gx := graph.New()
 	err = gx.Load(gg)
 	if err != nil {
 		log.Println("could not load graph")
-		return "", ""
+		return "", "", ""
 	}
 
 	credentials := gx.GetComponents().ByType("credentials")
 
-	return gx.ID, credentials[0].GetProvider()
+	return gx.ID, gx.Name, credentials[0].GetProvider()
 }
 
 func getDefinition(id string) (map[string]interface{}, error) {
@@ -190,7 +190,7 @@ func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 // and necessary workflow to create the environment on the
 // provider
 func SubscribeCreateService(body []byte) ([]byte, error) {
-	id, name, t, p, _ := getInputDetails(body)
+	id, _, t, p, name := getInputDetails(body)
 
 	m := providers.NewMapper(t)
 	if m == nil {
@@ -284,7 +284,7 @@ func SubscribeImportComplete(body []byte) error {
 		Mapping    string `json:"mapping"`
 	}
 
-	id, provider := getGraphDetails(body)
+	id, _, provider := getGraphDetails(body)
 
 	pd, err := getDefinition(id)
 	if err != nil {
@@ -398,6 +398,7 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 	}
 
 	g.ID = p
+	g.Name = original.Name
 
 	return json.Marshal(g)
 }
