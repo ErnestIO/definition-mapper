@@ -352,7 +352,7 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	return err
+	return n.Publish("service.import.mapping.done", gdata)
 }
 
 // SubscribeDeleteService : definition.map.deletion subscriber
