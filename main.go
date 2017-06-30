@@ -40,6 +40,11 @@ type service struct {
 	} `json:"service"`
 }
 
+type diff struct {
+	X map[string]interface{} `json:"x"`
+	Y map[string]interface{} `json:"y"`
+}
+
 func getInputDetails(body []byte) (string, string, string, string, string) {
 	var s service
 	if err := json.Unmarshal(body, &s); err != nil {
@@ -426,6 +431,45 @@ func SubscribeMapService(body []byte) ([]byte, error) {
 	}
 
 	return json.Marshal(definition)
+}
+
+// SubscribeDiffGraph : graph.diff subscriber
+// Will generate a diff graph from two input graphs
+func SubscribeDiffGraph(body []byte) ([]byte, error) {
+	var d diff
+	var gx, gy *graph.Graph
+
+	err := json.Unmarshal(body, &d)
+	if err != nil {
+		return body, err
+	}
+
+	err = gx.Load(d.X)
+	if err != nil {
+		return body, err
+	}
+
+	credentials := gx.GetComponents().ByType("credentials")
+	provider := credentials[0].GetProvider()
+
+	m := providers.NewMapper(provider)
+
+	gx, err = m.LoadGraph(d.X)
+	if err != nil {
+		return body, err
+	}
+
+	gy, err = m.LoadGraph(d.Y)
+	if err != nil {
+		return body, err
+	}
+
+	g, err := gx.Diff(gy)
+	if err != nil {
+		return body, err
+	}
+
+	return g.ToJSON()
 }
 
 // ManageDefinitions : Manages all subscriptions
