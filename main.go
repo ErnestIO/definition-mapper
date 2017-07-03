@@ -82,7 +82,7 @@ func getDefinition(id string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(resp.Data, &d)
+	err = yaml.Unmarshal(resp.Data, &d)
 
 	return d, err
 }
