@@ -549,6 +549,21 @@ func ManageDefinitions() {
 	}); err != nil {
 		log.Panic(err)
 	}
+
+	if _, err := n.Subscribe("graph.diff", func(m *nats.Msg) {
+		if body, err := SubscribeDiffGraph(m.Data); err == nil {
+			if err = n.Publish(m.Reply, body); err != nil {
+				log.Println(err.Error())
+			}
+		} else {
+			log.Println(err.Error())
+			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
+				log.Println("Error trying to respond through nats : " + err.Error())
+			}
+		}
+	}); err != nil {
+		log.Panic(err)
+	}
 }
 
 func setup() {
