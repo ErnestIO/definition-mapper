@@ -5,6 +5,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -122,14 +124,23 @@ func getImportFilters(m map[string]interface{}, name string, provider string) []
 	return filters
 }
 
-func copyMap(m map[string]interface{}) map[string]interface{} {
-	cm := make(map[string]interface{})
+func copyMap(m map[string]interface{}) (map[string]interface{}, error) {
+	var buf bytes.Buffer
+	var copy map[string]interface{}
 
-	for k, v := range m {
-		cm[k] = v
+	enc := gob.NewEncoder(&buf)
+	dec := gob.NewDecoder(&buf)
+
+	err := enc.Encode(m)
+	if err != nil {
+		return nil, err
 	}
 
-	return cm
+	err = dec.Decode(&copy)
+	if err != nil {
+		return nil, err
+	}
+	return copy, nil
 }
 
 func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
@@ -259,7 +270,7 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 		return nil, errors.New("could not find datacenter credentials")
 	}
 
-	id, name, t, _, n := getInputDetails(body)
+	id, _, t, _, n := getInputDetails(body)
 
 	m := providers.NewMapper(t)
 
@@ -271,7 +282,7 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 	}
 
 	g.ID = id
-	g.Name = name
+	g.Name = n
 	err = g.AddComponent(m.ProviderCredentials(credentials))
 	if err != nil {
 		return nil, err
@@ -437,29 +448,35 @@ func SubscribeMapService(body []byte) ([]byte, error) {
 // Will generate a diff graph from two input graphs
 func SubscribeDiffGraph(body []byte) ([]byte, error) {
 	var d diff
-	var gx, gy *graph.Graph
+	var igx graph.Graph
 
 	err := json.Unmarshal(body, &d)
 	if err != nil {
+		log.Println("Unmarshal: " + err.Error())
 		return body, err
 	}
 
-	err = gx.Load(d.X)
+	gm, err := copyMap(d.X)
 	if err != nil {
 		return body, err
 	}
 
-	credentials := gx.GetComponents().ByType("credentials")
+	err = igx.Load(gm)
+	if err != nil {
+		return body, err
+	}
+
+	credentials := igx.GetComponents().ByType("credentials")
 	provider := credentials[0].GetProvider()
 
 	m := providers.NewMapper(provider)
 
-	gx, err = m.LoadGraph(d.X)
+	gx, err := m.LoadGraph(d.X)
 	if err != nil {
 		return body, err
 	}
 
-	gy, err = m.LoadGraph(d.Y)
+	gy, err := m.LoadGraph(d.Y)
 	if err != nil {
 		return body, err
 	}
@@ -468,6 +485,9 @@ func SubscribeDiffGraph(body []byte) ([]byte, error) {
 	if err != nil {
 		return body, err
 	}
+
+	g.ID = gy.ID
+	g.Name = gy.Name
 
 	return g.ToJSON()
 }
