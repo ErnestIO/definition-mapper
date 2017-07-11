@@ -156,7 +156,7 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.S3Bucket{}
 		case "iam_role":
 			c = &components.IamRole{}
-		case "iam_profile":
+		case "iam_policy":
 			c = &components.IamPolicy{}
 		case "iam_instance_profile":
 			c = &components.IamInstanceProfile{}
