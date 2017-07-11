@@ -30,6 +30,7 @@ type IamRole struct {
 	DatacenterRegion     string   `json:"datacenter_region"`
 	AccessKeyID          string   `json:"aws_access_key_id"`
 	SecretAccessKey      string   `json:"aws_secret_access_key"`
+	Remove               bool     `json:"-"`
 	Service              string   `json:"service"`
 }
 
@@ -111,6 +112,17 @@ func (i *IamRole) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *IamRole) Rebuild(g *graph.Graph) {
+	var referenced []string
+
+	for _, c := range g.GetComponents().ByType("iam_instance_profile") {
+		profile := c.(*IamInstanceProfile)
+		referenced = append(referenced, profile.Roles...)
+	}
+
+	if isOneOf(referenced, i.Name) != true {
+		i.Remove = true
+	}
+
 	if len(i.Policies) > len(i.PolicyARNs) {
 		for _, policy := range i.Policies {
 			i.PolicyARNs = append(i.PolicyARNs, templIAMPolicyARN(policy))
@@ -153,7 +165,7 @@ func (i *IamRole) Validate() error {
 
 // IsStateful : returns true if the component needs to be actioned to be removed.
 func (i *IamRole) IsStateful() bool {
-	return true
+	return !i.Remove
 }
 
 // SetDefaultVariables : sets up the default template variables for a component

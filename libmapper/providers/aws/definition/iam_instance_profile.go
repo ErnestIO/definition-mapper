@@ -6,7 +6,7 @@ package definition
 
 // IamInstanceProfile ...
 type IamInstanceProfile struct {
-	Name  string   `json:"name"`
-	Path  string   `json:"path"`
-	Roles []string `json:"roles"`
+	Name  string   `json:"name" yaml:"name"`
+	Path  string   `json:"path" yaml:"path"`
+	Roles []string `json:"roles" yaml:"roles"`
 }

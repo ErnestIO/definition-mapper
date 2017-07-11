@@ -6,9 +6,9 @@ package definition
 
 // IamPolicy ...
 type IamPolicy struct {
-	Name              string                 `json:"name"`
-	PolicyDocument    map[string]interface{} `json:"policy_document"`
-	PolicyDocumentRaw string                 `json:"policy_document_raw"`
-	Description       string                 `json:"description"`
-	Path              string                 `json:"path"`
+	Name              string                 `json:"name" yaml:"name"`
+	PolicyDocument    map[string]interface{} `json:"policy_document" yaml:"policy_document"`
+	PolicyDocumentRaw string                 `json:"policy_document_raw,omitempty" yaml:"policy_document_raw,omitempty"`
+	Description       string                 `json:"description" yaml:"description"`
+	Path              string                 `json:"path" yaml:"path"`
 }

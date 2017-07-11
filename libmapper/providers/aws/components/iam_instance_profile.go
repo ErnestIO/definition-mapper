@@ -27,6 +27,7 @@ type IamInstanceProfile struct {
 	DatacenterRegion        string   `json:"datacenter_region"`
 	AccessKeyID             string   `json:"aws_access_key_id"`
 	SecretAccessKey         string   `json:"aws_secret_access_key"`
+	Remove                  bool     `json:"-"`
 	Service                 string   `json:"service"`
 }
 
@@ -108,6 +109,19 @@ func (i *IamInstanceProfile) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *IamInstanceProfile) Rebuild(g *graph.Graph) {
+	var referenced []string
+
+	for _, c := range g.GetComponents().ByType("instance") {
+		instance := c.(*Instance)
+		if instance.IAMInstanceProfile != nil {
+			referenced = append(referenced, *instance.IAMInstanceProfile)
+		}
+	}
+
+	if isOneOf(referenced, i.Name) != true {
+		i.Remove = true
+	}
+
 	i.SetDefaultVariables()
 }
 
@@ -137,7 +151,7 @@ func (i *IamInstanceProfile) Validate() error {
 
 // IsStateful : returns true if the component needs to be actioned to be removed.
 func (i *IamInstanceProfile) IsStateful() bool {
-	return true
+	return !i.Remove
 }
 
 // SetDefaultVariables : sets up the default template variables for a component

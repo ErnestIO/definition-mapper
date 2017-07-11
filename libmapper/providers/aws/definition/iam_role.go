@@ -6,10 +6,10 @@ package definition
 
 // IamRole ...
 type IamRole struct {
-	Name                    string                 `json:"name"`
-	AssumePolicyDocument    map[string]interface{} `json:"assume_policy_document"`
-	AssumePolicyDocumentRaw string                 `json:"assume_policy_document_raw"`
-	Policies                []string               `json:"policies"`
-	Description             string                 `json:"description"`
-	Path                    string                 `json:"path"`
+	Name                    string                 `json:"name" yaml:"name"`
+	AssumePolicyDocument    map[string]interface{} `json:"assume_policy_document" yaml:"assume_policy_document"`
+	AssumePolicyDocumentRaw string                 `json:"assume_policy_document_raw,omitempty" yaml:"assume_policy_document_raw,omitempty"`
+	Policies                []string               `json:"policies" yaml:"policies"`
+	Description             string                 `json:"description" yaml:"description"`
+	Path                    string                 `json:"path" yaml:"path"`
 }

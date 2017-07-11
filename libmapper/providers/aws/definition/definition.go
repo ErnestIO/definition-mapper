@@ -24,9 +24,9 @@ type Definition struct {
 	RDSClusters         []RDSCluster         `json:"rds_clusters,omitempty" yaml:"rds_clusters,omitempty"`
 	RDSInstances        []RDSInstance        `json:"rds_instances,omitempty" yaml:"rds_instances,omitempty"`
 	Route53Zones        []Route53Zone        `json:"route53_zones,omitempty" yaml:"route53_zones,omitempty"`
-	IamRoles            []IamRole            `json:"iam_roles" yaml:"iam_roles"`
-	IamPolicies         []IamPolicy          `json:"iam_policies" yaml:"iam_policies"`
-	IamInstanceProfiles []IamInstanceProfile `json:"iam_instance_profiles" yaml:"iam_instance_profiles"`
+	IamRoles            []IamRole            `json:"iam_roles,omitempty" yaml:"iam_roles,omitempty"`
+	IamPolicies         []IamPolicy          `json:"iam_policies,omitempty" yaml:"iam_policies,omitempty"`
+	IamInstanceProfiles []IamInstanceProfile `json:"iam_instance_profiles,omitempty" yaml:"iam_instance_profiles,omitempty"`
 	S3Buckets           []S3                 `json:"s3_buckets,omitempty" yaml:"s3_buckets,omitempty"`
 }
 

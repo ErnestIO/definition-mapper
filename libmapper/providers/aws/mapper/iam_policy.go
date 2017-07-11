@@ -6,7 +6,6 @@ package mapper
 
 import (
 	"encoding/json"
-	"sort"
 
 	"github.com/ernestio/definition-mapper/libmapper/providers/aws/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/aws/definition"
@@ -41,22 +40,11 @@ func MapIamPolicies(d *definition.Definition) []*components.IamPolicy {
 // MapDefinitionIamPolicies : Maps output iam policies into a definition defined iam policies
 func MapDefinitionIamPolicies(g *graph.Graph) []definition.IamPolicy {
 	var policys []definition.IamPolicy
-	var referenced []string
-
-	for _, c := range g.GetComponents().ByType("iam_role") {
-		role := c.(*components.IamRole)
-		referenced = append(referenced, role.AssumePolicyDocument)
-	}
 
 	for _, c := range g.GetComponents().ByType("iam_policy") {
 		var policyDoc map[string]interface{}
 
 		r := c.(*components.IamPolicy)
-
-		if sort.SearchStrings(referenced, r.Name) == -1 {
-			g.DeleteComponent(c)
-			continue
-		}
 
 		_ = json.Unmarshal([]byte(r.PolicyDocument), &policyDoc)
 

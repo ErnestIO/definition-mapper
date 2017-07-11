@@ -28,6 +28,7 @@ type IamPolicy struct {
 	DatacenterRegion string `json:"datacenter_region"`
 	AccessKeyID      string `json:"aws_access_key_id"`
 	SecretAccessKey  string `json:"aws_secret_access_key"`
+	Remove           bool   `json:"-"`
 	Service          string `json:"service"`
 }
 
@@ -109,6 +110,17 @@ func (i *IamPolicy) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *IamPolicy) Rebuild(g *graph.Graph) {
+	var referenced []string
+
+	for _, c := range g.GetComponents().ByType("iam_role") {
+		role := c.(*IamRole)
+		referenced = append(referenced, role.Policies...)
+	}
+
+	if isOneOf(referenced, i.Name) != true {
+		i.Remove = true
+	}
+
 	i.SetDefaultVariables()
 }
 
@@ -132,7 +144,7 @@ func (i *IamPolicy) Validate() error {
 
 // IsStateful : returns true if the component needs to be actioned to be removed.
 func (i *IamPolicy) IsStateful() bool {
-	return true
+	return !i.Remove
 }
 
 // SetDefaultVariables : sets up the default template variables for a component
