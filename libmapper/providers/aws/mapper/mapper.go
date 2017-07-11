@@ -15,7 +15,7 @@ import (
 )
 
 // SUPPORTEDCOMPONENTS represents all component types supported by ernest
-var SUPPORTEDCOMPONENTS = []string{"vpc", "internet_gateway", "network", "instance", "firewall", "nat", "elb", "ebs_volume", "s3", "route53", "rds_instance", "rds_cluster"}
+var SUPPORTEDCOMPONENTS = []string{"vpc", "internet_gateway", "network", "instance", "firewall", "nat", "elb", "ebs_volume", "s3", "route53", "rds_instance", "rds_cluster", "iam_role", "iam_policie", "iam_instance_profile"}
 
 // Mapper : implements the generic mapper structure
 type Mapper struct{}
@@ -102,6 +102,9 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 	d.RDSInstances = MapDefinitionRDSInstances(g)
 	d.Route53Zones = MapDefinitionRoute53Zones(g)
 	d.S3Buckets = MapDefinitionS3Buckets(g)
+	d.IamInstanceProfiles = MapDefinitionIamInstanceProfiles(g)
+	d.IamRoles = MapDefinitionIamRoles(g)
+	d.IamPolicies = MapDefinitionIamPolicies(g)
 
 	return &d, nil
 }
@@ -151,6 +154,12 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 			c = &components.Route53Zone{}
 		case "s3":
 			c = &components.S3Bucket{}
+		case "iam_role":
+			c = &components.IamRole{}
+		case "iam_profile":
+			c = &components.IamPolicy{}
+		case "iam_instance_profile":
+			c = &components.IamInstanceProfile{}
 		default:
 			continue
 		}
@@ -292,6 +301,27 @@ func mapComponents(d *def.Definition, g *graph.Graph) error {
 
 	for _, route53 := range MapRoute53Zones(d) {
 		err := g.AddComponent(route53)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, role := range MapIamRoles(d) {
+		err := g.AddComponent(role)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, policy := range MapIamPolicies(d) {
+		err := g.AddComponent(policy)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, profile := range MapIamInstanceProfiles(d) {
+		err := g.AddComponent(profile)
 		if err != nil {
 			return err
 		}

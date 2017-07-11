@@ -20,35 +20,37 @@ type InstanceVolume struct {
 
 // Instance : mapping of an instance component
 type Instance struct {
-	ProviderType        string            `json:"_provider"`
-	ComponentType       string            `json:"_component"`
-	ComponentID         string            `json:"_component_id"`
-	State               string            `json:"_state"`
-	Action              string            `json:"_action"`
-	InstanceAWSID       string            `json:"instance_aws_id"`
-	Name                string            `json:"name"`
-	Type                string            `json:"instance_type"`
-	Image               string            `json:"image"`
-	IP                  string            `json:"ip"`
-	PublicIP            string            `json:"public_ip"`
-	ElasticIP           string            `json:"elastic_ip"`
-	ElasticIPAWSID      *string           `json:"elastic_ip_aws_id,omitempty"`
-	AssignElasticIP     bool              `json:"assign_elastic_ip"`
-	KeyPair             string            `json:"key_pair"`
-	UserData            string            `json:"user_data"`
-	Network             string            `json:"network_name"`
-	NetworkAWSID        string            `json:"network_aws_id"`
-	NetworkIsPublic     bool              `json:"network_is_public"`
-	SecurityGroups      []string          `json:"security_groups"`
-	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids"`
-	Volumes             []InstanceVolume  `json:"volumes"`
-	Tags                map[string]string `json:"tags"`
-	DatacenterType      string            `json:"datacenter_type,omitempty"`
-	DatacenterName      string            `json:"datacenter_name,omitempty"`
-	DatacenterRegion    string            `json:"datacenter_region"`
-	AccessKeyID         string            `json:"aws_access_key_id"`
-	SecretAccessKey     string            `json:"aws_secret_access_key"`
-	Service             string            `json:"service"`
+	ProviderType          string            `json:"_provider"`
+	ComponentType         string            `json:"_component"`
+	ComponentID           string            `json:"_component_id"`
+	State                 string            `json:"_state"`
+	Action                string            `json:"_action"`
+	InstanceAWSID         string            `json:"instance_aws_id"`
+	Name                  string            `json:"name"`
+	Type                  string            `json:"instance_type"`
+	Image                 string            `json:"image"`
+	IP                    string            `json:"ip"`
+	PublicIP              string            `json:"public_ip"`
+	ElasticIP             string            `json:"elastic_ip"`
+	ElasticIPAWSID        *string           `json:"elastic_ip_aws_id,omitempty"`
+	AssignElasticIP       bool              `json:"assign_elastic_ip"`
+	KeyPair               string            `json:"key_pair"`
+	UserData              string            `json:"user_data"`
+	Network               string            `json:"network_name"`
+	NetworkAWSID          string            `json:"network_aws_id"`
+	NetworkIsPublic       bool              `json:"network_is_public"`
+	SecurityGroups        []string          `json:"security_groups"`
+	SecurityGroupAWSIDs   []string          `json:"security_group_aws_ids"`
+	IAMInstanceProfile    *string           `json:"iam_instance_profile"`
+	IAMInstanceProfileARN *string           `json:"iam_instance_profile_arn"`
+	Volumes               []InstanceVolume  `json:"volumes"`
+	Tags                  map[string]string `json:"tags"`
+	DatacenterType        string            `json:"datacenter_type,omitempty"`
+	DatacenterName        string            `json:"datacenter_name,omitempty"`
+	DatacenterRegion      string            `json:"datacenter_region"`
+	AccessKeyID           string            `json:"aws_access_key_id"`
+	SecretAccessKey       string            `json:"aws_secret_access_key"`
+	Service               string            `json:"service"`
 }
 
 // GetID : returns the component's ID
@@ -191,6 +193,19 @@ func (i *Instance) Rebuild(g *graph.Graph) {
 		}
 	}
 
+	if i.IAMInstanceProfile == nil && i.IAMInstanceProfileARN != nil {
+		p := g.GetComponents().ByProviderID(*i.IAMInstanceProfileARN)
+		if p != nil {
+			name := p.GetName()
+			i.IAMInstanceProfile = &name
+		}
+	}
+
+	if i.IAMInstanceProfileARN == nil && i.IAMInstanceProfile != nil {
+		tpl := templIAMInstanceProfileARN(*i.IAMInstanceProfile)
+		i.IAMInstanceProfileARN = &tpl
+	}
+
 	i.SetDefaultVariables()
 }
 
@@ -204,6 +219,10 @@ func (i *Instance) Dependencies() []string {
 
 	for _, ebs := range i.Volumes {
 		deps = append(deps, TYPEEBSVOLUME+TYPEDELIMITER+ebs.Volume)
+	}
+
+	if i.IAMInstanceProfile != nil {
+		deps = append(deps, TYPEIAMINSTANCEPROFILE+TYPEDELIMITER+*i.IAMInstanceProfile)
 	}
 
 	deps = append(deps, TYPENETWORK+TYPEDELIMITER+i.Network)

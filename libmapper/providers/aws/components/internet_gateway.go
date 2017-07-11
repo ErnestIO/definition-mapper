@@ -90,13 +90,6 @@ func (i *InternetGateway) GetTag(tag string) string {
 
 // Diff : diff's the component against another component of the same type
 func (i *InternetGateway) Diff(c graph.Component) bool {
-	/*
-		cn, ok := c.(*InternetGateway)
-		if ok {
-			return !reflect.DeepEqual(i.Tags, ci.Tags)
-		}
-	*/
-
 	return false
 }
 

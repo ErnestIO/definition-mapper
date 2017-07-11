@@ -12,19 +12,22 @@ import (
 
 // Definition ...
 type Definition struct {
-	Name           string          `json:"name" yaml:"name"`
-	Datacenter     string          `json:"datacenter" yaml:"datacenter"`
-	Vpcs           []Vpc           `json:"vpcs,omitempty" yaml:"vpcs,omitempty"`
-	Networks       []Network       `json:"networks,omitempty" yaml:"networks,omitempty"`
-	Instances      []Instance      `json:"instances,omitempty" yaml:"instances,omitempty"`
-	SecurityGroups []SecurityGroup `json:"security_groups,omitempty" yaml:"security_groups,omitempty"`
-	ELBs           []ELB           `json:"loadbalancers,omitempty" yaml:"loadbalancers,omitempty"`
-	EBSVolumes     []EBSVolume     `json:"ebs_volumes,omitempty" yaml:"ebs_volumes,omitempty"`
-	NatGateways    []NatGateway    `json:"nat_gateways,omitempty" yaml:"nat_gateways,omitempty"`
-	RDSClusters    []RDSCluster    `json:"rds_clusters,omitempty" yaml:"rds_clusters,omitempty"`
-	RDSInstances   []RDSInstance   `json:"rds_instances,omitempty" yaml:"rds_instances,omitempty"`
-	Route53Zones   []Route53Zone   `json:"route53_zones,omitempty" yaml:"route53_zones,omitempty"`
-	S3Buckets      []S3            `json:"s3_buckets,omitempty" yaml:"s3_buckets,omitempty"`
+	Name                string               `json:"name" yaml:"name"`
+	Datacenter          string               `json:"datacenter" yaml:"datacenter"`
+	Vpcs                []Vpc                `json:"vpcs,omitempty" yaml:"vpcs,omitempty"`
+	Networks            []Network            `json:"networks,omitempty" yaml:"networks,omitempty"`
+	Instances           []Instance           `json:"instances,omitempty" yaml:"instances,omitempty"`
+	SecurityGroups      []SecurityGroup      `json:"security_groups,omitempty" yaml:"security_groups,omitempty"`
+	ELBs                []ELB                `json:"loadbalancers,omitempty" yaml:"loadbalancers,omitempty"`
+	EBSVolumes          []EBSVolume          `json:"ebs_volumes,omitempty" yaml:"ebs_volumes,omitempty"`
+	NatGateways         []NatGateway         `json:"nat_gateways,omitempty" yaml:"nat_gateways,omitempty"`
+	RDSClusters         []RDSCluster         `json:"rds_clusters,omitempty" yaml:"rds_clusters,omitempty"`
+	RDSInstances        []RDSInstance        `json:"rds_instances,omitempty" yaml:"rds_instances,omitempty"`
+	Route53Zones        []Route53Zone        `json:"route53_zones,omitempty" yaml:"route53_zones,omitempty"`
+	IamRoles            []IamRole            `json:"iam_roles" yaml:"iam_roles"`
+	IamPolicies         []IamPolicy          `json:"iam_policies" yaml:"iam_policies"`
+	IamInstanceProfiles []IamInstanceProfile `json:"iam_instance_profiles" yaml:"iam_instance_profiles"`
+	S3Buckets           []S3                 `json:"s3_buckets,omitempty" yaml:"s3_buckets,omitempty"`
 }
 
 // New returns a new Definition

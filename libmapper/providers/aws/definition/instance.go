@@ -23,4 +23,5 @@ type Instance struct {
 	SecurityGroups []string         `json:"security_groups" yaml:"security_groups"`
 	Volumes        []InstanceVolume `json:"volumes" yaml:"volumes"`
 	UserData       string           `json:"user_data" yaml:"user_data"`
+	IamProfile     string           `json:"iam_profile" yaml:"iam_profile"`
 }

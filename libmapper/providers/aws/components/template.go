@@ -5,19 +5,22 @@
 package components
 
 const (
-	TYPEDELIMITER       = "::"
-	TYPEVPC             = "vpc"
-	TYPENETWORK         = "network"
-	TYPEINSTANCE        = "instance"
-	TYPEELB             = "elb"
-	TYPEEBSVOLUME       = "ebs_volume"
-	TYPESECURITYGROUP   = "firewall"
-	TYPENATGATEWAY      = "nat"
-	TYPERDSCLUSTER      = "rds_cluster"
-	TYPERDSINSTANCE     = "rds_instance"
-	TYPEINTERNETGATEWAY = "internet_gateway"
-	TYPEROUTE53         = "route53"
-	TYPES3BUCKET        = "s3"
+	TYPEDELIMITER          = "::"
+	TYPEVPC                = "vpc"
+	TYPENETWORK            = "network"
+	TYPEINSTANCE           = "instance"
+	TYPEELB                = "elb"
+	TYPEEBSVOLUME          = "ebs_volume"
+	TYPESECURITYGROUP      = "firewall"
+	TYPENATGATEWAY         = "nat"
+	TYPERDSCLUSTER         = "rds_cluster"
+	TYPERDSINSTANCE        = "rds_instance"
+	TYPEINTERNETGATEWAY    = "internet_gateway"
+	TYPEROUTE53            = "route53"
+	TYPES3BUCKET           = "s3"
+	TYPEIAMROLE            = "iam_role"
+	TYPEIAMPOLICY          = "iam_policy"
+	TYPEIAMINSTANCEPROFILE = "iam_instance_profile"
 
 	GROUPINSTANCE  = "ernest.instance_group"
 	GROUPEBSVOLUME = "ernest.volume_group"
@@ -80,4 +83,12 @@ func templRDSClusterDNS(rds string) string {
 
 func templRDSInstanceDNS(rds string) string {
 	return `$(components.#[_component_id="` + TYPERDSINSTANCE + TYPEDELIMITER + rds + `"].endpoint)`
+}
+
+func templIAMInstanceProfileARN(profile string) string {
+	return `$(components.#[_component_id="` + TYPEIAMINSTANCEPROFILE + TYPEDELIMITER + profile + `"].iam_instance_profile_arn)`
+}
+
+func templIAMPolicyARN(policy string) string {
+	return `$(components.#[_component_id="` + TYPEIAMPOLICY + TYPEDELIMITER + policy + `"].iam_policy_arn)`
 }

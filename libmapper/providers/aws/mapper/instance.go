@@ -36,6 +36,10 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 				Tags:            mapInstanceTags(name, d.Name, instance.Name),
 			}
 
+			if instance.IamProfile != "" {
+				ci.IAMInstanceProfile = &instance.IamProfile
+			}
+
 			for _, vol := range instance.Volumes {
 				v := components.InstanceVolume{
 					Volume: vol.Volume + "-" + strconv.Itoa(i+1),
@@ -87,6 +91,10 @@ func MapDefinitionInstances(g *graph.Graph) []definition.Instance {
 			SecurityGroups: firstInstance.SecurityGroups,
 			ElasticIP:      elastic,
 			Count:          len(is),
+		}
+
+		if firstInstance.IAMInstanceProfile != nil {
+			instance.IamProfile = *firstInstance.IAMInstanceProfile
 		}
 
 		for _, vol := range firstInstance.Volumes {
