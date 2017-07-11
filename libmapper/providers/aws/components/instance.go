@@ -6,6 +6,7 @@ package components
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 
 	graph "gopkg.in/r3labs/graph.v2"
@@ -222,6 +223,8 @@ func (i *Instance) Dependencies() []string {
 	}
 
 	if i.IAMInstanceProfile != nil {
+		fmt.Println(i.IAMInstanceProfile)
+		fmt.Println("'" + *i.IAMInstanceProfile + "'")
 		deps = append(deps, TYPEIAMINSTANCEPROFILE+TYPEDELIMITER+*i.IAMInstanceProfile)
 	}
 

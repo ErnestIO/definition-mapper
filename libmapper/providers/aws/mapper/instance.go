@@ -36,8 +36,8 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 				Tags:            mapInstanceTags(name, d.Name, instance.Name),
 			}
 
-			if instance.IamProfile != "" {
-				ci.IAMInstanceProfile = &instance.IamProfile
+			if instance.IamProfile != nil {
+				ci.IAMInstanceProfile = instance.IamProfile
 			}
 
 			for _, vol := range instance.Volumes {
@@ -89,12 +89,9 @@ func MapDefinitionInstances(g *graph.Graph) []definition.Instance {
 			StartIP:        firstInstance.IP,
 			KeyPair:        firstInstance.KeyPair,
 			SecurityGroups: firstInstance.SecurityGroups,
+			IamProfile:     firstInstance.IAMInstanceProfile,
 			ElasticIP:      elastic,
 			Count:          len(is),
-		}
-
-		if firstInstance.IAMInstanceProfile != nil {
-			instance.IamProfile = *firstInstance.IAMInstanceProfile
 		}
 
 		for _, vol := range firstInstance.Volumes {
