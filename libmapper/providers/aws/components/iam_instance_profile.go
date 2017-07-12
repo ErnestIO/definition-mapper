@@ -6,6 +6,7 @@ package components
 
 import (
 	"errors"
+	"strings"
 
 	graph "gopkg.in/r3labs/graph.v2"
 )
@@ -109,16 +110,7 @@ func (i *IamInstanceProfile) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *IamInstanceProfile) Rebuild(g *graph.Graph) {
-	var referenced []string
-
-	for _, c := range g.GetComponents().ByType("instance") {
-		instance := c.(*Instance)
-		if instance.IAMInstanceProfile != nil {
-			referenced = append(referenced, *instance.IAMInstanceProfile)
-		}
-	}
-
-	if isOneOf(referenced, i.Name) != true {
+	if i.IsReferenced(g) != true && strings.Contains(g.Action, "import") {
 		i.Remove = true
 	}
 
@@ -164,4 +156,22 @@ func (i *IamInstanceProfile) SetDefaultVariables() {
 	i.DatacenterRegion = DATACENTERREGION
 	i.AccessKeyID = ACCESSKEYID
 	i.SecretAccessKey = SECRETACCESSKEY
+}
+
+// IsReferenced : returns true if another component specifies this component directly
+func (i *IamInstanceProfile) IsReferenced(g *graph.Graph) bool {
+	var referenced []string
+
+	for _, c := range g.GetComponents().ByType("instance") {
+		instance := c.(*Instance)
+		if instance.IAMInstanceProfile != nil {
+			referenced = append(referenced, *instance.IAMInstanceProfile)
+		}
+	}
+
+	if isOneOf(referenced, i.Name) {
+		return true
+	}
+
+	return false
 }

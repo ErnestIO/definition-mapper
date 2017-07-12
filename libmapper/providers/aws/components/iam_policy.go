@@ -6,6 +6,7 @@ package components
 
 import (
 	"errors"
+	"strings"
 
 	graph "gopkg.in/r3labs/graph.v2"
 )
@@ -114,10 +115,12 @@ func (i *IamPolicy) Rebuild(g *graph.Graph) {
 
 	for _, c := range g.GetComponents().ByType("iam_role") {
 		role := c.(*IamRole)
-		referenced = append(referenced, role.Policies...)
+		if role.IsReferenced(g) {
+			referenced = append(referenced, role.Policies...)
+		}
 	}
 
-	if isOneOf(referenced, i.Name) != true {
+	if isOneOf(referenced, i.Name) != true && strings.Contains(g.Action, "import") {
 		i.Remove = true
 	}
 

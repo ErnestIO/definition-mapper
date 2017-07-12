@@ -6,6 +6,7 @@ package components
 
 import (
 	"errors"
+	"strings"
 
 	graph "gopkg.in/r3labs/graph.v2"
 )
@@ -112,14 +113,7 @@ func (i *IamRole) Update(c graph.Component) {
 
 // Rebuild : rebuilds the component's internal state, such as templated values
 func (i *IamRole) Rebuild(g *graph.Graph) {
-	var referenced []string
-
-	for _, c := range g.GetComponents().ByType("iam_instance_profile") {
-		profile := c.(*IamInstanceProfile)
-		referenced = append(referenced, profile.Roles...)
-	}
-
-	if isOneOf(referenced, i.Name) != true {
+	if i.IsReferenced(g) != true && strings.Contains(g.Action, "import") {
 		i.Remove = true
 	}
 
@@ -178,4 +172,22 @@ func (i *IamRole) SetDefaultVariables() {
 	i.DatacenterRegion = DATACENTERREGION
 	i.AccessKeyID = ACCESSKEYID
 	i.SecretAccessKey = SECRETACCESSKEY
+}
+
+// IsReferenced : returns true if another component specifies this component directly
+func (i *IamRole) IsReferenced(g *graph.Graph) bool {
+	var referenced []string
+
+	for _, c := range g.GetComponents().ByType("iam_instance_profile") {
+		profile := c.(*IamInstanceProfile)
+		if profile.IsReferenced(g) {
+			referenced = append(referenced, profile.Roles...)
+		}
+	}
+
+	if isOneOf(referenced, i.Name) {
+		return true
+	}
+
+	return false
 }
