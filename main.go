@@ -279,9 +279,9 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 // Converts a completed import graph to an inpurt definition
 func SubscribeImportComplete(body []byte) error {
 	var service struct {
-		ID         string `json:"id"`
-		Definition string `json:"definition"`
-		Mapping    string `json:"mapping"`
+		ID         string       `json:"id"`
+		Definition string       `json:"definition"`
+		Mapping    *graph.Graph `json:"mapping"`
 	}
 
 	id, _, provider := getGraphDetails(body)
@@ -323,14 +323,9 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	gdata, err := g.ToJSON()
-	if err != nil {
-		return err
-	}
-
 	service.ID = id
 	service.Definition = string(data)
-	service.Mapping = string(gdata)
+	service.Mapping = g
 
 	sdata, err := json.Marshal(service)
 	if err != nil {
