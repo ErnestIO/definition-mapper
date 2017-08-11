@@ -279,9 +279,9 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 // Converts a completed import graph to an inpurt definition
 func SubscribeImportComplete(body []byte) error {
 	var service struct {
-		ID         string `json:"id"`
-		Definition string `json:"definition"`
-		Mapping    string `json:"mapping"`
+		ID         string       `json:"id"`
+		Definition string       `json:"definition"`
+		Mapping    *graph.Graph `json:"mapping"`
 	}
 
 	id, _, provider := getGraphDetails(body)
@@ -323,14 +323,9 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	gdata, err := g.ToJSON()
-	if err != nil {
-		return err
-	}
-
 	service.ID = id
 	service.Definition = string(data)
-	service.Mapping = string(gdata)
+	service.Mapping = g
 
 	sdata, err := json.Marshal(service)
 	if err != nil {
@@ -365,19 +360,22 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 
 	m := providers.NewMapper(t)
 
-	oMsg, rerr := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
-	if rerr != nil {
-		return body, rerr
+	oMsg, err := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
+	if err != nil {
+		return body, err
 	}
 
-	original, merr := mappingToGraph(m, oMsg.Data)
-	if merr != nil {
-		return body, merr
+	fmt.Println(t)
+	fmt.Println(string(oMsg.Data))
+
+	original, err := mappingToGraph(m, oMsg.Data)
+	if err != nil {
+		return body, err
 	}
 
-	oMsg, rerr = n.Request("datacenter.get", []byte(`{"id":`+dID+`}`), time.Second)
-	if rerr != nil {
-		return body, rerr
+	oMsg, err = n.Request("datacenter.get", []byte(`{"id":`+dID+`}`), time.Second)
+	if err != nil {
+		return body, err
 	}
 	var datacenterDetails map[string]interface{}
 	if err := json.Unmarshal(oMsg.Data, &datacenterDetails); err != nil {
