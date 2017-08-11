@@ -360,19 +360,22 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 
 	m := providers.NewMapper(t)
 
-	oMsg, rerr := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
-	if rerr != nil {
-		return body, rerr
+	oMsg, err := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
+	if err != nil {
+		return body, err
 	}
 
-	original, merr := mappingToGraph(m, oMsg.Data)
-	if merr != nil {
-		return body, merr
+	fmt.Println(t)
+	fmt.Println(string(oMsg.Data))
+
+	original, err := mappingToGraph(m, oMsg.Data)
+	if err != nil {
+		return body, err
 	}
 
-	oMsg, rerr = n.Request("datacenter.get", []byte(`{"id":`+dID+`}`), time.Second)
-	if rerr != nil {
-		return body, rerr
+	oMsg, err = n.Request("datacenter.get", []byte(`{"id":`+dID+`}`), time.Second)
+	if err != nil {
+		return body, err
 	}
 	var datacenterDetails map[string]interface{}
 	if err := json.Unmarshal(oMsg.Data, &datacenterDetails); err != nil {
