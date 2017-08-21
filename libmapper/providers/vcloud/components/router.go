@@ -210,12 +210,12 @@ func (r *Router) Validate() error {
 
 	for _, rule := range r.NatRules {
 		// Check if Destination is a valid IP
-		err := validateIP("Nat Rule Source", rule.OriginIP)
+		err := validateIP(rule.OriginIP, "Nat Rule Source")
 		if err != nil {
 			return err
 		}
 
-		err = validateIP("Nat Rule Destination", rule.TranslationIP)
+		err = validateIP(rule.TranslationIP, "Nat Rule Destination")
 		if err != nil {
 			return err
 		}
