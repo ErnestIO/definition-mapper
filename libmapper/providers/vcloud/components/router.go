@@ -6,7 +6,6 @@ package components
 
 import (
 	"errors"
-	"net"
 
 	graph "gopkg.in/r3labs/graph.v2"
 )
@@ -211,19 +210,17 @@ func (r *Router) Validate() error {
 
 	for _, rule := range r.NatRules {
 		// Check if Destination is a valid IP
-		ip := net.ParseIP(rule.TranslationIP)
-		if ip == nil {
-			return errors.New("Port Forwarding must be a valid IP")
+		err := validateIP("Nat Rule Source", rule.OriginIP)
+		if err != nil {
+			return err
 		}
 
-		if rule.OriginIP != "" {
-			source := net.ParseIP(rule.OriginIP)
-			if source == nil {
-				return errors.New("Port Forwarding source must be a valid IP")
-			}
+		err = validateIP("Nat Rule Destination", rule.TranslationIP)
+		if err != nil {
+			return err
 		}
 
-		err := validatePort(rule.OriginPort, "Port Forwarding From")
+		err = validatePort(rule.OriginPort, "Port Forwarding From")
 		if err != nil {
 			return err
 		}
