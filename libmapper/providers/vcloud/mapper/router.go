@@ -19,7 +19,7 @@ func MapRouters(d *definition.Definition) []*components.Router {
 		}
 
 		// Map firewall rules
-		for _, rule := range router.Rules {
+		for _, rule := range router.FirewallRules {
 			snw := d.FindNetwork(rule.Source)
 			if snw != nil {
 				rule.Source = snw.Subnet
@@ -41,14 +41,14 @@ func MapRouters(d *definition.Definition) []*components.Router {
 		}
 
 		// Map nat rules
-		for _, rule := range router.PortForwarding {
+		for _, rule := range router.NatRules {
 			r.NatRules = append(r.NatRules, components.NatRule{
-				Type:            "dnat",
+				Type:            rule.Type,
 				OriginIP:        rule.Source,
 				OriginPort:      rule.FromPort,
 				TranslationIP:   rule.Destination,
 				TranslationPort: rule.ToPort,
-				Protocol:        "tcp",
+				Protocol:        rule.Protocol,
 			})
 		}
 

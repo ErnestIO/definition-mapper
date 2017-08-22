@@ -6,10 +6,10 @@ package definition
 
 // Router stores all information about the router and its componenets
 type Router struct {
-	Name           string           `json:"name"`
-	Networks       []Network        `json:"networks"`
-	Rules          []FirewallRule   `json:"rules"`
-	PortForwarding []ForwardingRule `json:"port_forwarding"`
+	Name          string         `json:"name"`
+	Networks      []Network      `json:"networks"`
+	FirewallRules []FirewallRule `json:"firewall_rules"`
+	NatRules      []NatRule      `json:"nat_rules"`
 }
 
 // Network ...
@@ -20,12 +20,14 @@ type Network struct {
 	DNS    []string `json:"dns"`
 }
 
-// ForwardingRule holds port forwarding information
-type ForwardingRule struct {
+// NatRule holds port forwarding information
+type NatRule struct {
 	Source      string `json:"source"`
 	Destination string `json:"destination"`
 	FromPort    string `json:"from_port"`
 	ToPort      string `json:"to_port"`
+	Protocol    string `json:"protocol"`
+	Type        string `json:"type"`
 }
 
 // FirewallRule ...
