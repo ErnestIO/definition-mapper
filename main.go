@@ -231,6 +231,10 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 		}
 	}
 
+	for i := range g.Changes {
+		g.Changes[i].SetDefaultVariables()
+	}
+
 	g.ID = id
 	g.Name = name
 
