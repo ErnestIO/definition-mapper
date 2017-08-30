@@ -399,6 +399,10 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 		return body, err
 	}
 
+	for i := range g.Changes {
+		g.Changes[i].SetDefaultVariables()
+	}
+
 	g.ID = p
 	g.Name = original.Name
 
