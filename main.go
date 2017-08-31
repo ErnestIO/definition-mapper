@@ -394,9 +394,9 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 		return body, err
 	}
 
-	credentials, ok := gd["datacenter"].(map[string]interface{})
-	if ok != true {
-		return body, errors.New("could not find datacenter credentials")
+	credentials, err := getCredentials(gd)
+	if err != nil {
+		return body, err
 	}
 
 	creds := m.ProviderCredentials(credentials)
