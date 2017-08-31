@@ -11,7 +11,6 @@ import (
 	"log"
 	"os"
 	"runtime"
-	"strconv"
 	"time"
 
 	"github.com/ernestio/definition-mapper/libmapper"
@@ -359,7 +358,6 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 	}
 
 	t := s.Datacenter.Type
-	dID := strconv.Itoa(s.Datacenter.ID)
 	p := s.Previous
 
 	m := providers.NewMapper(t)
@@ -369,24 +367,22 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 		return body, err
 	}
 
-	fmt.Println(t)
-	fmt.Println(string(oMsg.Data))
-
 	original, err := mappingToGraph(m, oMsg.Data)
 	if err != nil {
 		return body, err
 	}
 
-	oMsg, err = n.Request("datacenter.get", []byte(`{"id":`+dID+`}`), time.Second)
-	if err != nil {
-		return body, err
-	}
-	var datacenterDetails map[string]interface{}
-	if err := json.Unmarshal(oMsg.Data, &datacenterDetails); err != nil {
+	var gd map[string]interface{}
+	if err := json.Unmarshal(body, &gd); err != nil {
 		return body, err
 	}
 
-	creds := m.ProviderCredentials(datacenterDetails)
+	credentials, ok := gd["datacenter"].(map[string]interface{})
+	if ok != true {
+		return body, errors.New("could not find datacenter credentials")
+	}
+
+	creds := m.ProviderCredentials(credentials)
 	original.UpdateComponent(creds)
 	for i := range original.Components {
 		original.Components[i].Rebuild(original)
@@ -397,10 +393,6 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 	g, err := empty.Diff(original)
 	if err != nil {
 		return body, err
-	}
-
-	for i := range g.Changes {
-		g.Changes[i].SetDefaultVariables()
 	}
 
 	g.ID = p
