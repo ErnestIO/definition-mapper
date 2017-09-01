@@ -126,6 +126,23 @@ func copyMap(m map[string]interface{}) map[string]interface{} {
 	return cm
 }
 
+func getCredentials(gd map[string]interface{}) (map[string]interface{}, error) {
+	project, ok := gd["datacenter"].(map[string]interface{})
+	if ok != true {
+		return nil, errors.New("could not find project credentials")
+	}
+
+	credentials, ok := project["credentials"].(map[string]interface{})
+	if ok != true {
+		return nil, errors.New("could not find project credentials")
+	}
+
+	credentials["name"] = project["name"]
+	credentials["type"] = project["type"]
+
+	return credentials, nil
+}
+
 func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 	var gd map[string]interface{}
 	err := json.Unmarshal(body, &gd)
@@ -138,9 +155,9 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 		return nil, errors.New("could not convert definition")
 	}
 
-	credentials, ok := gd["datacenter"].(map[string]interface{})
-	if ok != true {
-		return nil, errors.New("could not find datacenter credentials")
+	credentials, err := getCredentials(gd)
+	if err != nil {
+		return nil, err
 	}
 
 	sid, ok := gd["id"].(string)
@@ -252,9 +269,9 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	credentials, ok := gd["datacenter"].(map[string]interface{})
-	if ok != true {
-		return nil, errors.New("could not find datacenter credentials")
+	credentials, err := getCredentials(gd)
+	if err != nil {
+		return nil, err
 	}
 
 	id, name, t, _, n := getInputDetails(body)
@@ -377,9 +394,9 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 		return body, err
 	}
 
-	credentials, ok := gd["datacenter"].(map[string]interface{})
-	if ok != true {
-		return body, errors.New("could not find datacenter credentials")
+	credentials, err := getCredentials(gd)
+	if err != nil {
+		return body, err
 	}
 
 	creds := m.ProviderCredentials(credentials)
