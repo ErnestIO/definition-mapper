@@ -35,7 +35,7 @@ type service struct {
 	} `json:"datacenter"`
 	Definition struct {
 		Name    string `json:"name"`
-		Project string `json:"project"`
+		Project string `json:"project2"`
 	} `json:"service"`
 }
 
@@ -83,12 +83,12 @@ func getDefinition(id string) (map[string]interface{}, error) {
 
 func getDefinitionDetails(d map[string]interface{}) (string, string) {
 	var name string
-	var datacenter string
+	var project string
 
 	name, _ = d["name"].(string)
-	datacenter, _ = d["datacenter"].(string)
+	project, _ = d["project"].(string)
 
-	return name, datacenter
+	return name, project
 }
 
 func getImportFilters(m map[string]interface{}, name string, provider string) []string {
