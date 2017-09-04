@@ -13,7 +13,7 @@ import (
 // Definition ...
 type Definition struct {
 	Name                string               `json:"name" yaml:"name"`
-	Datacenter          string               `json:"datacenter" yaml:"datacenter"`
+	Project             string               `json:"project" yaml:"project"`
 	Vpcs                []Vpc                `json:"vpcs,omitempty" yaml:"vpcs,omitempty"`
 	Networks            []Network            `json:"networks,omitempty" yaml:"networks,omitempty"`
 	Instances           []Instance           `json:"instances,omitempty" yaml:"instances,omitempty"`

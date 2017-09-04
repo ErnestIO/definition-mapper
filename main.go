@@ -34,8 +34,8 @@ type service struct {
 		Type string `json:"type"`
 	} `json:"datacenter"`
 	Definition struct {
-		Name       string `json:"name"`
-		Datacenter string `json:"datacenter"`
+		Name    string `json:"name"`
+		Project string `json:"project"`
 	} `json:"service"`
 }
 
@@ -332,10 +332,10 @@ func SubscribeImportComplete(body []byte) error {
 	switch provider {
 	case "aws":
 		def := d.(*aws.Definition)
-		def.Name, def.Datacenter = getDefinitionDetails(pd)
+		def.Name, def.Project = getDefinitionDetails(pd)
 	case "azure":
 		def := d.(*azure.Definition)
-		def.Name, def.Datacenter = getDefinitionDetails(pd)
+		def.Name, def.Project = getDefinitionDetails(pd)
 	}
 
 	data, err := yaml.Marshal(d)
