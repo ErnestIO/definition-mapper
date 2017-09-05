@@ -35,7 +35,7 @@ type service struct {
 	} `json:"datacenter"`
 	Definition struct {
 		Name    string `json:"name"`
-		Project string `json:"project2"`
+		Project string `json:"project"`
 	} `json:"service"`
 }
 
