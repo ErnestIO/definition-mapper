@@ -76,7 +76,7 @@ func (i *VirtualMachine) GetTags() map[string]string {
 
 // GetTag returns a components tag
 func (i *VirtualMachine) GetTag(tag string) string {
-	return ""
+	return i.Tags[tag]
 }
 
 // Diff : diff's the component against another component of the same type

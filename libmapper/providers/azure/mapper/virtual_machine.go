@@ -159,7 +159,7 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		image := firstInstance.StorageImageReference
 
 		dvm := definition.VirtualMachine{
-			Name:        firstInstance.Name,
+			Name:        ig,
 			Size:        firstInstance.VMSize,
 			Image:       strings.Join([]string{image.Publisher, image.Offer, image.Sku, image.Version}, ":"),
 			Count:       len(is),
@@ -210,16 +210,18 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 
 			nNi := definition.NetworkInterface{
 				ID:                   ni.GetProviderID(),
-				Name:                 ni.Name,
+				Name:                 ig,
 				SecurityGroup:        ni.NetworkSecurityGroup,
 				DNSServers:           ni.DNSServers,
 				InternalDNSNameLabel: ni.InternalDNSNameLabel,
 			}
 
 			for _, ip := range ni.IPConfigurations {
+				parts := strings.Split(ip.SubnetID, "/")
+				network := parts[len(parts)-3]
 				nIP := definition.IPConfiguration{
 					Name:                       ip.Name,
-					Subnet:                     ip.Subnet,
+					Subnet:                     network + ":" + ip.Subnet,
 					PrivateIPAddress:           ip.PrivateIPAddress,
 					PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
 				}
