@@ -196,8 +196,10 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		dvm.Authentication.SSHKeys = mapDefinitionSSHKeys(firstInstance.OSProfileLinuxConfig.SSHKeys)
 		dvm.Authentication.DisablePasswordAuthentication = firstInstance.OSProfileLinuxConfig.DisablePasswordAuthentication
 		dvm.OSProfileWindowsConfig = &definition.OSProfileWindowsConfig{}
-		dvm.OSProfileWindowsConfig.ProvisionVMAgent = firstInstance.OSProfileWindowsConfig.ProvisionVMAgent
-		dvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = firstInstance.OSProfileWindowsConfig.EnableAutomaticUpgrades
+		if firstInstance.OSProfileWindowsConfig != nil {
+			dvm.OSProfileWindowsConfig.ProvisionVMAgent = firstInstance.OSProfileWindowsConfig.ProvisionVMAgent
+			dvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = firstInstance.OSProfileWindowsConfig.EnableAutomaticUpgrades
+		}
 		dvm.Authentication.AdminUsername = firstInstance.OSProfile.AdminPassword
 		dvm.Authentication.AdminPassword = firstInstance.OSProfile.AdminPassword
 
