@@ -203,6 +203,13 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		dvm.Authentication.AdminUsername = firstInstance.OSProfile.AdminPassword
 		dvm.Authentication.AdminPassword = firstInstance.OSProfile.AdminPassword
 
+		dvm.OSProfile = definition.OSProfile{}
+		dvm.OSProfile.ComputerName = firstInstance.OSProfile.ComputerName
+		dvm.OSProfile.CustomData = firstInstance.OSProfile.CustomData
+
+		dvm.DeleteOSDiskOnTermination = firstInstance.DeleteOSDiskOnTermination
+		dvm.DeleteDataDisksOnTermination = firstInstance.DeleteDataDisksOnTermination
+
 		for _, cn := range g.GetComponents().ByType("network_interface") {
 			ni := cn.(*components.NetworkInterface)
 
