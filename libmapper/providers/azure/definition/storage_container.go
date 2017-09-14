@@ -6,7 +6,7 @@ package definition
 
 // StorageContainer ...
 type StorageContainer struct {
-	ID         string `json:"id" yaml:"id"`
-	Name       string `json:"name" yaml:"name"`
-	AccessType string `json:"access_type" yaml:"access_type"`
+	ID         string `json:"id,omitempty" yaml:"id,omitempty"`
+	Name       string `json:"name,omitempty" yaml:"name,omitempty"`
+	AccessType string `json:"access_type,omitempty" yaml:"access_type,omitempty"`
 }

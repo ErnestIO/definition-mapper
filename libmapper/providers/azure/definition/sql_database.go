@@ -6,16 +6,16 @@ package definition
 
 // SQLDatabase ..
 type SQLDatabase struct {
-	ID                            string            `json:"id" yaml:"id"`
-	Name                          string            `json:"name" yaml:"name"`
-	CreateMode                    string            `json:"create_mode" yaml:"create_mode"`
-	SourceDatabaseID              string            `json:"source_database_id" yaml:"source_database_id"`
-	RestorePointInTime            string            `json:"restore_point_in_time" yaml:"restore_point_in_time"`
-	Edition                       string            `json:"edition" yaml:"edition"`
-	Collation                     string            `json:"collation" yaml:"collation"`
-	MaxSizeBytes                  string            `json:"max_size_bytes" yaml:"max_size_bytes"`
-	RequestedServiceObjectiveID   string            `json:"requested_service_objective_id" yaml:"requested_service_objective_id"`
-	RequestedServiceObjectiveName string            `json:"requested_service_objective_name" yaml:"requested_service_objective_name"`
-	SourceDatabaseDeletionData    string            `json:"source_database_deletion_date" yaml:"source_database_deletion_date"`
-	Tags                          map[string]string `json:"tags" yaml:"tags"`
+	ID                            string            `json:"id,omitempty" yaml:"id,omitempty"`
+	Name                          string            `json:"name,omitempty" yaml:"name,omitempty"`
+	CreateMode                    string            `json:"create_mode,omitempty" yaml:"create_mode,omitempty"`
+	SourceDatabaseID              string            `json:"source_database_id,omitempty" yaml:"source_database_id,omitempty"`
+	RestorePointInTime            string            `json:"restore_point_in_time,omitempty" yaml:"restore_point_in_time,omitempty"`
+	Edition                       string            `json:"edition,omitempty" yaml:"edition,omitempty"`
+	Collation                     string            `json:"collation,omitempty" yaml:"collation,omitempty"`
+	MaxSizeBytes                  string            `json:"max_size_bytes,omitempty" yaml:"max_size_bytes,omitempty"`
+	RequestedServiceObjectiveID   string            `json:"requested_service_objective_id,omitempty" yaml:"requested_service_objective_id,omitempty"`
+	RequestedServiceObjectiveName string            `json:"requested_service_objective_name,omitempty" yaml:"requested_service_objective_name,omitempty"`
+	SourceDatabaseDeletionData    string            `json:"source_database_deletion_date,omitempty" yaml:"source_database_deletion_date,omitempty"`
+	Tags                          map[string]string `json:"tags,omitempty" yaml:"tags,omitempty"`
 }

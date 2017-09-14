@@ -6,8 +6,8 @@ package definition
 
 // SQLFirewallRule ..
 type SQLFirewallRule struct {
-	ID             string `json:"id" yaml:"id"`
-	Name           string `json:"name" yaml:"name"`
-	StartIPAddress string `json:"start_ip_address" yaml:"start_ip_address"`
-	EndIPAddress   string `json:"end_ip_address" yaml:"end_ip_address"`
+	ID             string `json:"id,omitempty" yaml:"id,omitempty"`
+	Name           string `json:"name,omitempty" yaml:"name,omitempty"`
+	StartIPAddress string `json:"start_ip_address,omitempty" yaml:"start_ip_address,omitempty"`
+	EndIPAddress   string `json:"end_ip_address,omitempty" yaml:"end_ip_address,omitempty"`
 }

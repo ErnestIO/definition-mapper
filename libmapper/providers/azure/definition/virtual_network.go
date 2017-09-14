@@ -6,8 +6,8 @@ package definition
 
 // VirtualNetwork ...
 type VirtualNetwork struct {
-	Name          string   `json:"name" yaml:"name"`
-	AddressSpaces []string `json:"address_spaces" yaml:"address_spaces"`
-	DNSServers    []string `json:"dns_servers" yaml:"dns_servers"`
-	Subnets       []Subnet `json:"subnets" yaml:"subnets"`
+	Name          string   `json:"name,omitempty" yaml:"name,omitempty"`
+	AddressSpaces []string `json:"address_spaces,omitempty" yaml:"address_spaces,omitempty"`
+	DNSServers    []string `json:"dns_servers,omitempty" yaml:"dns_servers,omitempty"`
+	Subnets       []Subnet `json:"subnets,omitempty" yaml:"subnets,omitempty"`
 }

@@ -115,6 +115,22 @@ func (vn *VirtualNetwork) Rebuild(g *graph.Graph) {
 			vn.Subnets[x].SecurityGroup = `$(components.#[_component_id="` + TYPESECURITYGROUP + TYPEDELIMITER + vn.Subnets[x].SecurityGroupName + `"].id)`
 		}
 	}
+
+	if len(vn.Subnets) < 1 {
+		for _, c := range g.GetComponents().ByType("subnet") {
+			s := c.(*Subnet)
+
+			if s.ResourceGroupName == vn.ResourceGroupName && s.VirtualNetworkName == vn.Name {
+				vn.Subnets = append(vn.Subnets, virtualnetwork.Subnet{
+					Name:              s.Name,
+					AddressPrefix:     s.AddressPrefix,
+					SecurityGroup:     s.NetworkSecurityGroupID,
+					SecurityGroupName: s.NetworkSecurityGroup,
+				})
+			}
+		}
+	}
+
 	vn.SetDefaultVariables()
 }
 

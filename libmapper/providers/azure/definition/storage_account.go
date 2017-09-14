@@ -6,11 +6,11 @@ package definition
 
 // StorageAccount ...
 type StorageAccount struct {
-	ID                   string             `json:"id" yaml:"id"`
-	Name                 string             `json:"name" yaml:"name"`
-	AccountType          string             `json:"account_type" yaml:"account_type"`
-	AccountKind          string             `json:"account_kind" yaml:"account_kind"`
-	EnableBlobEncryption bool               `json:"enable_blob_encryption" yaml:"enable_blob_encryption"`
-	Tags                 map[string]string  `json:"tags" yaml:"tags"`
-	Containers           []StorageContainer `json:"containers" yaml:"containers"`
+	ID                   string             `json:"id,omitempty" yaml:"id,omitempty"`
+	Name                 string             `json:"name,omitempty" yaml:"name,omitempty"`
+	AccountType          string             `json:"account_type,omitempty" yaml:"account_type,omitempty"`
+	AccountKind          string             `json:"account_kind,omitempty" yaml:"account_kind,omitempty"`
+	EnableBlobEncryption bool               `json:"enable_blob_encryption,omitempty" yaml:"enable_blob_encryption,omitempty"`
+	Tags                 map[string]string  `json:"tags,omitempty" yaml:"tags,omitempty"`
+	Containers           []StorageContainer `json:"containers,omitempty" yaml:"containers,omitempty"`
 }

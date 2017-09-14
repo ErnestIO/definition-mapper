@@ -6,14 +6,14 @@ package definition
 
 // SecurityGroupRule ...
 type SecurityGroupRule struct {
-	Name                     string `json:"name" yaml:"name"`
-	Description              string `json:"description" yaml:"description"`
-	Priority                 int    `json:"priority" yaml:"priority"`
-	Direction                string `json:"direction" yaml:"direction"`
-	Access                   string `json:"access" yaml:"access"`
-	Protocol                 string `json:"protocol" yaml:"protocol"`
-	SourcePortRange          string `json:"source_port_range" yaml:"source_port_range"`
-	DestinationPortRange     string `json:"destination_port_range" yaml:"destination_port_range"`
-	SourceAddressPrefix      string `json:"source_address_prefix" yaml:"source_address_prefix"`
-	DestinationAddressPrefix string `json:"destination_address_prefix" yaml:"destination_address_prefix"`
+	Name                     string `json:"name,omitempty" yaml:"name,omitempty"`
+	Description              string `json:"description,omitempty" yaml:"description,omitempty"`
+	Priority                 int    `json:"priority,omitempty" yaml:"priority,omitempty"`
+	Direction                string `json:"direction,omitempty" yaml:"direction,omitempty"`
+	Access                   string `json:"access,omitempty" yaml:"access,omitempty"`
+	Protocol                 string `json:"protocol,omitempty" yaml:"protocol,omitempty"`
+	SourcePortRange          string `json:"source_port_range,omitempty" yaml:"source_port_range,omitempty"`
+	DestinationPortRange     string `json:"destination_port_range,omitempty" yaml:"destination_port_range,omitempty"`
+	SourceAddressPrefix      string `json:"source_address_prefix,omitempty" yaml:"source_address_prefix,omitempty"`
+	DestinationAddressPrefix string `json:"destination_address_prefix,omitempty" yaml:"destination_address_prefix,omitempty"`
 }

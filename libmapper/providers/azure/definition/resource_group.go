@@ -6,15 +6,15 @@ package definition
 
 // ResourceGroup ...
 type ResourceGroup struct {
-	ID               string            `json:"id" yaml:"id"`
-	Name             string            `json:"name" yaml:"name"`
-	Location         string            `json:"location" yaml:"location"`
-	Tags             map[string]string `json:"tags" yaml:"tags"`
-	VirtualNetworks  []VirtualNetwork  `json:"virtual_networks" yaml:"virtual_networks"`
-	SecurityGroups   []SecurityGroup   `json:"security_groups" yaml:"security_groups"`
-	LBs              []LB              `json:"loadbalancers" yaml:"loadbalancers"`
-	VirtualMachines  []VirtualMachine  `json:"virtual_machines" yaml:"virtual_machines"`
-	AvailabilitySets []AvailabilitySet `json:"availability_sets" yaml:"availability_sets"`
-	StorageAccounts  []StorageAccount  `json:"storage_accounts" yaml:"storage_accounts"`
-	SQLServers       []SQLServer       `json:"sql_servers" yaml:"sql_servers"`
+	ID               string            `json:"id,omitempty" yaml:"id,omitempty"`
+	Name             string            `json:"name,omitempty" yaml:"name,omitempty"`
+	Location         string            `json:"location,omitempty" yaml:"location,omitempty"`
+	Tags             map[string]string `json:"tags,omitempty" yaml:"tags,omitempty"`
+	VirtualNetworks  []VirtualNetwork  `json:"virtual_networks,omitempty" yaml:"virtual_networks,omitempty"`
+	SecurityGroups   []SecurityGroup   `json:"security_groups,omitempty" yaml:"security_groups,omitempty"`
+	LBs              []LB              `json:"loadbalancers,omitempty" yaml:"loadbalancers,omitempty"`
+	VirtualMachines  []VirtualMachine  `json:"virtual_machines,omitempty" yaml:"virtual_machines,omitempty"`
+	AvailabilitySets []AvailabilitySet `json:"availability_sets,omitempty" yaml:"availability_sets,omitempty"`
+	StorageAccounts  []StorageAccount  `json:"storage_accounts,omitempty" yaml:"storage_accounts,omitempty"`
+	SQLServers       []SQLServer       `json:"sql_servers,omitempty" yaml:"sql_servers,omitempty"`
 }

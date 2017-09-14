@@ -6,7 +6,7 @@ package definition
 
 // Subnet ...
 type Subnet struct {
-	Name          string `json:"name" yaml:"name"`
-	AddressPrefix string `json:"address_prefix" yaml:"address_prefix"`
-	SecurityGroup string `json:"security_group" yaml:"security_group"`
+	Name          string `json:"name,omitempty" yaml:"name,omitempty"`
+	AddressPrefix string `json:"address_prefix,omitempty" yaml:"address_prefix,omitempty"`
+	SecurityGroup string `json:"security_group,omitempty" yaml:"security_group,omitempty"`
 }

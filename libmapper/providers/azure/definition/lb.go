@@ -6,44 +6,44 @@ package definition
 
 // LB ...
 type LB struct {
-	ID                       string                    `json:"id" yaml:"id"`
-	Name                     string                    `json:"name" yaml:"name"`
-	Location                 string                    `json:"location" yaml:"location"`
-	FrontendIPConfigurations []FrontendIPConfiguration `json:"frontend_ip_configurations" yaml:"frontend_ip_configurations" validate:"required"`
-	Probes                   []LoadbalancerProbe       `json:"probes" yaml:"probes"`
-	BackendAddressPools      []string                  `json:"backend_address_pools" yaml:"backend_address_pools"`
-	Tags                     map[string]string         `json:"tags" yaml:"tags"`
+	ID                       string                    `json:"id,omitempty" yaml:"id,omitempty"`
+	Name                     string                    `json:"name,omitempty" yaml:"name,omitempty"`
+	Location                 string                    `json:"location,omitempty" yaml:"location,omitempty"`
+	FrontendIPConfigurations []FrontendIPConfiguration `json:"frontend_ip_configurations,omitempty" yaml:"frontend_ip_configurations,omitempty" validate:"required"`
+	Probes                   []LoadbalancerProbe       `json:"probes,omitempty" yaml:"probes,omitempty"`
+	BackendAddressPools      []string                  `json:"backend_address_pools,omitempty" yaml:"backend_address_pools,omitempty"`
+	Tags                     map[string]string         `json:"tags,omitempty" yaml:"tags,omitempty"`
 }
 
 // FrontendIPConfiguration : ..
 type FrontendIPConfiguration struct {
-	Name                       string             `json:"name" validate:"required" yaml:"name"`
-	Subnet                     string             `json:"subnet" yaml:"subnet"`
-	PublicIPAddressAllocation  string             `json:"public_ip_address_allocation" yaml:"public_ip_address_allocation"`
-	PrivateIPAddress           string             `json:"private_ip_address" yaml:"private_ip_address"`
-	PrivateIPAddressAllocation string             `json:"private_ip_address_allocation" yaml:"private_ip_address_allocation"`
-	Rules                      []LoadbalancerRule `json:"rules" yaml:"rules"`
+	Name                       string             `json:"name,omitempty" validate:"required" yaml:"name,omitempty"`
+	Subnet                     string             `json:"subnet,omitempty" yaml:"subnet,omitempty"`
+	PublicIPAddressAllocation  string             `json:"public_ip_address_allocation,omitempty" yaml:"public_ip_address_allocation,omitempty"`
+	PrivateIPAddress           string             `json:"private_ip_address,omitempty" yaml:"private_ip_address,omitempty"`
+	PrivateIPAddressAllocation string             `json:"private_ip_address_allocation,omitempty" yaml:"private_ip_address_allocation,omitempty"`
+	Rules                      []LoadbalancerRule `json:"rules,omitempty" yaml:"rules,omitempty"`
 }
 
 // LoadbalancerRule ...
 type LoadbalancerRule struct {
-	Name               string `json:"name" yaml:"name"`
-	Protocol           string `json:"protocol" yaml:"protocol"`
-	FrontendPort       int    `json:"frontend_port" yaml:"frontend_port"`
-	BackendPort        int    `json:"backend_port" yaml:"backend_port"`
-	BackendAddressPool string `json:"backend_address_pool" yaml:"backend_address_pool"`
-	Probe              string `json:"probe" yaml:"probe"`
-	FloatingIP         bool   `json:"floating_ip" yaml:"floating_ip"`
-	IdleTimeout        int    `json:"idle_timeout" yaml:"idle_timeout"`
-	LoadDistribution   string `json:"load_distribution" yaml:"load_distribution"`
+	Name               string `json:"name,omitempty" yaml:"name,omitempty"`
+	Protocol           string `json:"protocol,omitempty" yaml:"protocol,omitempty"`
+	FrontendPort       int    `json:"frontend_port,omitempty" yaml:"frontend_port,omitempty"`
+	BackendPort        int    `json:"backend_port,omitempty" yaml:"backend_port,omitempty"`
+	BackendAddressPool string `json:"backend_address_pool,omitempty" yaml:"backend_address_pool,omitempty"`
+	Probe              string `json:"probe,omitempty" yaml:"probe,omitempty"`
+	FloatingIP         bool   `json:"floating_ip,omitempty" yaml:"floating_ip,omitempty"`
+	IdleTimeout        int    `json:"idle_timeout,omitempty" yaml:"idle_timeout,omitempty"`
+	LoadDistribution   string `json:"load_distribution,omitempty" yaml:"load_distribution,omitempty"`
 }
 
 // LoadbalancerProbe ...
 type LoadbalancerProbe struct {
-	Name            string `json:"name" yaml:"name"`
-	Port            int    `json:"port" yaml:"port"`
-	Protocol        string `json:"protocol" yaml:"protocol"`
-	RequestPath     string `json:"request_path" yaml:"request_path"`
-	Interval        int    `json:"interval" yaml:"interval"`
-	MaximumFailures int    `json:"max_failures" yaml:"max_failures"`
+	Name            string `json:"name,omitempty" yaml:"name,omitempty"`
+	Port            int    `json:"port,omitempty" yaml:"port,omitempty"`
+	Protocol        string `json:"protocol,omitempty" yaml:"protocol,omitempty"`
+	RequestPath     string `json:"request_path,omitempty" yaml:"request_path,omitempty"`
+	Interval        int    `json:"interval,omitempty" yaml:"interval,omitempty"`
+	MaximumFailures int    `json:"max_failures,omitempty" yaml:"max_failures,omitempty"`
 }

@@ -6,8 +6,8 @@ package definition
 
 // AvailabilitySet ...
 type AvailabilitySet struct {
-	Name              string `json:"name" yaml:"name"`
-	FaultDomainCount  int    `json:"fault_domain_count" yaml:"fault_domain_count"`
-	UpdateDomainCount int    `json:"update_domain_count" yaml:"update_domain_count"`
-	Managed           bool   `json:"managed" yaml:"managed"`
+	Name              string `json:"name,omitempty" yaml:"name,omitempty"`
+	FaultDomainCount  int    `json:"fault_domain_count,omitempty" yaml:"fault_domain_count,omitempty"`
+	UpdateDomainCount int    `json:"update_domain_count,omitempty" yaml:"update_domain_count,omitempty"`
+	Managed           bool   `json:"managed,omitempty" yaml:"managed,omitempty"`
 }
