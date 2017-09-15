@@ -25,7 +25,7 @@ import (
 
 var n *nats.Conn
 
-type service struct {
+type build struct {
 	ID         string `json:"id"`
 	Name       string `json:"name"`
 	Previous   string `json:"previous_id"`
@@ -36,11 +36,11 @@ type service struct {
 	Definition struct {
 		Name    string `json:"name"`
 		Project string `json:"project"`
-	} `json:"service"`
+	} `json:"build"`
 }
 
 func getInputDetails(body []byte) (string, string, string, string, string) {
-	var s service
+	var s build
 	if err := json.Unmarshal(body, &s); err != nil {
 		log.Panic(err)
 	}
@@ -71,7 +71,7 @@ func getGraphDetails(body []byte) (string, string, string) {
 func getDefinition(id string) (map[string]interface{}, error) {
 	var d map[string]interface{}
 
-	resp, err := n.Request("service.get.definition", []byte(`{"id":"`+id+`"}`), time.Second)
+	resp, err := n.Request("build.get.definition", []byte(`{"id":"`+id+`"}`), time.Second)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func getImportFilters(m map[string]interface{}, name string, provider string) []
 
 	switch provider {
 	case "azure", "azure-fake":
-		d, ok := m["service"].(map[string]interface{})
+		d, ok := m["build"].(map[string]interface{})
 		if !ok {
 			return filters
 		}
@@ -150,7 +150,7 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 		return nil, err
 	}
 
-	definition, ok := gd["service"].(map[string]interface{})
+	definition, ok := gd["build"].(map[string]interface{})
 	if ok != true {
 		return nil, errors.New("could not convert definition")
 	}
@@ -162,12 +162,12 @@ func definitionToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 
 	sid, ok := gd["id"].(string)
 	if ok != true {
-		return nil, errors.New("could not find service id")
+		return nil, errors.New("could not find build id")
 	}
 
 	name, ok := definition["name"].(string)
 	if ok != true {
-		return nil, errors.New("could not find service name")
+		return nil, errors.New("could not find build name")
 	}
 
 	d, err := m.LoadDefinition(definition)
@@ -201,11 +201,11 @@ func mappingToGraph(m libmapper.Mapper, body []byte) (*graph.Graph, error) {
 	return m.LoadGraph(gm)
 }
 
-// SubscribeCreateService : definition.map.creation subscriber
-// For a given definition, it will generate the valid service
+// SubscribeCreateBuild : definition.map.creation subscriber
+// For a given definition, it will generate the valid build
 // and necessary workflow to create the environment on the
 // provider
-func SubscribeCreateService(body []byte) ([]byte, error) {
+func SubscribeCreateBuild(body []byte) ([]byte, error) {
 	id, _, t, p, name := getInputDetails(body)
 
 	m := providers.NewMapper(t)
@@ -218,9 +218,9 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 		return body, err
 	}
 
-	// If there is a previous service
+	// If there is a previous build
 	if p != "" {
-		oMsg, rerr := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
+		oMsg, rerr := n.Request("build.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
 		if rerr != nil {
 			return body, rerr
 		}
@@ -257,10 +257,10 @@ func SubscribeCreateService(body []byte) ([]byte, error) {
 	return g.ToJSON()
 }
 
-// SubscribeImportService : definition.map.import subscriber
+// SubscribeImportBuild : definition.map.import subscriber
 // For a given filters it will generate a workflow to fully
-// import a provider service.
-func SubscribeImportService(body []byte) ([]byte, error) {
+// import a provider build.
+func SubscribeImportBuild(body []byte) ([]byte, error) {
 	var err error
 
 	var gd map[string]interface{}
@@ -295,10 +295,10 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 	return g.ToJSON()
 }
 
-// SubscribeImportComplete : service.create.done subscriber
+// SubscribeImportComplete : build.create.done subscriber
 // Converts a completed import graph to an inpurt definition
 func SubscribeImportComplete(body []byte) error {
-	var service struct {
+	var build struct {
 		ID         string       `json:"id"`
 		Definition string       `json:"definition"`
 		Mapping    *graph.Graph `json:"mapping"`
@@ -343,21 +343,21 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	service.ID = id
-	service.Definition = string(data)
-	service.Mapping = g
+	build.ID = id
+	build.Definition = string(data)
+	build.Mapping = g
 
-	sdata, err := json.Marshal(service)
+	sdata, err := json.Marshal(build)
 	if err != nil {
 		return err
 	}
 
-	_, err = n.Request("service.set.mapping", sdata, time.Second)
+	_, err = n.Request("build.set.mapping", sdata, time.Second)
 	if err != nil {
 		return err
 	}
 
-	_, err = n.Request("service.set.definition", sdata, time.Second)
+	_, err = n.Request("build.set.definition", sdata, time.Second)
 	if err != nil {
 		return err
 	}
@@ -365,21 +365,21 @@ func SubscribeImportComplete(body []byte) error {
 	return err
 }
 
-// SubscribeDeleteService : definition.map.deletion subscriber
-// For a given existing service will generate a valid internal
-// service with a workflow to delete all its components
-func SubscribeDeleteService(body []byte) ([]byte, error) {
-	var s service
-	if err := json.Unmarshal(body, &s); err != nil {
+// SubscribeDeleteBuild : definition.map.deletion subscriber
+// For a given existing build will generate a valid internal
+// build with a workflow to delete all its components
+func SubscribeDeleteBuild(body []byte) ([]byte, error) {
+	var b build
+	if err := json.Unmarshal(body, &b); err != nil {
 		log.Panic(err)
 	}
 
-	t := s.Datacenter.Type
-	p := s.Previous
+	t := b.Datacenter.Type
+	p := b.Previous
 
 	m := providers.NewMapper(t)
 
-	oMsg, err := n.Request("service.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
+	oMsg, err := n.Request("build.get.mapping", []byte(`{"id":"`+p+`"}`), time.Second)
 	if err != nil {
 		return body, err
 	}
@@ -418,10 +418,10 @@ func SubscribeDeleteService(body []byte) ([]byte, error) {
 	return json.Marshal(g)
 }
 
-// SubscribeMapService : definition.map.service subscriber
-// For a given full service will generate the relative
+// SubscribeMapBuild : definition.map.build subscriber
+// For a given full build will generate the relative
 // definition
-func SubscribeMapService(body []byte) ([]byte, error) {
+func SubscribeMapBuild(body []byte) ([]byte, error) {
 	var gd map[string]interface{}
 
 	if err := json.Unmarshal(body, &gd); err != nil {
@@ -446,7 +446,7 @@ func SubscribeMapService(body []byte) ([]byte, error) {
 // ManageDefinitions : Manages all subscriptions
 func ManageDefinitions() {
 	if _, err := n.Subscribe("definition.map.creation", func(m *nats.Msg) {
-		if body, err := SubscribeCreateService(m.Data); err == nil {
+		if body, err := SubscribeCreateBuild(m.Data); err == nil {
 			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println(err.Error())
 			}
@@ -469,7 +469,7 @@ func ManageDefinitions() {
 	}
 
 	if _, err := n.Subscribe("definition.map.import", func(m *nats.Msg) {
-		if body, err := SubscribeImportService(m.Data); err == nil {
+		if body, err := SubscribeImportBuild(m.Data); err == nil {
 			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println(err.Error())
 			}
@@ -484,7 +484,7 @@ func ManageDefinitions() {
 	}
 
 	if _, err := n.Subscribe("definition.map.deletion", func(m *nats.Msg) {
-		if body, err := SubscribeDeleteService(m.Data); err == nil {
+		if body, err := SubscribeDeleteBuild(m.Data); err == nil {
 			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println(err.Error())
 			}
@@ -498,8 +498,8 @@ func ManageDefinitions() {
 		log.Panic(err)
 	}
 
-	if _, err := n.Subscribe("definition.map.service", func(m *nats.Msg) {
-		if body, err := SubscribeMapService(m.Data); err == nil {
+	if _, err := n.Subscribe("definition.map.build", func(m *nats.Msg) {
+		if body, err := SubscribeMapBuild(m.Data); err == nil {
 			if err = n.Publish(m.Reply, body); err != nil {
 				log.Println(err.Error())
 			}
@@ -513,7 +513,7 @@ func ManageDefinitions() {
 		log.Panic(err)
 	}
 
-	if _, err := n.Subscribe("service.import.done", func(m *nats.Msg) {
+	if _, err := n.Subscribe("build.import.done", func(m *nats.Msg) {
 		if err := SubscribeImportComplete(m.Data); err != nil {
 			log.Println(err.Error())
 		}
