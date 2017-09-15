@@ -199,6 +199,12 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		if firstInstance.OSProfileWindowsConfig != nil {
 			dvm.OSProfileWindowsConfig.ProvisionVMAgent = firstInstance.OSProfileWindowsConfig.ProvisionVMAgent
 			dvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = firstInstance.OSProfileWindowsConfig.EnableAutomaticUpgrades
+			for _, v := range firstInstance.OSProfileWindowsConfig.WinRm {
+				winrm := definition.WinRM{}
+				winrm.Protocol = v.Protocol
+				winrm.CertificateURL = v.CertificateURL
+				dvm.OSProfileWindowsConfig.WinRM = append(dvm.OSProfileWindowsConfig.WinRM, winrm)
+			}
 		}
 		dvm.Authentication.AdminUsername = firstInstance.OSProfile.AdminPassword
 		dvm.Authentication.AdminPassword = firstInstance.OSProfile.AdminPassword
