@@ -208,7 +208,7 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 				dvm.OSProfileWindowsConfig.WinRM = append(dvm.OSProfileWindowsConfig.WinRM, winrm)
 			}
 		}
-		dvm.Authentication.AdminUsername = firstInstance.OSProfile.AdminPassword
+		dvm.Authentication.AdminUsername = firstInstance.OSProfile.AdminUsername
 		dvm.Authentication.AdminPassword = firstInstance.OSProfile.AdminPassword
 
 		dvm.OSProfile = definition.OSProfile{}
