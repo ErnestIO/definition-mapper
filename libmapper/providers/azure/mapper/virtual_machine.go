@@ -170,13 +170,15 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		_, osaccount, oscontainer := getStorageDetails(firstInstance.StorageOSDisk.VhdURI)
 		_, dataaccount, datacontainer := getStorageDetails(firstInstance.StorageDataDisk.VhdURI)
 
-		dvm.StorageOSDisk.Name = firstInstance.StorageOSDisk.Name
+		nameParts := strings.Split(firstInstance.StorageOSDisk.Name, "-"+dvm.Name)
+		dvm.StorageOSDisk.Name = nameParts[0]
 		dvm.StorageOSDisk.Caching = firstInstance.StorageOSDisk.Caching
 		dvm.StorageOSDisk.OSType = firstInstance.StorageOSDisk.OSType
 		dvm.StorageOSDisk.CreateOption = firstInstance.StorageOSDisk.CreateOption
 		dvm.StorageOSDisk.ImageURI = firstInstance.StorageOSDisk.ImageURI
 		dvm.StorageOSDisk.StorageAccount = osaccount
 		dvm.StorageOSDisk.StorageContainer = oscontainer
+		dvm.StorageOSDisk.ManagedDiskType = firstInstance.StorageOSDisk.StorageAccountType
 
 		dvm.StorageDataDisk.Name = firstInstance.StorageDataDisk.Name
 		dvm.StorageDataDisk.DiskSizeGB = firstInstance.StorageDataDisk.Size
@@ -301,7 +303,9 @@ func getStorageDetails(uri string) (string, string, string) {
 }
 
 func mapVMTags(group, service string, tags map[string]string) map[string]string {
-	tags["ernest.service"] = service
+	if _, ok := tags["ernest.service"]; !ok {
+		tags["ernest.service"] = service
+	}
 	tags["ernest.instance_group"] = group
 
 	return tags
