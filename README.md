@@ -1,7 +1,9 @@
 # Definition Mapper
 
-This service works as a router to redirect all definition mapping requests to its specific definition mapper (aws or vcloud)
+master:  [![CircleCI](https://circleci.com/gh/ernestio/definition-mapper/tree/master.svg?style=shield)](https://circleci.com/gh/ernestio/definition-mapper/tree/master)  
+develop: [![CircleCI](https://circleci.com/gh/ernestio/definition-mapper/tree/develop.svg?style=shield)](https://circleci.com/gh/ernestio/definition-mapper/tree/develop)
 
+This service works as a router to redirect all definition mapping requests to its specific definition mapper (aws or vcloud)
 
 ## Build status
 
