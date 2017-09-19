@@ -11,7 +11,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // NetworkInterface : A resource group a container that holds

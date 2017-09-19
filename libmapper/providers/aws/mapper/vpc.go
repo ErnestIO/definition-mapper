@@ -7,7 +7,7 @@ package mapper
 import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/aws/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/aws/definition"
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // MapVpcs ...

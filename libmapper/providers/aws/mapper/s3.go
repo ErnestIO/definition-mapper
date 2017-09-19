@@ -9,7 +9,7 @@ import (
 
 	"github.com/ernestio/definition-mapper/libmapper/providers/aws/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/aws/definition"
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // MapS3Buckets : Maps the s3 buckets from a given input payload.

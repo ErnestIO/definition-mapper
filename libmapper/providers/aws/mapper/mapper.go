@@ -11,7 +11,7 @@ import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/aws/components"
 	def "github.com/ernestio/definition-mapper/libmapper/providers/aws/definition"
 	"github.com/mitchellh/mapstructure"
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // SUPPORTEDCOMPONENTS represents all component types supported by ernest

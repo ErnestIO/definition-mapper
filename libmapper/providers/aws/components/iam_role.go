@@ -8,7 +8,7 @@ import (
 	"errors"
 	"strings"
 
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // IamRole : mapping of an iam role component

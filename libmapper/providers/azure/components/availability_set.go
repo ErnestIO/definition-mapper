@@ -7,7 +7,7 @@ package components
 import (
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/availabilityset"
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // AvailabilitySet : A resource group a container that holds

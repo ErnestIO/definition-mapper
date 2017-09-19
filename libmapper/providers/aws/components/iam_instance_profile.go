@@ -8,7 +8,7 @@ import (
 	"errors"
 	"strings"
 
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // IamInstanceProfile : mapping of an iam instance profile component
