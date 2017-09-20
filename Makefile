@@ -14,8 +14,14 @@ cover:
 	go test -v ./... --cover
 
 deps:
-	go get -u github.com/golang/dep/cmd/dep
-	dep ensure
+	go get github.com/nats-io/nats
+	go get github.com/ernestio/ernest-config-client
+	go get github.com/mitchellh/mapstructure
+	go get github.com/ghodss/yaml
+	go get github.com/r3labs/graph
+	go get github.com/r3labs/akira
+	go get github.com/r3labs/binary-prefix
+	go get github.com/ernestio/ernestprovider
 
 dev-deps: deps
 	go get golang.org/x/crypto/pbkdf2

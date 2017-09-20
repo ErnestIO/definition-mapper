@@ -4,7 +4,7 @@
 [[projects]]
   name = "github.com/Azure/azure-sdk-for-go"
   packages = ["arm/cdn","arm/compute","arm/containerregistry","arm/eventhub","arm/keyvault","arm/network","arm/redis","arm/resources/resources","arm/scheduler","arm/servicebus","arm/storage","arm/trafficmanager","storage"]
-  revision = "df4dd90d076ebbf6e87d08d3f00bfac8ff4bde1a"
+  revision = "ecf40e315d5ab0ca6d7b3b7f7fbb5c1577814813"
   version = "v10.3.1-beta"
 
 [[projects]]
