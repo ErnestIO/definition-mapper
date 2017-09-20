@@ -197,8 +197,8 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 
 		dvm.Authentication.SSHKeys = mapDefinitionSSHKeys(firstInstance.OSProfileLinuxConfig.SSHKeys)
 		dvm.Authentication.DisablePasswordAuthentication = firstInstance.OSProfileLinuxConfig.DisablePasswordAuthentication
-		dvm.OSProfileWindowsConfig = &definition.OSProfileWindowsConfig{}
 		if firstInstance.OSProfileWindowsConfig != nil {
+			dvm.OSProfileWindowsConfig = &definition.OSProfileWindowsConfig{}
 			dvm.OSProfileWindowsConfig.ProvisionVMAgent = firstInstance.OSProfileWindowsConfig.ProvisionVMAgent
 			dvm.OSProfileWindowsConfig.EnableAutomaticUpgrades = firstInstance.OSProfileWindowsConfig.EnableAutomaticUpgrades
 			for _, v := range firstInstance.OSProfileWindowsConfig.WinRm {
@@ -226,7 +226,6 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 			}
 
 			nNi := definition.NetworkInterface{
-				ID:                   ni.GetProviderID(),
 				Name:                 ig,
 				SecurityGroup:        ni.NetworkSecurityGroup,
 				DNSServers:           ni.DNSServers,
