@@ -33,8 +33,13 @@ func Delete(r *request.Request) (*graph.Graph, error) {
 	}
 
 	empty := graph.New()
-	empty.ID = original.ID
-	empty.Name = original.Name
+	g, err := empty.Diff(original)
+	if err != nil {
+		return nil, err
+	}
 
-	return empty.Diff(original)
+	g.ID = original.ID
+	g.Name = original.Name
+
+	return g, nil
 }

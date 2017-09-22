@@ -26,5 +26,13 @@ func Create(r *request.Request) (*graph.Graph, error) {
 		return nil, err
 	}
 
-	return dg.Diff(graph.New())
+	g, err := dg.Diff(graph.New())
+	if err != nil {
+		return nil, err
+	}
+
+	g.ID = r.ID
+	g.Name = r.Name
+
+	return g, err
 }

@@ -38,5 +38,13 @@ func Update(r *request.Request) (*graph.Graph, error) {
 		}
 	}
 
-	return dg.Diff(fg)
+	g, err := dg.Diff(fg)
+	if err != nil {
+		return nil, err
+	}
+
+	g.ID = r.ID
+	g.Name = r.Name
+
+	return g, err
 }
