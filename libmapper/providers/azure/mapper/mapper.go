@@ -106,6 +106,7 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 		d.ResourceGroups[i].SecurityGroups = MapDefinitionSecurityGroups(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].SQLServers = MapDefinitionSQLServers(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].StorageAccounts = MapDefinitionStorageAccounts(g, &d.ResourceGroups[i])
+		d.ResourceGroups[i].AvailabilitySets = MapDefinitionAvailabilitySets(g, &d.ResourceGroups[i])
 	}
 
 	return &d, nil
