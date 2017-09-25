@@ -16,7 +16,7 @@ import (
 )
 
 // SUPPORTEDCOMPONENTS represents all component types supported by ernest
-var SUPPORTEDCOMPONENTS = []string{"network_interface", "public_ip", "resource_group", "security_group", "sql_firewall_rule", "sql_database", "sql_server", "storage_account", "storage_container", "subnet", "virtual_machine", "virtual_network", "lb", "availability_set"}
+var SUPPORTEDCOMPONENTS = []string{"network_interface", "public_ip", "resource_group", "security_group", "sql_firewall_rule", "sql_database", "sql_server", "storage_account", "storage_container", "subnet", "virtual_machine", "virtual_network", "lb", "availability_set", "lb_backend_address_pool", "lb_rule", "lb_probe"}
 
 // Mapper : implements the generic mapper structure
 type Mapper struct{}

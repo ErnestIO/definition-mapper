@@ -5,16 +5,23 @@
 package mapper
 
 import (
+	"fmt"
+
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
 )
 
 // MapLBRules ...
 func MapLBRules(d *definition.Definition) (rules []*components.LBRule) {
+	println("----> A")
 	for _, rg := range d.ResourceGroups {
+		println("----> B")
 		for _, loadbalancer := range rg.LBs {
+			println("----> C")
 			for _, config := range loadbalancer.FrontendIPConfigurations {
+				println("----> D")
 				for _, rule := range config.Rules {
+					println("----> E")
 					n := &components.LBRule{}
 					n.Name = rule.Name
 					n.Probe = rule.Probe
@@ -28,6 +35,7 @@ func MapLBRules(d *definition.Definition) (rules []*components.LBRule) {
 					n.Loadbalancer = loadbalancer.Name
 					n.ResourceGroupName = rg.Name
 					n.FrontendIPConfigurationName = config.Name
+					fmt.Println("%w", n)
 
 					n.SetDefaultVariables()
 
