@@ -34,12 +34,12 @@ func Import(r *request.Request) (*graph.Graph, error) {
 	ig.Name = r.Name
 
 	c := m.ProviderCredentials(r.Credentials)
-	err := g.AddComponent(c)
+	err := ig.AddComponent(c)
 	if err != nil {
 		return nil, err
 	}
 
-	g, err := g.Diff(graph.New())
+	g, err := ig.Diff(graph.New())
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,6 @@ func ImportComplete(ig map[string]interface{}) (interface{}, error) {
 		def := d.(*azure.Definition)
 		def.Name = parts[1]
 		def.Project = parts[0]
-
 	}
 
 	data, err := yaml.Marshal(d)
