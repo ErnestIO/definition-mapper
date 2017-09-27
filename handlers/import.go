@@ -29,9 +29,9 @@ func Import(r *request.Request) (*graph.Graph, error) {
 
 	filters := r.ImportFilters()
 
-	g := m.CreateImportGraph(filters)
-	g.ID = r.ID
-	g.Name = r.Name
+	ig := m.CreateImportGraph(filters)
+	ig.ID = r.ID
+	ig.Name = r.Name
 
 	c := m.ProviderCredentials(r.Credentials)
 	err := g.AddComponent(c)
@@ -39,7 +39,15 @@ func Import(r *request.Request) (*graph.Graph, error) {
 		return nil, err
 	}
 
-	return g.Diff(graph.New())
+	g, err := g.Diff(graph.New())
+	if err != nil {
+		return nil, err
+	}
+
+	g.ID = r.ID
+	g.Name = r.Name
+
+	return g, nil
 }
 
 // ImportComplete : handles the conversion of an import graph to a definition
