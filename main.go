@@ -58,7 +58,7 @@ func StartMappingHandlers() {
 
 // StartSecondaryHandlers : start secondary handlers
 func StartSecondaryHandlers() {
-	n.Subscribe("service.import.done", func(msg *nats.Msg) {
+	n.Subscribe("build.import.done", func(msg *nats.Msg) {
 		var ig map[string]interface{}
 		var b interface{}
 		var data []byte
