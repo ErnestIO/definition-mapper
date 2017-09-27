@@ -73,5 +73,5 @@ func (r *Request) ImportFilters() []string {
 }
 
 func env(e string) string {
-	return strings.Split(e, "/")[0]
+	return strings.Split(e, "/")[1]
 }
