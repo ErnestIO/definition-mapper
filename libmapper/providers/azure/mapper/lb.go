@@ -82,7 +82,40 @@ func MapDefinitionLBs(g *graph.Graph, rg *definition.ResourceGroup) (lbs []defin
 					dconfig.PublicIPAddressAllocation = pip.PublicIPAddressAllocation
 				}
 			}
+
+			for _, cn := range g.GetComponents().ByType("lb_rule") {
+				lg := cn.(*components.LBRule)
+				dconfig.Rules = append(dconfig.Rules, definition.LoadbalancerRule{
+					Name:               lg.Name,
+					Protocol:           lg.Protocol,
+					FrontendPort:       lg.FrontendPort,
+					BackendPort:        lg.BackendPort,
+					BackendAddressPool: lg.BackendAddressPool,
+					Probe:              lg.Probe,
+					FloatingIP:         lg.EnableFloatingIP,
+					IdleTimeout:        lg.IdleTimeoutInMinutes,
+					LoadDistribution:   lg.LoadDistribution,
+				})
+			}
+
 			dlb.FrontendIPConfigurations = append(dlb.FrontendIPConfigurations, dconfig)
+		}
+
+		for _, cn := range g.GetComponents().ByType("lb_backend_address_pool") {
+			lg := cn.(*components.LBBackendAddressPool)
+			dlb.BackendAddressPools = append(dlb.BackendAddressPools, lg.Name)
+		}
+
+		for _, cn := range g.GetComponents().ByType("lb_probe") {
+			lg := cn.(*components.LBProbe)
+			dlb.Probes = append(dlb.Probes, definition.LoadbalancerProbe{
+				Name:            lg.Name,
+				Port:            lg.Port,
+				Protocol:        lg.Protocol,
+				RequestPath:     lg.RequestPath,
+				Interval:        lg.IntervalInSeconds,
+				MaximumFailures: lg.NumberOfProbes,
+			})
 		}
 
 		lbs = append(lbs, dlb)

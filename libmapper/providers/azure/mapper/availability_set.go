@@ -7,6 +7,7 @@ package mapper
 import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
+	graph "gopkg.in/r3labs/graph.v2"
 )
 
 // MapAvailabilitySets ...
@@ -27,5 +28,19 @@ func MapAvailabilitySets(d *definition.Definition) (sets []*components.Availabil
 		}
 	}
 
+	return
+}
+
+// MapDefinitionAvailabilitySets : ...
+func MapDefinitionAvailabilitySets(g *graph.Graph, rg *definition.ResourceGroup) (sets []definition.AvailabilitySet) {
+	for _, c := range g.GetComponents().ByType("availability_set") {
+		as := c.(*components.AvailabilitySet)
+		sets = append(sets, definition.AvailabilitySet{
+			Name:              as.Name,
+			FaultDomainCount:  as.PlatformFaultDomainCount,
+			UpdateDomainCount: as.PlatformUpdateDomainCount,
+			Managed:           as.Managed,
+		})
+	}
 	return
 }

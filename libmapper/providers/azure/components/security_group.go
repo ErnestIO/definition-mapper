@@ -93,9 +93,11 @@ func (i *SecurityGroup) Diff(c graph.Component) bool {
 		if len(i.SecurityRules) != len(cs.SecurityRules) {
 			return true
 		}
+		count := 0
 		for j := range cs.SecurityRules {
 			for k := range i.SecurityRules {
 				if i.SecurityRules[k].Name == cs.SecurityRules[j].Name {
+					count = count + 1
 					if i.SecurityRules[k].Description != cs.SecurityRules[j].Description {
 						return true
 					}
@@ -125,6 +127,9 @@ func (i *SecurityGroup) Diff(c graph.Component) bool {
 					}
 				}
 			}
+		}
+		if count != len(i.SecurityRules) {
+			return true
 		}
 	}
 

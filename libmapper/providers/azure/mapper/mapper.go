@@ -16,7 +16,7 @@ import (
 )
 
 // SUPPORTEDCOMPONENTS represents all component types supported by ernest
-var SUPPORTEDCOMPONENTS = []string{"network_interface", "public_ip", "resource_group", "security_group", "sql_firewall_rule", "sql_database", "sql_server", "storage_account", "storage_container", "subnet", "virtual_machine", "virtual_network", "lb", "availability_set"}
+var SUPPORTEDCOMPONENTS = []string{"network_interface", "public_ip", "resource_group", "security_group", "sql_firewall_rule", "sql_database", "sql_server", "storage_account", "storage_container", "subnet", "virtual_machine", "virtual_network", "lb", "availability_set", "lb_backend_address_pool", "lb_rule", "lb_probe"}
 
 // Mapper : implements the generic mapper structure
 type Mapper struct{}
@@ -106,6 +106,7 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 		d.ResourceGroups[i].SecurityGroups = MapDefinitionSecurityGroups(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].SQLServers = MapDefinitionSQLServers(g, &d.ResourceGroups[i])
 		d.ResourceGroups[i].StorageAccounts = MapDefinitionStorageAccounts(g, &d.ResourceGroups[i])
+		d.ResourceGroups[i].AvailabilitySets = MapDefinitionAvailabilitySets(g, &d.ResourceGroups[i])
 	}
 
 	return &d, nil
