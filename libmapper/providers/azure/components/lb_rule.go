@@ -121,15 +121,6 @@ func (i *LBRule) Update(c graph.Component) {
 	cs, ok := c.(*LBRule)
 	if ok {
 		i.ID = cs.ID
-		i.FrontendIPConfigurationName = cs.FrontendIPConfigurationName
-		i.Protocol = cs.Protocol
-		i.FrontendPort = cs.FrontendPort
-		i.BackendPort = cs.BackendPort
-		i.BackendAddressPool = cs.BackendAddressPool
-		i.Probe = cs.Probe
-		i.EnableFloatingIP = cs.EnableFloatingIP
-		i.IdleTimeoutInMinutes = cs.IdleTimeoutInMinutes
-		i.LoadDistribution = cs.LoadDistribution
 	}
 	i.SetDefaultVariables()
 }
