@@ -141,7 +141,7 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 	credentials["_component_id"] = "credentials::vcloud"
 	credentials["_provider"] = details["type"]
 	credentials["name"] = details["name"]
-	credentials["datacenter"] = strings.Split(details["name"].(string), "/")[1]
+	credentials["datacenter"] = strings.Split(details["name"].(string), "/")[0]
 	credentials["region"] = details["region"]
 	credentials["username"] = details["username"]
 	credentials["password"] = details["password"]
