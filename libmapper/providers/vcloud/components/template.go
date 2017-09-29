@@ -13,7 +13,7 @@ const (
 	GROUPINSTANCE = "ernest.instance_group"
 
 	PROVIDERTYPE       = `$(components.#[_component_id="credentials::vcloud"]._provider)`
-	DATACENTERNAME     = `$(components.#[_component_id="credentials::vcloud"].name)`
+	DATACENTERNAME     = `$(components.#[_component_id="credentials::vcloud"].datacenter)`
 	DATACENTERTYPE     = `$(components.#[_component_id="credentials::vcloud"]._provider)`
 	DATACENTERUSERNAME = `$(components.#[_component_id="credentials::vcloud"].username)`
 	DATACENTERPASSWORD = `$(components.#[_component_id="credentials::vcloud"].password)`
