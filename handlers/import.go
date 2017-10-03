@@ -5,6 +5,7 @@
 package handlers
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/ernestio/definition-mapper/libmapper/providers"
@@ -52,16 +53,14 @@ func Import(r *request.Request) (*graph.Graph, error) {
 
 // ImportComplete : handles the conversion of an import graph to a definition
 func ImportComplete(ig map[string]interface{}) (interface{}, error) {
-	g := graph.New()
-	err := g.Load(ig)
+	provider := getGraphProvider(ig)
+	fmt.Println(provider)
+	m := providers.NewMapper(provider)
+
+	g, err := m.LoadGraph(ig)
 	if err != nil {
 		return nil, err
 	}
-
-	credentials := g.GetComponents().ByType("credentials")
-	provider := credentials[0].GetProvider()
-
-	m := providers.NewMapper(provider)
 
 	d, err := m.ConvertGraph(g)
 	if err != nil {
@@ -71,11 +70,11 @@ func ImportComplete(ig map[string]interface{}) (interface{}, error) {
 	parts := strings.Split(g.Name, "/")
 
 	switch provider {
-	case "aws":
+	case "aws", "aws-fake":
 		def := d.(*aws.Definition)
 		def.Name = parts[1]
 		def.Project = parts[0]
-	case "azure":
+	case "azure", "azure-fake":
 		def := d.(*azure.Definition)
 		def.Name = parts[1]
 		def.Project = parts[0]
@@ -93,4 +92,14 @@ func ImportComplete(ig map[string]interface{}) (interface{}, error) {
 	}
 
 	return &b, err
+}
+
+func getGraphProvider(m map[string]interface{}) string {
+	for _, c := range m["components"].([]interface{}) {
+		x := c.(map[string]interface{})
+		if x["_component"].(string) == "credentials" {
+			return x["_provider"].(string)
+		}
+	}
+	return ""
 }
