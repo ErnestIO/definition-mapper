@@ -6,7 +6,6 @@ package components
 
 import (
 	"log"
-	"reflect"
 	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
@@ -97,10 +96,8 @@ func (i *NetworkInterface) Diff(c graph.Component) bool {
 		if i.ResourceGroupName != cs.ResourceGroupName {
 			return true
 		}
-		if len(i.Tags) != 0 && len(cs.Tags) != 0 {
-			if !reflect.DeepEqual(i.Tags, cs.Tags) {
-				return true
-			}
+		if len(i.Tags) != len(cs.Tags) {
+			return true
 		}
 		if len(i.DNSServers) != len(cs.DNSServers) {
 			return true

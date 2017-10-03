@@ -236,10 +236,11 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 				parts := strings.Split(ip.SubnetID, "/")
 				network := parts[len(parts)-3]
 				nIP := definition.IPConfiguration{
-					Name:                       ip.Name,
-					Subnet:                     network + ":" + ip.Subnet,
-					PrivateIPAddress:           ip.PrivateIPAddress,
-					PrivateIPAddressAllocation: ip.PrivateIPAddressAllocation,
+					Name:                            ip.Name,
+					Subnet:                          network + ":" + ip.Subnet,
+					PrivateIPAddress:                ip.PrivateIPAddress,
+					PrivateIPAddressAllocation:      ip.PrivateIPAddressAllocation,
+					LoadBalancerBackendAddressPools: ip.LoadBalancerBackendAddressPools,
 				}
 				if ip.PublicIPAddressID != "" {
 					cpip := g.GetComponents().ByProviderID(ip.PublicIPAddressID)
