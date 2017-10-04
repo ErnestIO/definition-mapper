@@ -5,6 +5,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -37,6 +39,11 @@ type service struct {
 		Name    string `json:"name"`
 		Project string `json:"project"`
 	} `json:"service"`
+}
+
+type diff struct {
+	X map[string]interface{} `json:"x"`
+	Y map[string]interface{} `json:"y"`
 }
 
 func getInputDetails(body []byte) (string, string, string, string, string) {
@@ -76,7 +83,7 @@ func getDefinition(id string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(resp.Data, &d)
+	err = yaml.Unmarshal(resp.Data, &d)
 
 	return d, err
 }
@@ -116,14 +123,23 @@ func getImportFilters(m map[string]interface{}, name string, provider string) []
 	return filters
 }
 
-func copyMap(m map[string]interface{}) map[string]interface{} {
-	cm := make(map[string]interface{})
+func copyMap(m map[string]interface{}) (map[string]interface{}, error) {
+	var buf bytes.Buffer
+	var copy map[string]interface{}
 
-	for k, v := range m {
-		cm[k] = v
+	enc := gob.NewEncoder(&buf)
+	dec := gob.NewDecoder(&buf)
+
+	err := enc.Encode(m)
+	if err != nil {
+		return nil, err
 	}
 
-	return cm
+	err = dec.Decode(&copy)
+	if err != nil {
+		return nil, err
+	}
+	return copy, nil
 }
 
 func getCredentials(gd map[string]interface{}) (map[string]interface{}, error) {
@@ -274,7 +290,7 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	id, name, t, _, n := getInputDetails(body)
+	id, _, t, _, n := getInputDetails(body)
 
 	m := providers.NewMapper(t)
 
@@ -286,7 +302,7 @@ func SubscribeImportService(body []byte) ([]byte, error) {
 	}
 
 	g.ID = id
-	g.Name = name
+	g.Name = n
 	err = g.AddComponent(m.ProviderCredentials(credentials))
 	if err != nil {
 		return nil, err
@@ -362,7 +378,7 @@ func SubscribeImportComplete(body []byte) error {
 		return err
 	}
 
-	return err
+	return n.Publish("service.import.mapping.done", gdata)
 }
 
 // SubscribeDeleteService : definition.map.deletion subscriber
@@ -443,6 +459,54 @@ func SubscribeMapService(body []byte) ([]byte, error) {
 	return json.Marshal(definition)
 }
 
+// SubscribeDiffGraph : graph.diff subscriber
+// Will generate a diff graph from two input graphs
+func SubscribeDiffGraph(body []byte) ([]byte, error) {
+	var d diff
+	var igx graph.Graph
+
+	err := json.Unmarshal(body, &d)
+	if err != nil {
+		log.Println("Unmarshal: " + err.Error())
+		return body, err
+	}
+
+	gm, err := copyMap(d.X)
+	if err != nil {
+		return body, err
+	}
+
+	err = igx.Load(gm)
+	if err != nil {
+		return body, err
+	}
+
+	credentials := igx.GetComponents().ByType("credentials")
+	provider := credentials[0].GetProvider()
+
+	m := providers.NewMapper(provider)
+
+	gx, err := m.LoadGraph(d.X)
+	if err != nil {
+		return body, err
+	}
+
+	gy, err := m.LoadGraph(d.Y)
+	if err != nil {
+		return body, err
+	}
+
+	g, err := gx.Diff(gy)
+	if err != nil {
+		return body, err
+	}
+
+	g.ID = gy.ID
+	g.Name = gy.Name
+
+	return g.ToJSON()
+}
+
 // ManageDefinitions : Manages all subscriptions
 func ManageDefinitions() {
 	if _, err := n.Subscribe("definition.map.creation", func(m *nats.Msg) {
@@ -516,6 +580,21 @@ func ManageDefinitions() {
 	if _, err := n.Subscribe("service.import.done", func(m *nats.Msg) {
 		if err := SubscribeImportComplete(m.Data); err != nil {
 			log.Println(err.Error())
+		}
+	}); err != nil {
+		log.Panic(err)
+	}
+
+	if _, err := n.Subscribe("graph.diff", func(m *nats.Msg) {
+		if body, err := SubscribeDiffGraph(m.Data); err == nil {
+			if err = n.Publish(m.Reply, body); err != nil {
+				log.Println(err.Error())
+			}
+		} else {
+			log.Println(err.Error())
+			if err = n.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
+				log.Println("Error trying to respond through nats : " + err.Error())
+			}
 		}
 	}); err != nil {
 		log.Panic(err)

@@ -288,7 +288,8 @@ func (z *Route53Zone) Validate() error {
 			return fmt.Errorf("Route53 record type '%s' is not a valid dns type. Please use one of [%s]", record.Type, strings.Join(DNSTYPES, ", "))
 		}
 
-		if record.TTL == 0 {
+		// fix for aliased type records
+		if record.TTL == 0 && len(record.Values) > 0 {
 			return errors.New("Route53 record TTL must be greater than 0")
 		}
 	}

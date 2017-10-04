@@ -175,7 +175,7 @@ func (s3 *S3Bucket) Validate() error {
 			return fmt.Errorf("S3 grantee type (%s) is invalid", g.Type)
 		}
 
-		if g.ID == "" {
+		if g.ID == "" && strings.ToLower(g.Type) != "group" {
 			return fmt.Errorf("S3 grantee id should not be null")
 		}
 
