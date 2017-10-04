@@ -43,6 +43,10 @@ func Update(r *request.Request) (*graph.Graph, error) {
 		return nil, err
 	}
 
+	for i := range g.Changes {
+		g.Changes[i].SetDefaultVariables()
+	}
+
 	g.ID = r.ID
 	g.Name = r.Name
 
