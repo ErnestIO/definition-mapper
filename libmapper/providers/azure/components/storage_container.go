@@ -89,6 +89,7 @@ func (i *StorageContainer) Update(c graph.Component) {
 	cs, ok := c.(*StorageContainer)
 	if ok {
 		i.ID = cs.ID
+		i.ContainerAccessType = cs.ContainerAccessType
 	}
 	i.SetDefaultVariables()
 }
