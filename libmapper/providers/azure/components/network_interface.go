@@ -151,15 +151,15 @@ func (i *NetworkInterface) Rebuild(g *graph.Graph) {
 	}
 
 	for x := 0; x < len(i.IPConfigurations); x++ {
+		if i.IPConfigurations[x].SubnetID == "" && i.IPConfigurations[x].Subnet != "" {
+			i.IPConfigurations[x].SubnetID = templSubnetID(i.IPConfigurations[x].Subnet)
+		}
+
 		if i.IPConfigurations[x].Subnet == "" && i.IPConfigurations[x].SubnetID != "" {
 			s := g.GetComponents().ByProviderID(i.IPConfigurations[x].SubnetID)
 			if s != nil {
 				i.IPConfigurations[x].Subnet = s.GetName()
 			}
-		}
-
-		if i.IPConfigurations[x].SubnetID == "" && i.IPConfigurations[x].Subnet != "" {
-			i.IPConfigurations[x].SubnetID = templSubnetID(i.IPConfigurations[x].Subnet)
 		}
 
 		if i.IPConfigurations[x].PublicIPAddress == "" && i.IPConfigurations[x].PublicIPAddressID != "" {

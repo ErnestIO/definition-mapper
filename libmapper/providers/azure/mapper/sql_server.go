@@ -56,6 +56,16 @@ func MapDefinitionSQLServers(g *graph.Graph, rg *definition.ResourceGroup) (ss [
 			AdministratorLoginPassword: sqls.AdministratorLoginPassword,
 		}
 
+		for _, cd := range g.GetComponents().ByType("sql_firewall_rule") {
+			fw := cd.(*components.SQLFirewallRule)
+			dsqls.FirewallRules = append(dsqls.FirewallRules, definition.SQLFirewallRule{
+				ID:             fw.GetProviderID(),
+				Name:           fw.Name,
+				StartIPAddress: fw.StartIPAddress,
+				EndIPAddress:   fw.EndIPAddress,
+			})
+		}
+
 		for _, cd := range g.GetComponents().ByType("sql_database") {
 			sqld := cd.(*components.SQLDatabase)
 

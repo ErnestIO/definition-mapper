@@ -159,12 +159,13 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 		image := firstInstance.StorageImageReference
 
 		dvm := definition.VirtualMachine{
-			Name:        ig,
-			Size:        firstInstance.VMSize,
-			Image:       strings.Join([]string{image.Publisher, image.Offer, image.Sku, image.Version}, ":"),
-			Count:       len(is),
-			Tags:        firstInstance.Tags,
-			LicenseType: firstInstance.LicenseType,
+			Name:            ig,
+			Size:            firstInstance.VMSize,
+			AvailabilitySet: firstInstance.AvailabilitySet,
+			Image:           strings.Join([]string{image.Publisher, image.Offer, image.Sku, image.Version}, ":"),
+			Count:           len(is),
+			Tags:            firstInstance.Tags,
+			LicenseType:     firstInstance.LicenseType,
 		}
 
 		_, osaccount, oscontainer := getStorageDetails(firstInstance.StorageOSDisk.VhdURI)
@@ -227,6 +228,7 @@ func MapDefinitionVirtualMachines(g *graph.Graph, rg *definition.ResourceGroup) 
 
 			nNi := definition.NetworkInterface{
 				Name:                 ig,
+				EnableIPForwarding:   ni.EnableIPForwarding,
 				SecurityGroup:        ni.NetworkSecurityGroup,
 				DNSServers:           ni.DNSServers,
 				InternalDNSNameLabel: ni.InternalDNSNameLabel,

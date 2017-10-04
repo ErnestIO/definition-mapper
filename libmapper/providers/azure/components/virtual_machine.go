@@ -6,6 +6,7 @@ package components
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/virtualmachine"
@@ -142,10 +143,12 @@ func (i *VirtualMachine) Rebuild(g *graph.Graph) {
 	}
 
 	if i.AvailabilitySet == "" && i.AvailabilitySetID != "" {
-		as := g.GetComponents().ByProviderID(i.AvailabilitySetID)
-		if as != nil {
-			i.AvailabilitySet = as.GetName()
-		}
+		parts := strings.Split(i.AvailabilitySetID, "/")
+		i.AvailabilitySet = parts[len(parts)-1]
+		// as := g.GetComponents().ByProviderID(i.AvailabilitySetID)
+		// if as != nil {
+		// 	i.AvailabilitySet = as.GetName()
+		// }
 	}
 
 	if i.AvailabilitySetID == "" && i.AvailabilitySet != "" {
