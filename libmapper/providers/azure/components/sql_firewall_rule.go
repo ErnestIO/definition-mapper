@@ -9,7 +9,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqlfirewallrule"
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // SQLFirewallRule : A resource group a container that holds

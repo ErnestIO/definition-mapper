@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // EBSTestSuite : Test suite for ebs component

@@ -8,7 +8,7 @@ import (
 	"errors"
 	"reflect"
 
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // InstanceVolume ...

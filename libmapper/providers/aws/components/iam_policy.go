@@ -8,7 +8,7 @@ import (
 	"errors"
 	"strings"
 
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // IamPolicy : mapping of an iam policy component

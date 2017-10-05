@@ -8,7 +8,7 @@ import (
 	"errors"
 	"net"
 
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // Network : Mapping of a network component

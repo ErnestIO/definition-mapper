@@ -18,7 +18,8 @@ deps:
 	go get github.com/ernestio/ernest-config-client
 	go get github.com/mitchellh/mapstructure
 	go get github.com/ghodss/yaml
-	go get gopkg.in/r3labs/graph.v2
+	go get github.com/r3labs/graph
+	go get github.com/r3labs/akira
 	go get github.com/r3labs/binary-prefix
 	go get github.com/ernestio/ernestprovider
 

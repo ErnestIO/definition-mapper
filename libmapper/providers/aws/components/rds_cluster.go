@@ -11,7 +11,7 @@ import (
 	"strings"
 	"unicode"
 
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // RDSCluster ...

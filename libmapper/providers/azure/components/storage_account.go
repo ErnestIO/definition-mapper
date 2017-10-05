@@ -10,7 +10,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/storageaccount"
-	graph "gopkg.in/r3labs/graph.v2"
+	"github.com/r3labs/graph"
 )
 
 // StorageAccount : A resource group a container that holds
