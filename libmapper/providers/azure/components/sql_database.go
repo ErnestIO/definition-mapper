@@ -6,7 +6,6 @@ package components
 
 import (
 	"log"
-	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqldatabase"
@@ -114,12 +113,49 @@ func (i *SQLDatabase) Diff(c graph.Component) bool {
 		if i.SourceDatabaseDeletionData != cv.SourceDatabaseDeletionData {
 			return true
 		}
-		if len(i.Tags) != 0 && len(cv.Tags) != 0 {
-			if !reflect.DeepEqual(i.Tags, cv.Tags) {
-				return true
+		if diffTags(i.Tags, cv.Tags) {
+			return true
+		}
+	}
+	return false
+}
+
+func diffTags(t1, t2 map[string]string) bool {
+	blackList := []string{"ernest_firewall_rules"}
+	tags1 := map[string]string{}
+	tags2 := map[string]string{}
+	for k, t := range t1 {
+		for _, bt := range blackList {
+			if k != bt {
+				tags1[k] = t
 			}
 		}
 	}
+
+	for k, t := range t2 {
+		for _, bt := range blackList {
+			if k != bt {
+				tags2[k] = t
+			}
+		}
+	}
+
+	if len(tags1) != len(tags2) {
+		return true
+	}
+
+	for kk1, tt1 := range tags1 {
+		sw := false
+		if val, ok := tags2[kk1]; ok {
+			if val == tt1 {
+				sw = true
+			}
+		}
+		if sw == false {
+			return true
+		}
+	}
+
 	return false
 }
 

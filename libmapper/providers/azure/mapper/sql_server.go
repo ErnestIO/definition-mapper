@@ -5,6 +5,8 @@
 package mapper
 
 import (
+	"strings"
+
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
 	"github.com/r3labs/graph"
@@ -25,6 +27,12 @@ func MapSQLServers(d *definition.Definition) (ips []*components.SQLServer) {
 			for k, v := range ss.Tags {
 				n.Tags[k] = v
 			}
+
+			rules := make([]string, 0)
+			for _, v := range ss.FirewallRules {
+				rules = append(rules, v.Name)
+			}
+			n.Tags["ernest_firewall_rules"] = strings.Join(rules, ",")
 
 			if n.ID != "" {
 				n.SetAction("none")
