@@ -5,9 +5,9 @@
 package handlers
 
 import (
-	"fmt"
 	"strings"
 
+	"github.com/ernestio/definition-mapper/build"
 	"github.com/ernestio/definition-mapper/libmapper/providers"
 	aws "github.com/ernestio/definition-mapper/libmapper/providers/aws/definition"
 	azure "github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
@@ -15,12 +15,6 @@ import (
 	"github.com/r3labs/graph"
 	yaml "gopkg.in/yaml.v2"
 )
-
-type build struct {
-	ID         string       `json:"id"`
-	Definition string       `json:"definition"`
-	Mapping    *graph.Graph `json:"mapping"`
-}
 
 // Import : handles a import request
 func Import(r *request.Request) (*graph.Graph, error) {
@@ -52,9 +46,9 @@ func Import(r *request.Request) (*graph.Graph, error) {
 }
 
 // ImportComplete : handles the conversion of an import graph to a definition
-func ImportComplete(ig map[string]interface{}) (interface{}, error) {
+func ImportComplete(ig map[string]interface{}) (*build.Build, error) {
 	provider := getGraphProvider(ig)
-	fmt.Println(provider)
+
 	m := providers.NewMapper(provider)
 
 	g, err := m.LoadGraph(ig)
@@ -85,7 +79,7 @@ func ImportComplete(ig map[string]interface{}) (interface{}, error) {
 		return nil, err
 	}
 
-	b := build{
+	b := build.Build{
 		ID:         g.ID,
 		Definition: string(data),
 		Mapping:    g,
