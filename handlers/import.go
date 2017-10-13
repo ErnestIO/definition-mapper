@@ -47,6 +47,8 @@ func Import(r *request.Request) (*graph.Graph, error) {
 
 	g.ID = r.ID
 	g.Name = r.Name
+	g.UserID = r.UserID
+	g.Username = r.Username
 
 	return g, nil
 }

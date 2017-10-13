@@ -38,8 +38,10 @@ func Delete(r *request.Request) (*graph.Graph, error) {
 		return nil, err
 	}
 
-	g.ID = original.ID
-	g.Name = original.Name
+	g.ID = r.ID
+	g.Name = r.Name
+	g.UserID = r.UserID
+	g.Username = r.Username
 
 	return g, nil
 }
