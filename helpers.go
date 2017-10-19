@@ -25,7 +25,7 @@ func response(reply string, data *[]byte, err *error) {
 	}
 
 	if reply != "" {
-		n.Publish(reply, rdata)
+		_ = n.Publish(reply, rdata)
 	} else if *err != nil {
 		log.Println(*err)
 	}

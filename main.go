@@ -24,7 +24,7 @@ var n akira.Connector
 
 // StartMappingHandlers : start the primary mapping handlers
 func StartMappingHandlers() {
-	n.Subscribe("mapping.get.*", func(msg *nats.Msg) {
+	_, _ = n.Subscribe("mapping.get.*", func(msg *nats.Msg) {
 		var r request.Request
 		var g *graph.Graph
 		var data []byte
@@ -61,7 +61,7 @@ func StartMappingHandlers() {
 
 // StartSecondaryHandlers : start secondary handlers
 func StartSecondaryHandlers() {
-	n.Subscribe("build.import.done", func(msg *nats.Msg) {
+	_, _ = n.Subscribe("build.import.done", func(msg *nats.Msg) {
 		var ig map[string]interface{}
 		var b *build.Build
 		var data []byte
