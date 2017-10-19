@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ernestio/definition-mapper/build"
 	"github.com/ernestio/definition-mapper/handlers"
 	"github.com/ernestio/definition-mapper/request"
 	ecc "github.com/ernestio/ernest-config-client"
@@ -46,6 +47,8 @@ func StartMappingHandlers() {
 			g, err = handlers.Delete(&r)
 		case "import":
 			g, err = handlers.Import(&r)
+		case "diff":
+			g, err = handlers.Diff(&r)
 		}
 
 		if err != nil {
@@ -60,11 +63,11 @@ func StartMappingHandlers() {
 func StartSecondaryHandlers() {
 	_, _ = n.Subscribe("build.import.done", func(msg *nats.Msg) {
 		var ig map[string]interface{}
-		var b interface{}
+		var b *build.Build
 		var data []byte
 		var err error
 
-		defer response(msg.Reply, nil, &err)
+		defer response(msg.Reply, &data, &err)
 
 		err = json.Unmarshal(msg.Data, &ig)
 		if err != nil {
@@ -87,6 +90,11 @@ func StartSecondaryHandlers() {
 		}
 
 		_, err = n.Request("build.set.definition", data, time.Second*5)
+		if err != nil {
+			return
+		}
+
+		data = []byte(`{"status": "success"}`)
 	})
 }
 
