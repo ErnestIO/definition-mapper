@@ -185,6 +185,11 @@ func (sg *SecurityGroup) Validate() error {
 	return nil
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (sg *SecurityGroup) SequentialDependencies() []string {
+	return []string{}
+}
+
 // IsStateful : returns true if the component needs to be actioned to be removed.
 func (sg *SecurityGroup) IsStateful() bool {
 	return true

@@ -127,6 +127,11 @@ func (s *Subnet) Dependencies() (deps []string) {
 	return append(deps, TYPEVIRTUALNETWORK+TYPEDELIMITER+s.VirtualNetworkName)
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (s *Subnet) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (s *Subnet) Validate() error {
 	log.Println("Validating subnets")

@@ -190,6 +190,11 @@ func (i *SQLDatabase) Dependencies() (deps []string) {
 	return []string{TYPESQLSERVER + TYPEDELIMITER + i.ServerName}
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *SQLDatabase) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *SQLDatabase) Validate() error {
 	log.Println("Validating SQL databases")

@@ -219,6 +219,11 @@ func (i *NetworkInterface) Dependencies() (deps []string) {
 	return
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *NetworkInterface) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *NetworkInterface) Validate() error {
 	log.Println("Validating azure network interfaces")

@@ -152,6 +152,11 @@ func (s3 *S3Bucket) Dependencies() []string {
 	return []string{}
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (s3 *S3Bucket) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (s3 *S3Bucket) Validate() error {
 	if s3.Name == "" {

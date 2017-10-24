@@ -180,6 +180,11 @@ func (i *LBRule) Dependencies() (deps []string) {
 	return
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *LBRule) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *LBRule) Validate() error {
 	log.Println("Validating LB")

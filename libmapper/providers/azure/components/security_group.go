@@ -152,6 +152,11 @@ func (i *SecurityGroup) Dependencies() (deps []string) {
 	return []string{TYPERESOURCEGROUP + TYPEDELIMITER + i.ResourceGroupName}
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *SecurityGroup) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *SecurityGroup) Validate() error {
 	log.Println("Validating security groups")

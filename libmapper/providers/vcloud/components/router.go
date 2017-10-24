@@ -168,6 +168,11 @@ func (r *Router) Dependencies() []string {
 	return []string{}
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (r *Router) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (r *Router) Validate() error {
 	for _, rule := range r.FirewallRules {

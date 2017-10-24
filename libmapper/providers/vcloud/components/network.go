@@ -115,6 +115,11 @@ func (n *Network) Dependencies() []string {
 	return []string{TYPEROUTER + TYPEDELIMITER + n.Router}
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (n *Network) SequentialDependencies() []string {
+	return []string{TYPEROUTER + TYPEDELIMITER + n.Router}
+}
+
 // Validate : validates the components values
 func (n *Network) Validate() error {
 	_, _, err := net.ParseCIDR(n.Subnet)

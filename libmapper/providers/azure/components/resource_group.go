@@ -117,6 +117,11 @@ func (i *ResourceGroup) Dependencies() (deps []string) {
 	return
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *ResourceGroup) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *ResourceGroup) Validate() error {
 	log.Println("Validating resource groups")

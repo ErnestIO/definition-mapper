@@ -230,6 +230,11 @@ func (i *Instance) Dependencies() []string {
 	return deps
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *Instance) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *Instance) Validate() error {
 	if i.Name == "" {
