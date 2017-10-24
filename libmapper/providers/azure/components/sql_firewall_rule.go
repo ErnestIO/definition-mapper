@@ -115,6 +115,11 @@ func (i *SQLFirewallRule) Dependencies() (deps []string) {
 	return []string{TYPESQLSERVER + TYPEDELIMITER + i.ServerName}
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *SQLFirewallRule) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *SQLFirewallRule) Validate() error {
 	log.Println("Validating SQL firewall rules")

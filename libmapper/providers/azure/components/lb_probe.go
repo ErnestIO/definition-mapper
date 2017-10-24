@@ -133,6 +133,11 @@ func (i *LBProbe) Dependencies() (deps []string) {
 	return append(deps, TYPELB+TYPEDELIMITER+i.Loadbalancer)
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *LBProbe) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *LBProbe) Validate() error {
 	log.Println("Validating LB")

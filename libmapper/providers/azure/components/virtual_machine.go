@@ -183,6 +183,11 @@ func (i *VirtualMachine) Dependencies() (deps []string) {
 	return
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *VirtualMachine) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *VirtualMachine) Validate() error {
 	val := event.NewValidator()

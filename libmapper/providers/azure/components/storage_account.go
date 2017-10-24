@@ -136,6 +136,11 @@ func (i *StorageAccount) Dependencies() (deps []string) {
 	return []string{TYPERESOURCEGROUP + TYPEDELIMITER + i.ResourceGroupName}
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *StorageAccount) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *StorageAccount) Validate() error {
 	log.Println("Validating storage accounts")

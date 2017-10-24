@@ -125,6 +125,11 @@ func (i *ManagedDisk) Dependencies() (deps []string) {
 	return []string{TYPERESOURCEGROUP + TYPEDELIMITER + i.ResourceGroupName}
 }
 
+// SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
+func (i *ManagedDisk) SequentialDependencies() []string {
+	return []string{}
+}
+
 // Validate : validates the components values
 func (i *ManagedDisk) Validate() error {
 	log.Println("Validating Managed disk")
