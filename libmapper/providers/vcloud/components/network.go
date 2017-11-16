@@ -13,26 +13,17 @@ import (
 
 // Network : Mapping of a network component
 type Network struct {
-	ProviderType       string   `json:"_provider"`
-	ComponentType      string   `json:"_component"`
-	ComponentID        string   `json:"_component_id"`
-	State              string   `json:"_state"`
-	Action             string   `json:"_action"`
-	Name               string   `json:"name"`
-	Subnet             string   `json:"range"`
-	Netmask            string   `json:"netmask"`
-	StartAddress       string   `json:"start_address"`
-	EndAddress         string   `json:"end_address"`
-	Gateway            string   `json:"gateway"`
-	DNS                []string `json:"dns"`
-	Router             string   `json:"router_name"`
-	DatacenterType     string   `json:"datacenter_type"`
-	DatacenterName     string   `json:"datacenter_name"`
-	DatacenterUsername string   `json:"datacenter_username"`
-	DatacenterPassword string   `json:"datacenter_password"`
-	DatacenterRegion   string   `json:"datacenter_region"`
-	VCloudURL          string   `json:"vcloud_url"`
-	Service            string   `json:"service"`
+	Base
+	ID            string   `json:"id"`
+	Name          string   `json:"name"`
+	Subnet        string   `json:"range"`
+	Netmask       string   `json:"netmask"`
+	StartAddress  string   `json:"start_address"`
+	EndAddress    string   `json:"end_address"`
+	Gateway       string   `json:"gateway"`
+	DNS           []string `json:"dns"`
+	EdgeGateway   string   `json:"edge_gateway"`
+	EdgeGatewayID string   `json:"edge_gateway_id"`
 }
 
 // GetID : returns the component's ID
@@ -112,12 +103,12 @@ func (n *Network) Rebuild(g *graph.Graph) {
 
 // Dependencies : returns a list cf component id's upon which the component depends
 func (n *Network) Dependencies() []string {
-	return []string{TYPEROUTER + TYPEDELIMITER + n.Router}
+	return []string{TYPEROUTER + TYPEDELIMITER + n.EdgeGateway}
 }
 
 // SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
 func (n *Network) SequentialDependencies() []string {
-	return []string{TYPEROUTER + TYPEDELIMITER + n.Router}
+	return []string{TYPEROUTER + TYPEDELIMITER + n.EdgeGateway}
 }
 
 // Validate : validates the components values
@@ -150,10 +141,11 @@ func (n *Network) SetDefaultVariables() {
 	n.ComponentType = TYPENETWORK
 	n.ComponentID = TYPENETWORK + TYPEDELIMITER + n.Name
 	n.ProviderType = PROVIDERTYPE
-	n.DatacenterName = DATACENTERNAME
-	n.DatacenterType = DATACENTERTYPE
-	n.DatacenterRegion = DATACENTERREGION
-	n.DatacenterUsername = DATACENTERUSERNAME
-	n.DatacenterPassword = DATACENTERPASSWORD
-	n.VCloudURL = VCLOUDURL
+	n.Credentials = &Credentials{
+		Type:      DATACENTERTYPE,
+		Vdc:       DATACENTERNAME,
+		Username:  DATACENTERUSERNAME,
+		Password:  DATACENTERPASSWORD,
+		VCloudURL: VCLOUDURL,
+	}
 }

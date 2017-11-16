@@ -9,12 +9,12 @@ import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/definition"
 )
 
-// MapRouters : Maps input router to an ernest formatted router
-func MapRouters(d *definition.Definition) []*components.Router {
-	var routers []*components.Router
+// MapGateways : Maps input edge gateway to an ernest formatted edge gateway
+func MapGateways(d *definition.Definition) []*components.Gateway {
+	var routers []*components.Gateway
 
-	for _, router := range d.Routers {
-		r := &components.Router{
+	for _, router := range d.Gateways {
+		r := &components.Gateway{
 			Name: router.Name,
 		}
 

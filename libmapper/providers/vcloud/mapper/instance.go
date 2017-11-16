@@ -30,11 +30,11 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 		}
 
 		for i := 0; i < instance.Count; i++ {
-			var disks []components.InstanceDisk
+			var disks []components.Disk
 
 			if instance.RootDisk != "" {
 				size, _ := binaryprefix.GetMB(instance.RootDisk)
-				disks = append(disks, components.InstanceDisk{
+				disks = append(disks, components.Disk{
 					ID:   0,
 					Size: size,
 				})
@@ -56,7 +56,7 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 				Tags:          mapInstanceTags(d.Name, instance.Name),
 			}
 
-			if len(d.Routers) < 1 {
+			if len(d.Gateways) < 1 {
 				newInstance.InstanceOnly = true
 			}
 
@@ -72,12 +72,12 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 }
 
 // MapInstanceDisks : Maps the instances disks
-func MapInstanceDisks(d []string) []components.InstanceDisk {
-	var disks []components.InstanceDisk
+func MapInstanceDisks(d []string) []components.Disk {
+	var disks []components.Disk
 
 	for x, disk := range d {
 		size, _ := binaryprefix.GetMB(disk)
-		disks = append(disks, components.InstanceDisk{
+		disks = append(disks, components.Disk{
 			ID:   (x + 1),
 			Size: size,
 		})

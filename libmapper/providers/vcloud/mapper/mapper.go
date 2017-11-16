@@ -94,7 +94,7 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 
 		switch gc.GetType() {
 		case "router":
-			c = &components.Router{}
+			c = &components.Gateway{}
 		case "network":
 			c = &components.Network{}
 		case "instance":
@@ -141,12 +141,10 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 	credentials["_component_id"] = "credentials::vcloud"
 	credentials["_provider"] = details["type"]
 	credentials["name"] = details["name"]
-	credentials["datacenter"] = strings.Split(details["name"].(string), "/")[0]
-	credentials["region"] = details["region"]
+	credentials["vdc"] = strings.Split(details["name"].(string), "/")[0]
 	credentials["username"] = details["username"]
 	credentials["password"] = details["password"]
 	credentials["vcloud_url"] = details["vcloud_url"]
-	credentials["external_network"] = details["external_network"]
 
 	return &credentials
 }
@@ -154,8 +152,8 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 func mapComponents(d *def.Definition, g *graph.Graph) error {
 	// Map basic component values from definition
 
-	for _, router := range MapRouters(d) {
-		err := g.AddComponent(router)
+	for _, gateway := range MapGateways(d) {
+		err := g.AddComponent(gateway)
 		if err != nil {
 			return err
 		}

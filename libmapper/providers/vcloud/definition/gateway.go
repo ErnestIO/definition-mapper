@@ -4,8 +4,8 @@
 
 package definition
 
-// Router stores all information about the router and its componenets
-type Router struct {
+// Gateway stores all information about the router and its componenets
+type Gateway struct {
 	Name          string         `json:"name"`
 	Networks      []Network      `json:"networks"`
 	FirewallRules []FirewallRule `json:"firewall_rules"`
