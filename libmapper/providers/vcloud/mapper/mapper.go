@@ -69,7 +69,34 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 
 // ConvertGraph : converts the service graph into an input yaml format
 func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
-	return &def.Definition{}, nil
+	var d def.Definition
+
+	for i := len(g.Components) - 1; i >= 0; i-- {
+		c := g.Components[i]
+		c.Rebuild(g)
+
+		// remove any components that were determined to not be apart of the service
+		if c.IsStateful() != true {
+			g.Components = append(g.Components[:i], g.Components[i+1:]...)
+			continue
+		}
+
+		for _, dep := range c.Dependencies() {
+			if g.HasComponent(dep) != true {
+				return g, errors.New("Component '" + c.GetID() + "': Could not resolve component dependency '" + dep + "'")
+			}
+		}
+
+		err := c.Validate()
+		if err != nil {
+			return d, err
+		}
+	}
+
+	d.Gateways = MapDefinitionGateways(g)
+	d.Instances = MapDefinitionInstances(g)
+
+	return &d, nil
 }
 
 // LoadDefinition : returns an aws type definition
@@ -127,7 +154,18 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 
 // CreateImportGraph : creates a new graph with component queries used to import components from a provider
 func (m Mapper) CreateImportGraph(params []string) *graph.Graph {
+
 	g := graph.New()
+	filter := make(map[string]string)
+
+	if len(params) > 0 {
+		filter["ernest.service"] = params[0]
+	}
+
+	for _, ctype := range SUPPORTEDCOMPONENTS {
+		q := MapQuery(ctype+"s", filter)
+		g.AddComponent(q)
+	}
 
 	return g
 }

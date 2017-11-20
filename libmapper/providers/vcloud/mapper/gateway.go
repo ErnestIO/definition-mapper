@@ -7,6 +7,7 @@ package mapper
 import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/definition"
+	"github.com/r3labs/graph"
 )
 
 // MapGateways : Maps input edge gateway to an ernest formatted edge gateway
@@ -58,4 +59,57 @@ func MapGateways(d *definition.Definition) []*components.Gateway {
 	}
 
 	return routers
+}
+
+// MapDefinitionGateways : maps all networks, firewall and nat rules and gateway config to a definition gateway
+func MapDefinitionGateways(g *graph.Graph) []definition.Gateway {
+	var gateways []definition.Gateway
+
+	for _, c := range g.GetComponents().ByType("router") {
+		gw := c.(*components.Gateway)
+
+		dgw := definition.Gateway{
+			Name: gw.Name,
+		}
+
+		for _, c := range g.GetComponents().ByType("network") {
+			n := c.(*components.Network)
+
+			if n.EdgeGateway != dgw.Name {
+				continue
+			}
+
+			dgw.Networks = append(dgw.Networks, definition.Network{
+				Name:   n.Name,
+				Subnet: n.Subnet,
+				DNS:    n.DNS,
+			})
+		}
+
+		for _, rule := range gw.FirewallRules {
+			dgw.FirewallRules = append(dgw.FirewallRules, definition.FirewallRule{
+				Name:        rule.Name,
+				Source:      rule.SourceIP,
+				FromPort:    rule.SourcePort,
+				Destination: rule.DestinationIP,
+				ToPort:      rule.DestinationPort,
+				Protocol:    rule.Protocol,
+			})
+		}
+
+		for _, rule := range gw.NatRules {
+			dgw.NatRules = append(dgw.NatRules, definition.NatRule{
+				Type:        rule.Type,
+				Source:      rule.OriginIP,
+				FromPort:    rule.OriginPort,
+				Destination: rule.TranslationIP,
+				ToPort:      rule.TranslationPort,
+				Protocol:    rule.Protocol,
+			})
+		}
+
+		gateways = append(gateways, dgw)
+	}
+
+	return gateways
 }

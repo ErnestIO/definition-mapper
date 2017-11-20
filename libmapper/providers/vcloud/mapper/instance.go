@@ -11,6 +11,7 @@ import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/definition"
 	binaryprefix "github.com/r3labs/binary-prefix"
+	"github.com/r3labs/graph"
 )
 
 // MapInstances : Maps the instances for the input payload on a ernest internal format
@@ -93,4 +94,63 @@ func mapInstanceTags(service, instanceGroup string) map[string]string {
 	tags["ernest.instance_group"] = instanceGroup
 
 	return tags
+}
+
+/*
+Count       int      `json:"count"`
+Cpus        int      `json:"cpus"`
+Image       string   `json:"image"`
+Memory      string   `json:"memory"`
+RootDisk    string   `json:"root_disk"`
+Disks       []string `json:"disks"`
+Name        string   `json:"name"`
+Network     string   `json:"network"`
+StartIP     string   `json:"start_ip"`
+Provisioner []Exec   `json:"provisioner"`
+*/
+
+// MapDefinitionInstances :
+func MapDefinitionInstances(g *graph.Graph) []definition.Instance {
+	var instances []definition.Instance
+
+	ci := g.GetComponents().ByType("instance")
+
+	for _, ig := range ci.TagValues("ernest.instance_group") {
+		is := ci.ByGroup("ernest.instance_group", ig)
+
+		if len(is) < 1 {
+			continue
+		}
+
+		firstInstance := is[0].(*components.Instance)
+
+		instance := definition.Instance{
+			Name:    ig,
+			Cpus:    firstInstance.Cpus,
+			Memory:  strconv.Itoa(firstInstance.Memory) + "MB",
+			Image:   firstInstance.Image,
+			Network: firstInstance.Network,
+			StartIP: firstInstance.IP,
+			Count:   len(is),
+		}
+
+		for _, disk := range firstInstance.Disks {
+			size := strconv.Itoa(disk.Size) + "MB"
+
+			if disk.ID == 0 {
+				instance.RootDisk = size
+				continue
+			}
+
+			instance.Disks = append(instance.Disks, size)
+		}
+
+		if len(firstInstance.ShellCommands) > 0 {
+			instance.Provisioner = append(instance.Provisioner, definition.Exec{Shell: firstInstance.ShellCommands})
+		}
+
+		instances = append(instances, instance)
+	}
+
+	return instances
 }

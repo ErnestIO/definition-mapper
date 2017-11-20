@@ -11,6 +11,7 @@ import (
 	"github.com/ernestio/definition-mapper/libmapper/providers"
 	aws "github.com/ernestio/definition-mapper/libmapper/providers/aws/definition"
 	azure "github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
+	vcloud "github.com/ernestio/definition-mapper/libmapper/providers/vcloud/definition"
 	"github.com/ernestio/definition-mapper/request"
 	"github.com/r3labs/graph"
 	yaml "gopkg.in/yaml.v2"
@@ -72,6 +73,10 @@ func ImportComplete(ig map[string]interface{}) (*build.Build, error) {
 		def.Project = parts[0]
 	case "azure", "azure-fake":
 		def := d.(*azure.Definition)
+		def.Name = parts[1]
+		def.Project = parts[0]
+	case "vcloud", "vcloud-fake":
+		def := d.(*vcloud.Definition)
 		def.Name = parts[1]
 		def.Project = parts[0]
 	}
