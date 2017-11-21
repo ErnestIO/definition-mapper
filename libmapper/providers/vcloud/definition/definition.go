@@ -14,7 +14,7 @@ import (
 type Definition struct {
 	Name      string     `json:"name"  yaml:"name"`
 	Project   string     `json:"project" yaml:"project"`
-	Gateways  []Gateway  `json:"routers"  yaml:"gateways"`
+	Gateways  []Gateway  `json:"routers"  yaml:"routers"`
 	Instances []Instance `json:"instances"  yaml:"instances"`
 }
 

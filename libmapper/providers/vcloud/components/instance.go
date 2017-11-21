@@ -121,6 +121,11 @@ func (i *Instance) Diff(c graph.Component) bool {
 			return true
 		}
 
+		if ci.hasDisk(0) && !i.hasDisk(0) {
+			rd := ci.getDisk(0)
+			i.Disks = append(i.Disks, *rd)
+		}
+
 		if reflect.DeepEqual(i.Disks, ci.Disks) != true {
 			return true
 		}
@@ -211,4 +216,22 @@ func (i *Instance) SetDefaultVariables() {
 		Password:  DATACENTERPASSWORD,
 		VCloudURL: VCLOUDURL,
 	}
+}
+
+func (i *Instance) hasDisk(id int) bool {
+	for _, disk := range i.Disks {
+		if disk.ID == id {
+			return true
+		}
+	}
+	return false
+}
+
+func (i *Instance) getDisk(id int) *Disk {
+	for _, disk := range i.Disks {
+		if disk.ID == id {
+			return &disk
+		}
+	}
+	return nil
 }
