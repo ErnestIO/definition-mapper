@@ -38,6 +38,7 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 				disks = append(disks, components.Disk{
 					ID:   0,
 					Size: size,
+					Root: true,
 				})
 			}
 

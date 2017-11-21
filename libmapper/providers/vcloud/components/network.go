@@ -118,7 +118,6 @@ func (n *Network) SequentialDependencies() []string {
 
 // Validate : validates the components values
 func (n *Network) Validate() error {
-
 	if n.Name == "" {
 		return errors.New("Network name should not be null")
 	}

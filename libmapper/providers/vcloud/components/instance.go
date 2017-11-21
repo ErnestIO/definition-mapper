@@ -13,8 +13,9 @@ import (
 
 // Disk an instance disk
 type Disk struct {
-	ID   int `json:"id"`
-	Size int `json:"size"`
+	ID   int  `json:"id"`
+	Size int  `json:"size"`
+	Root bool `json:"root"`
 }
 
 // Instance : Mapping of an instance component
