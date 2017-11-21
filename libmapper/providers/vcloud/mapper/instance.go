@@ -116,7 +116,7 @@ func MapDefinitionInstances(g *graph.Graph) []definition.Instance {
 			Name:    ig,
 			Cpus:    firstInstance.Cpus,
 			Memory:  strconv.Itoa(firstInstance.Memory) + "MB",
-			Image:   firstInstance.Image,
+			Image:   firstInstance.Catalog + "/" + firstInstance.Image,
 			Network: firstInstance.Network,
 			StartIP: firstInstance.IP,
 			Count:   len(is),
