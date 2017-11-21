@@ -5,6 +5,11 @@
 package mapper
 
 import (
+	"fmt"
+	"net"
+	"strconv"
+	"strings"
+
 	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/definition"
 	"github.com/r3labs/graph"
@@ -79,9 +84,17 @@ func MapDefinitionGateways(g *graph.Graph) []definition.Gateway {
 				continue
 			}
 
+			mask := net.IPMask(net.ParseIP(n.Netmask).To4())
+			prefixSize, _ := mask.Size()
+
+			octets := strings.Split(n.Gateway, ".")
+			octet, _ := strconv.Atoi(octets[3])
+			octets[3] = strconv.Itoa(octet - 1)
+			cidr := fmt.Sprintf("%s/%d", strings.Join(octets, "."), prefixSize)
+
 			dgw.Networks = append(dgw.Networks, definition.Network{
 				Name:   n.Name,
-				Subnet: n.Subnet,
+				Subnet: cidr,
 				DNS:    n.DNS,
 			})
 		}
