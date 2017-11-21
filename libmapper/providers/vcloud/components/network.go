@@ -93,6 +93,11 @@ func (n *Network) Diff(c graph.Component) bool {
 
 // Update : updates the provider returned values cf a component
 func (n *Network) Update(c graph.Component) {
+	cn := c.(*Network)
+
+	n.ID = cn.ID
+	n.EdgeGatewayID = cn.EdgeGatewayID
+
 	n.SetDefaultVariables()
 }
 
@@ -113,19 +118,27 @@ func (n *Network) SequentialDependencies() []string {
 
 // Validate : validates the components values
 func (n *Network) Validate() error {
-	_, _, err := net.ParseCIDR(n.Subnet)
-	if err != nil {
-		return errors.New("Network CIDR is not valid")
-	}
 
 	if n.Name == "" {
 		return errors.New("Network name should not be null")
 	}
 
 	for _, val := range n.DNS {
+		if val == "" {
+			continue
+		}
 		if ok := net.ParseIP(val); ok == nil {
 			return errors.New("DNS " + val + " is not a valid CIDR")
 		}
+	}
+
+	if n.Subnet == "" && n.Gateway != "" && n.Netmask != "" {
+		return nil
+	}
+
+	_, _, err := net.ParseCIDR(n.Subnet)
+	if err != nil {
+		return errors.New("Network CIDR is not valid")
 	}
 
 	return nil

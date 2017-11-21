@@ -75,12 +75,6 @@ func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
 		c := g.Components[i]
 		c.Rebuild(g)
 
-		// remove any components that were determined to not be apart of the service
-		if c.IsStateful() != true {
-			g.Components = append(g.Components[:i], g.Components[i+1:]...)
-			continue
-		}
-
 		for _, dep := range c.Dependencies() {
 			if g.HasComponent(dep) != true {
 				return g, errors.New("Component '" + c.GetID() + "': Could not resolve component dependency '" + dep + "'")
@@ -129,6 +123,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 		default:
 			continue
 		}
+
+		(*gc)["Base"] = gc
 
 		config := &mapstructure.DecoderConfig{
 			Metadata: nil,

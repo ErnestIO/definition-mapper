@@ -12,10 +12,10 @@ import (
 
 // Definition ...
 type Definition struct {
-	Name      string     `json:"name"`
+	Name      string     `json:"name"  yaml:"name"`
 	Project   string     `json:"project" yaml:"project"`
-	Gateways  []Gateway  `json:"routers"`
-	Instances []Instance `json:"instances"`
+	Gateways  []Gateway  `json:"routers"  yaml:"gateways"`
+	Instances []Instance `json:"instances"  yaml:"instances"`
 }
 
 // New returns a new Definition

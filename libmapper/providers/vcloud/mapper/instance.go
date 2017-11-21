@@ -96,19 +96,6 @@ func mapInstanceTags(service, instanceGroup string) map[string]string {
 	return tags
 }
 
-/*
-Count       int      `json:"count"`
-Cpus        int      `json:"cpus"`
-Image       string   `json:"image"`
-Memory      string   `json:"memory"`
-RootDisk    string   `json:"root_disk"`
-Disks       []string `json:"disks"`
-Name        string   `json:"name"`
-Network     string   `json:"network"`
-StartIP     string   `json:"start_ip"`
-Provisioner []Exec   `json:"provisioner"`
-*/
-
 // MapDefinitionInstances :
 func MapDefinitionInstances(g *graph.Graph) []definition.Instance {
 	var instances []definition.Instance
@@ -146,7 +133,7 @@ func MapDefinitionInstances(g *graph.Graph) []definition.Instance {
 		}
 
 		if len(firstInstance.ShellCommands) > 0 {
-			instance.Provisioner = append(instance.Provisioner, definition.Exec{Shell: firstInstance.ShellCommands})
+			instance.Provisioner = append(instance.Provisioner, &definition.Exec{Shell: firstInstance.ShellCommands})
 		}
 
 		instances = append(instances, instance)

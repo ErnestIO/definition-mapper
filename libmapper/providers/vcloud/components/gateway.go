@@ -35,7 +35,6 @@ type Gateway struct {
 	Base
 	ID            string         `json:"id"`
 	Name          string         `json:"name"`
-	IP            string         `json:"ip"`
 	NatRules      []NatRule      `json:"nat_rules"`
 	FirewallRules []FirewallRule `json:"firewall_rules"`
 }
@@ -139,6 +138,10 @@ func (gw *Gateway) Diff(c graph.Component) bool {
 
 // Update : updates the provider returned values cf a component
 func (gw *Gateway) Update(c graph.Component) {
+	cgw := c.(*Gateway)
+
+	gw.ID = cgw.ID
+
 	gw.SetDefaultVariables()
 }
 

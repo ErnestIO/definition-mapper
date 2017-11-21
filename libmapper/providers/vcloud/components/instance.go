@@ -130,6 +130,11 @@ func (i *Instance) Diff(c graph.Component) bool {
 
 // Update : updates the provider returned values of a component
 func (i *Instance) Update(c graph.Component) {
+	ci := c.(*Instance)
+
+	i.ID = ci.ID
+	i.VMID = ci.VMID
+
 	i.SetDefaultVariables()
 }
 
