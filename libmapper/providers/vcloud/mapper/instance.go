@@ -11,6 +11,7 @@ import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/vcloud/definition"
 	binaryprefix "github.com/r3labs/binary-prefix"
+	"github.com/r3labs/graph"
 )
 
 // MapInstances : Maps the instances for the input payload on a ernest internal format
@@ -30,13 +31,14 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 		}
 
 		for i := 0; i < instance.Count; i++ {
-			var disks []components.InstanceDisk
+			var disks []components.Disk
 
 			if instance.RootDisk != "" {
 				size, _ := binaryprefix.GetMB(instance.RootDisk)
-				disks = append(disks, components.InstanceDisk{
+				disks = append(disks, components.Disk{
 					ID:   0,
 					Size: size,
+					Root: true,
 				})
 			}
 
@@ -56,7 +58,7 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 				Tags:          mapInstanceTags(d.Name, instance.Name),
 			}
 
-			if len(d.Routers) < 1 {
+			if len(d.Gateways) < 1 {
 				newInstance.InstanceOnly = true
 			}
 
@@ -72,12 +74,12 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 }
 
 // MapInstanceDisks : Maps the instances disks
-func MapInstanceDisks(d []string) []components.InstanceDisk {
-	var disks []components.InstanceDisk
+func MapInstanceDisks(d []string) []components.Disk {
+	var disks []components.Disk
 
 	for x, disk := range d {
 		size, _ := binaryprefix.GetMB(disk)
-		disks = append(disks, components.InstanceDisk{
+		disks = append(disks, components.Disk{
 			ID:   (x + 1),
 			Size: size,
 		})
@@ -93,4 +95,50 @@ func mapInstanceTags(service, instanceGroup string) map[string]string {
 	tags["ernest.instance_group"] = instanceGroup
 
 	return tags
+}
+
+// MapDefinitionInstances :
+func MapDefinitionInstances(g *graph.Graph) []definition.Instance {
+	var instances []definition.Instance
+
+	ci := g.GetComponents().ByType("instance")
+
+	for _, ig := range ci.TagValues("ernest.instance_group") {
+		is := ci.ByGroup("ernest.instance_group", ig)
+
+		if len(is) < 1 {
+			continue
+		}
+
+		firstInstance := is[0].(*components.Instance)
+
+		instance := definition.Instance{
+			Name:    ig,
+			Cpus:    firstInstance.Cpus,
+			Memory:  strconv.Itoa(firstInstance.Memory) + "MB",
+			Image:   firstInstance.Catalog + "/" + firstInstance.Image,
+			Network: firstInstance.Network,
+			StartIP: firstInstance.IP,
+			Count:   len(is),
+		}
+
+		for _, disk := range firstInstance.Disks {
+			size := strconv.Itoa(disk.Size) + "MB"
+
+			if disk.ID == 0 {
+				instance.RootDisk = size
+				continue
+			}
+
+			instance.Disks = append(instance.Disks, size)
+		}
+
+		if len(firstInstance.ShellCommands) > 0 {
+			instance.Provisioner = append(instance.Provisioner, &definition.Exec{Shell: firstInstance.ShellCommands})
+		}
+
+		instances = append(instances, instance)
+	}
+
+	return instances
 }

@@ -12,10 +12,10 @@ import (
 
 // Definition ...
 type Definition struct {
-	Name      string     `json:"name"`
+	Name      string     `json:"name"  yaml:"name"`
 	Project   string     `json:"project" yaml:"project"`
-	Routers   []Router   `json:"routers"`
-	Instances []Instance `json:"instances"`
+	Gateways  []Gateway  `json:"routers"  yaml:"routers"`
+	Instances []Instance `json:"instances"  yaml:"instances"`
 }
 
 // New returns a new Definition
@@ -46,8 +46,8 @@ func (d *Definition) LoadMap(i map[string]interface{}) error {
 
 // FindNetwork returns a network matched by name
 func (d *Definition) FindNetwork(name string) *Network {
-	for _, router := range d.Routers {
-		for _, network := range router.Networks {
+	for _, gateway := range d.Gateways {
+		for _, network := range gateway.Networks {
 			if network.Name == name {
 				return &network
 			}

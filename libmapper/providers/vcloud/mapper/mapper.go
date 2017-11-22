@@ -69,7 +69,28 @@ func (m Mapper) ConvertDefinition(gd libmapper.Definition) (*graph.Graph, error)
 
 // ConvertGraph : converts the service graph into an input yaml format
 func (m Mapper) ConvertGraph(g *graph.Graph) (libmapper.Definition, error) {
-	return &def.Definition{}, nil
+	var d def.Definition
+
+	for i := len(g.Components) - 1; i >= 0; i-- {
+		c := g.Components[i]
+		c.Rebuild(g)
+
+		for _, dep := range c.Dependencies() {
+			if g.HasComponent(dep) != true {
+				return g, errors.New("Component '" + c.GetID() + "': Could not resolve component dependency '" + dep + "'")
+			}
+		}
+
+		err := c.Validate()
+		if err != nil {
+			return d, err
+		}
+	}
+
+	d.Gateways = MapDefinitionGateways(g)
+	d.Instances = MapDefinitionInstances(g)
+
+	return &d, nil
 }
 
 // LoadDefinition : returns an aws type definition
@@ -94,7 +115,7 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 
 		switch gc.GetType() {
 		case "router":
-			c = &components.Router{}
+			c = &components.Gateway{}
 		case "network":
 			c = &components.Network{}
 		case "instance":
@@ -102,6 +123,8 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 		default:
 			continue
 		}
+
+		(*gc)["Base"] = gc
 
 		config := &mapstructure.DecoderConfig{
 			Metadata: nil,
@@ -127,7 +150,18 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 
 // CreateImportGraph : creates a new graph with component queries used to import components from a provider
 func (m Mapper) CreateImportGraph(params []string) *graph.Graph {
+
 	g := graph.New()
+	filter := make(map[string]string)
+
+	if len(params) > 0 {
+		filter["ernest.service"] = params[0]
+	}
+
+	for _, ctype := range SUPPORTEDCOMPONENTS {
+		q := MapQuery(ctype+"s", filter)
+		g.AddComponent(q)
+	}
 
 	return g
 }
@@ -141,12 +175,10 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 	credentials["_component_id"] = "credentials::vcloud"
 	credentials["_provider"] = details["type"]
 	credentials["name"] = details["name"]
-	credentials["datacenter"] = strings.Split(details["name"].(string), "/")[0]
-	credentials["region"] = details["region"]
+	credentials["vdc"] = strings.Split(details["name"].(string), "/")[0]
 	credentials["username"] = details["username"]
 	credentials["password"] = details["password"]
 	credentials["vcloud_url"] = details["vcloud_url"]
-	credentials["external_network"] = details["external_network"]
 
 	return &credentials
 }
@@ -154,8 +186,8 @@ func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Compon
 func mapComponents(d *def.Definition, g *graph.Graph) error {
 	// Map basic component values from definition
 
-	for _, router := range MapRouters(d) {
-		err := g.AddComponent(router)
+	for _, gateway := range MapGateways(d) {
+		err := g.AddComponent(gateway)
 		if err != nil {
 			return err
 		}

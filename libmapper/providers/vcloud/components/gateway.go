@@ -18,7 +18,6 @@ type NatRule struct {
 	TranslationIP   string `json:"translation_ip"`
 	TranslationPort string `json:"translation_port"`
 	Protocol        string `json:"protocol"`
-	Network         string `json:"network"`
 }
 
 // FirewallRule ...
@@ -31,116 +30,104 @@ type FirewallRule struct {
 	Protocol        string `json:"protocol"`
 }
 
-// Router : mapping of a router component
-type Router struct {
-	ProviderType       string            `json:"_provider"`
-	ComponentType      string            `json:"_component"`
-	ComponentID        string            `json:"_component_id"`
-	State              string            `json:"_state"`
-	Action             string            `json:"_action"`
-	Name               string            `json:"name"`
-	IP                 string            `json:"ip"`
-	NatRules           []NatRule         `json:"nat_rules"`
-	FirewallRules      []FirewallRule    `json:"firewall_rules"`
-	Tags               map[string]string `json:"tags"`
-	DatacenterType     string            `json:"datacenter_type"`
-	DatacenterName     string            `json:"datacenter_name"`
-	DatacenterUsername string            `json:"datacenter_username"`
-	DatacenterPassword string            `json:"datacenter_password"`
-	DatacenterRegion   string            `json:"datacenter_region"`
-	VCloudURL          string            `json:"vcloud_url"`
-	Service            string            `json:"service"`
+// Gateway : mapping of a edge gateway component
+type Gateway struct {
+	Base
+	ID            string         `json:"id"`
+	Name          string         `json:"name"`
+	NatRules      []NatRule      `json:"nat_rules"`
+	FirewallRules []FirewallRule `json:"firewall_rules"`
 }
 
 // GetID : returns the component's ID
-func (r *Router) GetID() string {
-	return r.ComponentID
+func (gw *Gateway) GetID() string {
+	return gw.ComponentID
 }
 
 // GetName returns a components name
-func (r *Router) GetName() string {
-	return r.Name
+func (gw *Gateway) GetName() string {
+	return gw.Name
 }
 
 // GetProvider : returns the provider type
-func (r *Router) GetProvider() string {
-	return r.ProviderType
+func (gw *Gateway) GetProvider() string {
+	return gw.ProviderType
 }
 
 // GetProviderID returns a components provider id
-func (r *Router) GetProviderID() string {
-	return r.Name
+func (gw *Gateway) GetProviderID() string {
+	return gw.Name
 }
 
 // GetType : returns the type cf the component
-func (r *Router) GetType() string {
-	return r.ComponentType
+func (gw *Gateway) GetType() string {
+	return gw.ComponentType
 }
 
 // GetState : returns the state cf the component
-func (r *Router) GetState() string {
-	return r.State
+func (gw *Gateway) GetState() string {
+	return gw.State
 }
 
 // SetState : sets the state cf the component
-func (r *Router) SetState(s string) {
-	r.State = s
+func (gw *Gateway) SetState(s string) {
+	gw.State = s
 }
 
 // GetAction : returns the action cf the component
-func (r *Router) GetAction() string {
-	return r.Action
+func (gw *Gateway) GetAction() string {
+	return gw.Action
 }
 
 // SetAction : Sets the action cf the component
-func (r *Router) SetAction(s string) {
-	r.Action = s
+func (gw *Gateway) SetAction(s string) {
+	gw.Action = s
 }
 
 // GetGroup : returns the components group
-func (r *Router) GetGroup() string {
+func (gw *Gateway) GetGroup() string {
 	return ""
 }
 
 // GetTags returns a components tags
-func (r *Router) GetTags() map[string]string {
-	return r.Tags
+func (gw *Gateway) GetTags() map[string]string {
+	return map[string]string{}
 }
 
 // GetTag returns a components tag
-func (r *Router) GetTag(tag string) string {
-	return r.Tags[tag]
+func (gw *Gateway) GetTag(tag string) string {
+	return ""
 }
 
 // Diff : diff's the component against another component cf the same type
-func (r *Router) Diff(c graph.Component) bool {
-	cr, ok := c.(*Router)
+func (gw *Gateway) Diff(c graph.Component) bool {
+	cgw, ok := c.(*Gateway)
 	if ok {
-		if len(r.FirewallRules) != len(cr.FirewallRules) {
+		if len(gw.FirewallRules) != len(cgw.FirewallRules) {
 			return true
 		}
 
-		for i := 0; i < len(r.FirewallRules); i++ {
-			if r.FirewallRules[i].DestinationIP != cr.FirewallRules[i].DestinationIP ||
-				r.FirewallRules[i].DestinationPort != cr.FirewallRules[i].DestinationPort ||
-				r.FirewallRules[i].Protocol != cr.FirewallRules[i].Protocol ||
-				r.FirewallRules[i].SourceIP != cr.FirewallRules[i].SourceIP ||
-				r.FirewallRules[i].SourcePort != cr.FirewallRules[i].SourcePort {
+		for i := 0; i < len(gw.FirewallRules); i++ {
+			if gw.FirewallRules[i].DestinationIP != cgw.FirewallRules[i].DestinationIP ||
+				gw.FirewallRules[i].DestinationPort != cgw.FirewallRules[i].DestinationPort ||
+				gw.FirewallRules[i].Protocol != cgw.FirewallRules[i].Protocol ||
+				gw.FirewallRules[i].SourceIP != cgw.FirewallRules[i].SourceIP ||
+				gw.FirewallRules[i].SourcePort != cgw.FirewallRules[i].SourcePort {
 				return true
 			}
 		}
 
-		if len(r.NatRules) != len(cr.NatRules) {
+		if len(gw.NatRules) != len(cgw.NatRules) {
 			return true
 		}
 
-		for i := 0; i < len(r.NatRules); i++ {
-			if r.NatRules[i].OriginIP != cr.NatRules[i].OriginIP ||
-				r.NatRules[i].OriginPort != cr.NatRules[i].OriginPort ||
-				r.NatRules[i].TranslationIP != cr.NatRules[i].TranslationIP ||
-				r.NatRules[i].TranslationPort != cr.NatRules[i].TranslationPort ||
-				r.NatRules[i].Protocol != cr.NatRules[i].Protocol ||
-				r.NatRules[i].Type != cr.NatRules[i].Type {
+		for i := 0; i < len(gw.NatRules); i++ {
+			if gw.NatRules[i].OriginIP != cgw.NatRules[i].OriginIP ||
+				gw.NatRules[i].OriginPort != cgw.NatRules[i].OriginPort ||
+				gw.NatRules[i].TranslationIP != cgw.NatRules[i].TranslationIP ||
+				gw.NatRules[i].TranslationPort != cgw.NatRules[i].TranslationPort ||
+				gw.NatRules[i].Protocol != cgw.NatRules[i].Protocol ||
+				gw.NatRules[i].Type != cgw.NatRules[i].Type {
 				return true
 			}
 		}
@@ -150,32 +137,32 @@ func (r *Router) Diff(c graph.Component) bool {
 }
 
 // Update : updates the provider returned values cf a component
-func (r *Router) Update(c graph.Component) {
-	r.SetDefaultVariables()
+func (gw *Gateway) Update(c graph.Component) {
+	cgw := c.(*Gateway)
+
+	gw.ID = cgw.ID
+
+	gw.SetDefaultVariables()
 }
 
 // Rebuild : rebuilds the component's internal state, such as templated values
-func (r *Router) Rebuild(g *graph.Graph) {
-	for i := 0; i < len(r.NatRules); i++ {
-		r.NatRules[i].Network = EXTERNALNETWORK
-	}
-
-	r.SetDefaultVariables()
+func (gw *Gateway) Rebuild(g *graph.Graph) {
+	gw.SetDefaultVariables()
 }
 
 // Dependencies : returns a list cf component id's upon which the component depends
-func (r *Router) Dependencies() []string {
+func (gw *Gateway) Dependencies() []string {
 	return []string{}
 }
 
 // SequentialDependencies : returns a list of origin components that restrict the execution of its dependents, allowing only one dependent component to be provisioned at a time (sequentially)
-func (r *Router) SequentialDependencies() []string {
+func (gw *Gateway) SequentialDependencies() []string {
 	return []string{}
 }
 
 // Validate : validates the components values
-func (r *Router) Validate() error {
-	for _, rule := range r.FirewallRules {
+func (gw *Gateway) Validate() error {
+	for _, rule := range gw.FirewallRules {
 		// Check if firewall rule name is null
 		if rule.Name == "" {
 			return errors.New("Firewall Rule name should not be null")
@@ -213,7 +200,7 @@ func (r *Router) Validate() error {
 		}
 	}
 
-	for _, rule := range r.NatRules {
+	for _, rule := range gw.NatRules {
 		// Check if Destination is a valid IP
 		err := validateIP(rule.OriginIP, "Nat Rule Source")
 		if err != nil {
@@ -240,20 +227,21 @@ func (r *Router) Validate() error {
 }
 
 // IsStateful : returns true if the component needs to be actioned to be removed.
-func (r *Router) IsStateful() bool {
+func (gw *Gateway) IsStateful() bool {
 	// set to false because we can't delete a router
 	return false
 }
 
 // SetDefaultVariables : sets up the default template variables for a component
-func (r *Router) SetDefaultVariables() {
-	r.ComponentType = TYPEROUTER
-	r.ComponentID = TYPEROUTER + TYPEDELIMITER + r.Name
-	r.ProviderType = PROVIDERTYPE
-	r.DatacenterName = DATACENTERNAME
-	r.DatacenterType = DATACENTERTYPE
-	r.DatacenterRegion = DATACENTERREGION
-	r.DatacenterUsername = DATACENTERUSERNAME
-	r.DatacenterPassword = DATACENTERPASSWORD
-	r.VCloudURL = VCLOUDURL
+func (gw *Gateway) SetDefaultVariables() {
+	gw.ComponentType = TYPEROUTER
+	gw.ComponentID = TYPEROUTER + TYPEDELIMITER + gw.Name
+	gw.ProviderType = PROVIDERTYPE
+	gw.Credentials = &Credentials{
+		Type:      DATACENTERTYPE,
+		Vdc:       DATACENTERNAME,
+		Username:  DATACENTERUSERNAME,
+		Password:  DATACENTERPASSWORD,
+		VCloudURL: VCLOUDURL,
+	}
 }

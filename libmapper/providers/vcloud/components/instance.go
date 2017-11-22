@@ -11,38 +11,30 @@ import (
 	"github.com/r3labs/graph"
 )
 
-// InstanceDisk an instance disk
-type InstanceDisk struct {
-	ID   int `json:"id"`
-	Size int `json:"size"`
+// Disk an instance disk
+type Disk struct {
+	ID   int  `json:"id"`
+	Size int  `json:"size"`
+	Root bool `json:"root"`
 }
 
-// Instance : mapping of an instance component
+// Instance : Mapping of an instance component
 type Instance struct {
-	ProviderType       string            `json:"_provider"`
-	ComponentType      string            `json:"_component"`
-	ComponentID        string            `json:"_component_id"`
-	State              string            `json:"_state"`
-	Action             string            `json:"_action"`
-	Name               string            `json:"name"`
-	Hostname           string            `json:"hostname"`
-	Catalog            string            `json:"reference_catalog"`
-	Image              string            `json:"reference_image"`
-	Cpus               int               `json:"cpus"`
-	Memory             int               `json:"ram"`
-	Network            string            `json:"network"`
-	IP                 string            `json:"ip"`
-	Disks              []InstanceDisk    `json:"disks"`
-	InstanceOnly       bool              `json:"-"`
-	ShellCommands      []string          `json:"shell_commands"`
-	Tags               map[string]string `json:"tags"`
-	DatacenterType     string            `json:"datacenter_type"`
-	DatacenterName     string            `json:"datacenter_name"`
-	DatacenterUsername string            `json:"datacenter_username"`
-	DatacenterPassword string            `json:"datacenter_password"`
-	DatacenterRegion   string            `json:"datacenter_region"`
-	VCloudURL          string            `json:"vcloud_url"`
-	Service            string            `json:"service"`
+	Base
+	ID            string            `json:"id"`
+	VMID          string            `json:"vm_id"`
+	Name          string            `json:"name"`
+	Hostname      string            `json:"hostname"`
+	Catalog       string            `json:"reference_catalog"`
+	Image         string            `json:"reference_image"`
+	Cpus          int               `json:"cpus"`
+	Memory        int               `json:"ram"`
+	Network       string            `json:"network"`
+	IP            string            `json:"ip"`
+	Disks         []Disk            `json:"disks"`
+	ShellCommands []string          `json:"shell_commands"`
+	Tags          map[string]string `json:"tags"`
+	InstanceOnly  bool              `json:"-"`
 }
 
 // GetID : returns the component's ID
@@ -129,6 +121,11 @@ func (i *Instance) Diff(c graph.Component) bool {
 			return true
 		}
 
+		if ci.hasDisk(0) && !i.hasDisk(0) {
+			rd := ci.getDisk(0)
+			i.Disks = append(i.Disks, *rd)
+		}
+
 		if reflect.DeepEqual(i.Disks, ci.Disks) != true {
 			return true
 		}
@@ -139,6 +136,11 @@ func (i *Instance) Diff(c graph.Component) bool {
 
 // Update : updates the provider returned values of a component
 func (i *Instance) Update(c graph.Component) {
+	ci := c.(*Instance)
+
+	i.ID = ci.ID
+	i.VMID = ci.VMID
+
 	i.SetDefaultVariables()
 }
 
@@ -207,10 +209,29 @@ func (i *Instance) SetDefaultVariables() {
 	i.ComponentType = TYPEINSTANCE
 	i.ComponentID = TYPEINSTANCE + TYPEDELIMITER + i.Name
 	i.ProviderType = PROVIDERTYPE
-	i.DatacenterName = DATACENTERNAME
-	i.DatacenterType = DATACENTERTYPE
-	i.DatacenterRegion = DATACENTERREGION
-	i.DatacenterUsername = DATACENTERUSERNAME
-	i.DatacenterPassword = DATACENTERPASSWORD
-	i.VCloudURL = VCLOUDURL
+	i.Credentials = &Credentials{
+		Type:      DATACENTERTYPE,
+		Vdc:       DATACENTERNAME,
+		Username:  DATACENTERUSERNAME,
+		Password:  DATACENTERPASSWORD,
+		VCloudURL: VCLOUDURL,
+	}
+}
+
+func (i *Instance) hasDisk(id int) bool {
+	for _, disk := range i.Disks {
+		if disk.ID == id {
+			return true
+		}
+	}
+	return false
+}
+
+func (i *Instance) getDisk(id int) *Disk {
+	for _, disk := range i.Disks {
+		if disk.ID == id {
+			return &disk
+		}
+	}
+	return nil
 }

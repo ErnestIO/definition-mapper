@@ -8,22 +8,22 @@ import "strings"
 
 // Instance ...
 type Instance struct {
-	Count       int      `json:"count"`
-	Cpus        int      `json:"cpus"`
-	Image       string   `json:"image"`
-	Memory      string   `json:"memory"`
-	RootDisk    string   `json:"root_disk"`
-	Disks       []string `json:"disks"`
-	Name        string   `json:"name"`
-	Network     string   `json:"network"`
-	StartIP     string   `json:"start_ip"`
-	Provisioner []Exec   `json:"provisioner"`
+	Name        string   `json:"name" yaml:"name"`
+	Count       int      `json:"count" yaml:"count"`
+	Cpus        int      `json:"cpus" yaml:"cpus"`
+	Image       string   `json:"image" yaml:"image"`
+	Memory      string   `json:"memory" yaml:"memory"`
+	RootDisk    string   `json:"root_disk,omitempty" yaml:"root_disk,omitempty"`
+	Disks       []string `json:"disks,omitempty" yaml:"disks,omitempty"`
+	Network     string   `json:"network" yaml:"network"`
+	StartIP     string   `json:"start_ip" yaml:"start_ip"`
+	Provisioner []*Exec  `json:"provisioner,omitempty" yaml:"provisioner,omitempty"`
 }
 
 // Exec ...
 type Exec struct {
-	Shell    []string `json:"shell"`
-	Commands []string `json:"exec"`
+	Shell    []string `json:"shell,omitempty"  yaml:"shell,omitempty"`
+	Commands []string `json:"exec,omitempty" yaml:"exec,omitempty"`
 }
 
 // Catalog ...

@@ -20,7 +20,7 @@ import (
 func MapNetworks(d *definition.Definition) []*components.Network {
 	var networks []*components.Network
 
-	for _, r := range d.Routers {
+	for _, r := range d.Gateways {
 		for _, network := range r.Networks {
 			octets := getIPOctets(network.Subnet)
 
@@ -32,7 +32,7 @@ func MapNetworks(d *definition.Definition) []*components.Network {
 				Gateway:      octets + ".1",
 				Netmask:      parseNetmask(network.Subnet),
 				DNS:          network.DNS,
-				Router:       r.Name,
+				EdgeGateway:  r.Name,
 			}
 
 			n.SetDefaultVariables()
