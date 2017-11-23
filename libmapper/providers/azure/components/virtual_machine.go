@@ -88,6 +88,10 @@ func (i *VirtualMachine) Diff(c graph.Component) bool {
 			return true
 		}
 
+		if i.Powered != cvm.Powered {
+			return true
+		}
+
 		if i.StorageDataDisk.Size != nil && cvm.StorageDataDisk.Size != nil {
 			if *i.StorageDataDisk.Size != *cvm.StorageDataDisk.Size {
 				return true

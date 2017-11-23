@@ -51,6 +51,7 @@ type Instance struct {
 	AccessKeyID           string            `json:"aws_access_key_id"`
 	SecretAccessKey       string            `json:"aws_secret_access_key"`
 	Service               string            `json:"service"`
+	Powered               bool              `json:"powered"`
 }
 
 // GetID : returns the component's ID
@@ -118,6 +119,10 @@ func (i *Instance) Diff(c graph.Component) bool {
 	ci, ok := c.(*Instance)
 	if ok {
 		if i.Type != ci.Type {
+			return true
+		}
+
+		if i.Powered != ci.Powered {
 			return true
 		}
 

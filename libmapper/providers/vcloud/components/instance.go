@@ -33,6 +33,7 @@ type Instance struct {
 	IP            string            `json:"ip"`
 	Disks         []Disk            `json:"disks"`
 	ShellCommands []string          `json:"shell_commands"`
+	Powered       bool              `json:"powered"`
 	Tags          map[string]string `json:"tags"`
 	InstanceOnly  bool              `json:"-"`
 }
@@ -102,6 +103,10 @@ func (i *Instance) Diff(c graph.Component) bool {
 	ci, ok := c.(*Instance)
 	if ok {
 		if i.Hostname != ci.Hostname {
+			return true
+		}
+
+		if i.Powered != ci.Powered {
 			return true
 		}
 
