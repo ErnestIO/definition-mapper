@@ -49,7 +49,7 @@ func MapGateways(d *definition.Definition) []*components.Gateway {
 		// Map nat rules
 		for _, rule := range router.NatRules {
 			r.NatRules = append(r.NatRules, components.NatRule{
-				Type:            rule.Type,
+				Type:            strings.ToUpper(rule.Type),
 				OriginIP:        rule.Source,
 				OriginPort:      rule.FromPort,
 				TranslationIP:   rule.Destination,
