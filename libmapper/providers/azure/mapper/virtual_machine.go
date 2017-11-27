@@ -125,6 +125,7 @@ func MapVirtualMachines(d *definition.Definition) (vms []*components.VirtualMach
 				if vm.Tags != nil {
 					tags = vm.Tags
 				}
+				cvm.Powered = true
 				cvm.Tags = mapVMTags(vm.Name, d.Name, tags)
 				cvm.LicenseType = vm.LicenseType
 				cvm.ResourceGroupName = rg.Name

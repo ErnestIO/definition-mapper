@@ -137,7 +137,7 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 		case "internet_gateway":
 			c = &components.InternetGateway{}
 		case "instance":
-			c = &components.Instance{Powered: true}
+			c = &components.Instance{}
 		case "firewall":
 			c = &components.SecurityGroup{}
 		case "elb":

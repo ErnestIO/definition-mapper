@@ -119,7 +119,7 @@ func (m Mapper) LoadGraph(gg map[string]interface{}) (*graph.Graph, error) {
 		case "network":
 			c = &components.Network{}
 		case "instance":
-			c = &components.Instance{Powered: true}
+			c = &components.Instance{}
 		default:
 			continue
 		}

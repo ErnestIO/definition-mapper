@@ -152,6 +152,7 @@ func (i *Instance) Update(c graph.Component) {
 		i.PublicIP = ci.PublicIP
 		i.ElasticIP = ci.ElasticIP
 		i.ElasticIPAWSID = ci.ElasticIPAWSID
+		i.Powered = ci.Powered
 	}
 
 	i.SetDefaultVariables()

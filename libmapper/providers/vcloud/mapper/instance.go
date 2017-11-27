@@ -55,6 +55,7 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 				Network:       instance.Network,
 				IP:            ip.String(),
 				ShellCommands: commands,
+				Powered:       true,
 				Tags:          mapInstanceTags(d.Name, instance.Name),
 			}
 

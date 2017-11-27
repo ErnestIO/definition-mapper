@@ -145,6 +145,7 @@ func (i *Instance) Update(c graph.Component) {
 
 	i.ID = ci.ID
 	i.VMID = ci.VMID
+	i.Powered = ci.Powered
 
 	i.SetDefaultVariables()
 }

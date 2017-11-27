@@ -117,6 +117,7 @@ func (i *VirtualMachine) Update(c graph.Component) {
 	cvm, ok := c.(*VirtualMachine)
 	if ok {
 		i.ID = cvm.ID
+		i.Powered = cvm.Powered
 		i.StorageDataDisk.Lun = cvm.StorageDataDisk.Lun
 		if cvm.StorageDataDisk.StorageAccount != "" {
 			i.StorageDataDisk.ManagedDiskID = cvm.StorageDataDisk.ManagedDiskID
