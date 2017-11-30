@@ -33,6 +33,7 @@ type Instance struct {
 	IP            string            `json:"ip"`
 	Disks         []Disk            `json:"disks"`
 	ShellCommands []string          `json:"shell_commands"`
+	Powered       bool              `json:"powered"`
 	Tags          map[string]string `json:"tags"`
 	InstanceOnly  bool              `json:"-"`
 }
@@ -105,6 +106,10 @@ func (i *Instance) Diff(c graph.Component) bool {
 			return true
 		}
 
+		if i.Powered != ci.Powered {
+			return true
+		}
+
 		if i.Cpus != ci.Cpus {
 			return true
 		}
@@ -140,6 +145,7 @@ func (i *Instance) Update(c graph.Component) {
 
 	i.ID = ci.ID
 	i.VMID = ci.VMID
+	i.Powered = ci.Powered
 
 	i.SetDefaultVariables()
 }

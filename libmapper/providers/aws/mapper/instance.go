@@ -33,6 +33,7 @@ func MapInstances(d *definition.Definition) []*components.Instance {
 				AssignElasticIP: instance.ElasticIP,
 				SecurityGroups:  instance.SecurityGroups,
 				UserData:        instance.UserData,
+				Powered:         true,
 				Tags:            mapInstanceTags(name, d.Name, instance.Name),
 			}
 

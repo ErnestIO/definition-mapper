@@ -51,6 +51,7 @@ type Instance struct {
 	AccessKeyID           string            `json:"aws_access_key_id"`
 	SecretAccessKey       string            `json:"aws_secret_access_key"`
 	Service               string            `json:"service"`
+	Powered               bool              `json:"powered"`
 }
 
 // GetID : returns the component's ID
@@ -121,6 +122,10 @@ func (i *Instance) Diff(c graph.Component) bool {
 			return true
 		}
 
+		if i.Powered != ci.Powered {
+			return true
+		}
+
 		for _, v := range i.Volumes {
 			if hasVolume(ci.Volumes, v.Volume) != true {
 				return true
@@ -147,6 +152,7 @@ func (i *Instance) Update(c graph.Component) {
 		i.PublicIP = ci.PublicIP
 		i.ElasticIP = ci.ElasticIP
 		i.ElasticIPAWSID = ci.ElasticIPAWSID
+		i.Powered = ci.Powered
 	}
 
 	i.SetDefaultVariables()
