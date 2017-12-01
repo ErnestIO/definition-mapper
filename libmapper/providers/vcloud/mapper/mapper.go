@@ -169,16 +169,21 @@ func (m Mapper) CreateImportGraph(params []string) *graph.Graph {
 // ProviderCredentials : maps aws credentials to a generic component
 func (m Mapper) ProviderCredentials(details map[string]interface{}) graph.Component {
 	credentials := make(graph.GenericComponent)
+	project := strings.Split(details["name"].(string), "/")[0]
 
 	credentials["_action"] = "none"
 	credentials["_component"] = "credentials"
 	credentials["_component_id"] = "credentials::vcloud"
 	credentials["_provider"] = details["type"]
 	credentials["name"] = details["name"]
-	credentials["vdc"] = strings.Split(details["name"].(string), "/")[0]
+	credentials["vdc"] = details["vdc"]
 	credentials["username"] = details["username"]
 	credentials["password"] = details["password"]
 	credentials["vcloud_url"] = details["vcloud_url"]
+
+	if credentials["vdc"] == nil {
+		credentials["vdc"] = project
+	}
 
 	return &credentials
 }
