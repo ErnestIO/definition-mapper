@@ -128,7 +128,7 @@ func (i *Instance) Diff(c graph.Component) bool {
 
 		if ci.hasDisk(0) && !i.hasDisk(0) {
 			rd := ci.getDisk(0)
-			i.Disks = append(i.Disks, *rd)
+			i.Disks = append([]Disk{*rd}, i.Disks...)
 		}
 
 		if reflect.DeepEqual(i.Disks, ci.Disks) != true {
