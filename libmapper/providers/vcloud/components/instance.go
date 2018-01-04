@@ -6,35 +6,35 @@ package components
 
 import (
 	"errors"
-	"reflect"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // Disk an instance disk
 type Disk struct {
-	ID   int  `json:"id"`
-	Size int  `json:"size"`
-	Root bool `json:"root"`
+	ID   int  `json:"id" diff:"id,identifier"`
+	Size int  `json:"size" diff:"size"`
+	Root bool `json:"root" diff:"root"`
 }
 
 // Instance : Mapping of an instance component
 type Instance struct {
 	Base
-	ID            string            `json:"id"`
-	VMID          string            `json:"vm_id"`
-	Name          string            `json:"name"`
-	Hostname      string            `json:"hostname"`
-	Catalog       string            `json:"reference_catalog"`
-	Image         string            `json:"reference_image"`
-	Cpus          int               `json:"cpus"`
-	Memory        int               `json:"ram"`
-	Network       string            `json:"network"`
-	IP            string            `json:"ip"`
-	Disks         []Disk            `json:"disks"`
-	ShellCommands []string          `json:"shell_commands"`
-	Powered       bool              `json:"powered"`
-	Tags          map[string]string `json:"tags"`
+	ID            string            `json:"id" diff:"-"`
+	VMID          string            `json:"vm_id" diff:"-"`
+	Name          string            `json:"name" diff:"-"`
+	Hostname      string            `json:"hostname" diff:"hostname"`
+	Catalog       string            `json:"reference_catalog" diff:"-"`
+	Image         string            `json:"reference_image" diff:"-"`
+	Cpus          int               `json:"cpus" diff:"cpus"`
+	Memory        int               `json:"ram" diff:"ram"`
+	Network       string            `json:"network" diff:"network"`
+	IP            string            `json:"ip" diff:"ip"`
+	Disks         []Disk            `json:"disks" diff:"disks"`
+	ShellCommands []string          `json:"shell_commands" diff:"-"`
+	Powered       bool              `json:"powered" diff:"powered"`
+	Tags          map[string]string `json:"tags" diff:"tags"`
 	InstanceOnly  bool              `json:"-"`
 }
 
@@ -99,44 +99,18 @@ func (i *Instance) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *Instance) Diff(c graph.Component) bool {
+func (i *Instance) Diff(c graph.Component) (diff.Changelog, error) {
 	ci, ok := c.(*Instance)
 	if ok {
-		if i.Hostname != ci.Hostname {
-			return true
-		}
-
-		if i.Powered != ci.Powered {
-			return true
-		}
-
-		if i.Cpus != ci.Cpus {
-			return true
-		}
-
-		if i.Memory != ci.Memory {
-			return true
-		}
-
-		if i.Network != ci.Network {
-			return true
-		}
-
-		if i.IP != ci.IP {
-			return true
-		}
-
 		if ci.hasDisk(0) && !i.hasDisk(0) {
 			rd := ci.getDisk(0)
 			i.Disks = append([]Disk{*rd}, i.Disks...)
 		}
 
-		if reflect.DeepEqual(i.Disks, ci.Disks) != true {
-			return true
-		}
+		return diff.Diff(ci, i)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

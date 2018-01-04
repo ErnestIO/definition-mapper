@@ -8,22 +8,23 @@ import (
 	"errors"
 	"net"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // Network : Mapping of a network component
 type Network struct {
 	Base
-	ID            string   `json:"id"`
-	Name          string   `json:"name"`
-	Subnet        string   `json:"range"`
-	Netmask       string   `json:"netmask"`
-	StartAddress  string   `json:"start_address"`
-	EndAddress    string   `json:"end_address"`
-	Gateway       string   `json:"gateway"`
-	DNS           []string `json:"dns"`
-	EdgeGateway   string   `json:"edge_gateway"`
-	EdgeGatewayID string   `json:"edge_gateway_id"`
+	ID            string   `json:"id" diff:"-"`
+	Name          string   `json:"name" diff:"-"`
+	Subnet        string   `json:"range" diff:"-"`
+	Netmask       string   `json:"netmask" diff:"-"`
+	StartAddress  string   `json:"start_address" diff:"-"`
+	EndAddress    string   `json:"end_address" diff:"-"`
+	Gateway       string   `json:"gateway" diff:"-"`
+	DNS           []string `json:"dns" diff:"dns"`
+	EdgeGateway   string   `json:"edge_gateway" diff:"-"`
+	EdgeGatewayID string   `json:"edge_gateway_id" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -87,8 +88,13 @@ func (n *Network) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component cf the same type
-func (n *Network) Diff(c graph.Component) bool {
-	return false
+func (n *Network) Diff(c graph.Component) (diff.Changelog, error) {
+	cn, ok := c.(*Network)
+	if ok {
+		diff.Diff(cn, n)
+	}
+
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values cf a component

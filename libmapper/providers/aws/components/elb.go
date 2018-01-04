@@ -7,45 +7,45 @@ package components
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"sort"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // ELBListener ...
 type ELBListener struct {
-	FromPort int    `json:"from_port"`
-	ToPort   int    `json:"to_port"`
-	Protocol string `json:"protocol"`
-	SSLCert  string `json:"ssl_cert"`
+	FromPort int    `json:"from_port" diff:"from_port"`
+	ToPort   int    `json:"to_port" diff:"to_port"`
+	Protocol string `json:"protocol" diff:"protcol"`
+	SSLCert  string `json:"ssl_cert" diff:"ssl_cert"`
 }
 
 // ELB : Mapping for a elb component
 type ELB struct {
-	ProviderType        string            `json:"_provider"`
-	ComponentType       string            `json:"_component"`
-	ComponentID         string            `json:"_component_id"`
-	State               string            `json:"_state"`
-	Action              string            `json:"_action"`
-	Name                string            `json:"name"`
-	IsPrivate           bool              `json:"is_private"`
-	DNSName             string            `json:"dns_name"`
-	Listeners           []ELBListener     `json:"listeners"`
-	Networks            []string          `json:"networks"`
-	NetworkAWSIDs       []string          `json:"network_aws_ids"`
-	Instances           []string          `json:"instances"`
-	InstanceNames       sort.StringSlice  `json:"instance_names"`
-	InstanceAWSIDs      []string          `json:"instance_aws_ids"`
-	SecurityGroups      sort.StringSlice  `json:"security_groups"`
-	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids"`
-	Tags                map[string]string `json:"tags"`
-	DatacenterType      string            `json:"datacenter_type,omitempty"`
-	DatacenterName      string            `json:"datacenter_name,omitempty"`
-	DatacenterRegion    string            `json:"datacenter_region"`
-	AccessKeyID         string            `json:"aws_access_key_id"`
-	SecretAccessKey     string            `json:"aws_secret_access_key"`
-	Service             string            `json:"service"`
+	ProviderType        string            `json:"_provider" diff:"-"`
+	ComponentType       string            `json:"_component" diff:"-"`
+	ComponentID         string            `json:"_component_id" diff:"component_id,identifier"`
+	State               string            `json:"_state" diff:"-"`
+	Action              string            `json:"_action" diff:"-"`
+	Name                string            `json:"name" diff:"-"`
+	IsPrivate           bool              `json:"is_private" diff:"-"`
+	DNSName             string            `json:"dns_name" diff:"-"`
+	Listeners           []ELBListener     `json:"listeners" diff:"listeners"`
+	Networks            []string          `json:"networks" diff:"-"`
+	NetworkAWSIDs       []string          `json:"network_aws_ids" diff:"-"`
+	Instances           []string          `json:"instances" diff:"instances"`
+	InstanceNames       sort.StringSlice  `json:"instance_names" diff:"-"`
+	InstanceAWSIDs      []string          `json:"instance_aws_ids" diff:"-"`
+	SecurityGroups      sort.StringSlice  `json:"security_groups" diff:"security_groups"`
+	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids" diff:"-"`
+	Tags                map[string]string `json:"tags" diff:"tags"`
+	DatacenterType      string            `json:"datacenter_type,omitempty" diff:"-"`
+	DatacenterName      string            `json:"datacenter_name,omitempty" diff:"-"`
+	DatacenterRegion    string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID         string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey     string            `json:"aws_secret_access_key" diff:"-"`
+	Service             string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -109,40 +109,13 @@ func (e *ELB) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (e *ELB) Diff(c graph.Component) bool {
+func (e *ELB) Diff(c graph.Component) (diff.Changelog, error) {
 	ce, ok := c.(*ELB)
 	if ok {
-		if len(e.Listeners) != len(ce.Listeners) {
-			return true
-		}
-
-		for i := 0; i < len(e.Listeners); i++ {
-			if e.Listeners[i].FromPort != ce.Listeners[i].FromPort ||
-				e.Listeners[i].ToPort != ce.Listeners[i].ToPort ||
-				e.Listeners[i].Protocol != ce.Listeners[i].Protocol ||
-				e.Listeners[i].SSLCert != ce.Listeners[i].SSLCert {
-				return true
-			}
-		}
-
-		// Sort for comparison
-		e.InstanceNames.Sort()
-		ce.InstanceNames.Sort()
-		e.SecurityGroups.Sort()
-		ce.SecurityGroups.Sort()
-
-		if !reflect.DeepEqual(e.InstanceNames, ce.InstanceNames) {
-			return true
-		}
-
-		if !reflect.DeepEqual(e.SecurityGroups, ce.SecurityGroups) {
-			return true
-		}
-
-		return false
+		return diff.Diff(ce, e)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

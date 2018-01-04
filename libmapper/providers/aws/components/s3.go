@@ -7,9 +7,9 @@ package components
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"strings"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -24,30 +24,30 @@ var (
 
 // S3Grantee ...
 type S3Grantee struct {
-	ID          string `json:"id"`
-	Type        string `json:"type"`
-	Permissions string `json:"permissions"`
+	ID          string `json:"id" diff:"id,identifier"`
+	Type        string `json:"type" diff:"type"`
+	Permissions string `json:"permissions" diff:"permissions"`
 }
 
 // S3Bucket : Mapping of an s3 bucket component
 type S3Bucket struct {
-	ProviderType     string            `json:"_provider"`
-	ComponentType    string            `json:"_component"`
-	ComponentID      string            `json:"_component_id"`
-	State            string            `json:"_state"`
-	Action           string            `json:"_action"`
-	Name             string            `json:"name"`
-	ACL              string            `json:"acl"`
-	BucketLocation   string            `json:"bucket_location"`
-	BucketURI        string            `json:"bucket_uri"`
-	Grantees         []S3Grantee       `json:"grantees,omitempty"`
-	Tags             map[string]string `json:"tags"`
-	DatacenterType   string            `json:"datacenter_type,omitempty"`
-	DatacenterName   string            `json:"datacenter_name,omitempty"`
-	DatacenterRegion string            `json:"datacenter_region"`
-	AccessKeyID      string            `json:"aws_access_key_id"`
-	SecretAccessKey  string            `json:"aws_secret_access_key"`
-	Service          string            `json:"service"`
+	ProviderType     string            `json:"_provider" diff:"-"`
+	ComponentType    string            `json:"_component" diff:"-"`
+	ComponentID      string            `json:"_component_id" diff:"component_id,identifier"`
+	State            string            `json:"_state" diff:"-"`
+	Action           string            `json:"_action" diff:"-"`
+	Name             string            `json:"name" diff:"-"`
+	ACL              string            `json:"acl" diff:"acl"`
+	BucketLocation   string            `json:"bucket_location" diff:"-"`
+	BucketURI        string            `json:"bucket_uri" diff:"-"`
+	Grantees         []S3Grantee       `json:"grantees,omitempty" diff:"grantees"`
+	Tags             map[string]string `json:"tags" diff:"-"`
+	DatacenterType   string            `json:"datacenter_type,omitempty" diff:"-"`
+	DatacenterName   string            `json:"datacenter_name,omitempty" diff:"-"`
+	DatacenterRegion string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID      string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey  string            `json:"aws_secret_access_key" diff:"-"`
+	Service          string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -111,25 +111,13 @@ func (s3 *S3Bucket) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (s3 *S3Bucket) Diff(c graph.Component) bool {
+func (s3 *S3Bucket) Diff(c graph.Component) (diff.Changelog, error) {
 	cs3, ok := c.(*S3Bucket)
 	if ok {
-		if s3.ACL != cs3.ACL {
-			return true
-		}
-
-		if len(s3.Grantees) < 1 && len(cs3.Grantees) < 1 {
-			return false
-		}
-
-		if len(s3.Grantees) != len(cs3.Grantees) {
-			return true
-		}
-
-		return !reflect.DeepEqual(s3.Grantees, cs3.Grantees)
+		return diff.Diff(cs3, s3)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

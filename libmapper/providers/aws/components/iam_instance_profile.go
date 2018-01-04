@@ -8,28 +8,29 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // IamInstanceProfile : mapping of an iam instance profile component
 type IamInstanceProfile struct {
-	ProviderType            string   `json:"_provider"`
-	ComponentType           string   `json:"_component"`
-	ComponentID             string   `json:"_component_id"`
-	State                   string   `json:"_state"`
-	Action                  string   `json:"_action"`
-	IAMInstanceProfileAWSID string   `json:"iam_instance_profile_aws_id"`
-	IAMInstanceProfileARN   string   `json:"iam_instance_profile_arn"`
-	Name                    string   `json:"name"`
-	Roles                   []string `json:"roles"`
-	Path                    string   `json:"path"`
-	DatacenterType          string   `json:"datacenter_type,omitempty"`
-	DatacenterName          string   `json:"datacenter_name,omitempty"`
-	DatacenterRegion        string   `json:"datacenter_region"`
-	AccessKeyID             string   `json:"aws_access_key_id"`
-	SecretAccessKey         string   `json:"aws_secret_access_key"`
-	Remove                  bool     `json:"-"`
-	Service                 string   `json:"service"`
+	ProviderType            string   `json:"_provider" diff:"-"`
+	ComponentType           string   `json:"_component" diff:"-"`
+	ComponentID             string   `json:"_component_id" diff:"component_id,identifier"`
+	State                   string   `json:"_state" diff:"-"`
+	Action                  string   `json:"_action" diff:"-"`
+	IAMInstanceProfileAWSID string   `json:"iam_instance_profile_aws_id" diff:"-"`
+	IAMInstanceProfileARN   string   `json:"iam_instance_profile_arn" diff:"-"`
+	Name                    string   `json:"name" diff:"-"`
+	Roles                   []string `json:"roles" diff:"-"`
+	Path                    string   `json:"path" diff:"-"`
+	DatacenterType          string   `json:"datacenter_type,omitempty" diff:"-"`
+	DatacenterName          string   `json:"datacenter_name,omitempty" diff:"-"`
+	DatacenterRegion        string   `json:"datacenter_region" diff:"-"`
+	AccessKeyID             string   `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey         string   `json:"aws_secret_access_key" diff:"-"`
+	Remove                  bool     `json:"-" diff:"-"`
+	Service                 string   `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -93,8 +94,8 @@ func (i *IamInstanceProfile) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *IamInstanceProfile) Diff(c graph.Component) bool {
-	return false
+func (i *IamInstanceProfile) Diff(c graph.Component) (diff.Changelog, error) {
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

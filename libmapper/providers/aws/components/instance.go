@@ -6,52 +6,52 @@ package components
 
 import (
 	"errors"
-	"reflect"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // InstanceVolume ...
 type InstanceVolume struct {
-	VolumeAWSID string `json:"volume_aws_id"`
-	Volume      string `json:"volume"`
-	Device      string `json:"device"`
+	VolumeAWSID string `json:"volume_aws_id" diff:"-"`
+	Volume      string `json:"volume" diff:"volume,identifier"`
+	Device      string `json:"device" diff:"device"`
 }
 
 // Instance : mapping of an instance component
 type Instance struct {
-	ProviderType          string            `json:"_provider"`
-	ComponentType         string            `json:"_component"`
-	ComponentID           string            `json:"_component_id"`
-	State                 string            `json:"_state"`
-	Action                string            `json:"_action"`
-	InstanceAWSID         string            `json:"instance_aws_id"`
-	Name                  string            `json:"name"`
-	Type                  string            `json:"instance_type"`
-	Image                 string            `json:"image"`
-	IP                    string            `json:"ip"`
-	PublicIP              string            `json:"public_ip"`
-	ElasticIP             string            `json:"elastic_ip"`
-	ElasticIPAWSID        *string           `json:"elastic_ip_aws_id,omitempty"`
-	AssignElasticIP       bool              `json:"assign_elastic_ip"`
-	KeyPair               string            `json:"key_pair"`
-	UserData              string            `json:"user_data"`
-	Network               string            `json:"network_name"`
-	NetworkAWSID          string            `json:"network_aws_id"`
-	NetworkIsPublic       bool              `json:"network_is_public"`
-	SecurityGroups        []string          `json:"security_groups"`
+	ProviderType          string            `json:"_provider" diff:"-"`
+	ComponentType         string            `json:"_component" diff:"-"`
+	ComponentID           string            `json:"_component_id" diff:"component_id,identifier"`
+	State                 string            `json:"_state" diff:"-"`
+	Action                string            `json:"_action" diff:"-"`
+	InstanceAWSID         string            `json:"instance_aws_id" diff:"-"`
+	Name                  string            `json:"name" diff:"-"`
+	Type                  string            `json:"instance_type" diff:"instance_type"`
+	Image                 string            `json:"image" diff:"-"`
+	IP                    string            `json:"ip" diff:"-"`
+	PublicIP              string            `json:"public_ip" diff:"-"`
+	ElasticIP             string            `json:"elastic_ip" diff:"-"`
+	ElasticIPAWSID        *string           `json:"elastic_ip_aws_id,omitempty" diff:"-"`
+	AssignElasticIP       bool              `json:"assign_elastic_ip" diff:"-"`
+	KeyPair               string            `json:"key_pair" diff:"-"`
+	UserData              string            `json:"user_data" diff:"-"`
+	Network               string            `json:"network_name" diff:"-"`
+	NetworkAWSID          string            `json:"network_aws_id" diff:"-"`
+	NetworkIsPublic       bool              `json:"network_is_public" diff:"-"`
+	SecurityGroups        []string          `json:"security_groups" diff:"security_groups"`
 	SecurityGroupAWSIDs   []string          `json:"security_group_aws_ids"`
 	IAMInstanceProfile    *string           `json:"iam_instance_profile"`
 	IAMInstanceProfileARN *string           `json:"iam_instance_profile_arn"`
-	Volumes               []InstanceVolume  `json:"volumes"`
-	Tags                  map[string]string `json:"tags"`
-	DatacenterType        string            `json:"datacenter_type,omitempty"`
-	DatacenterName        string            `json:"datacenter_name,omitempty"`
-	DatacenterRegion      string            `json:"datacenter_region"`
-	AccessKeyID           string            `json:"aws_access_key_id"`
-	SecretAccessKey       string            `json:"aws_secret_access_key"`
-	Service               string            `json:"service"`
-	Powered               bool              `json:"powered"`
+	Volumes               []InstanceVolume  `json:"volumes" diff:"volumes"`
+	Tags                  map[string]string `json:"tags" diff:"tags"`
+	Powered               bool              `json:"powered" diff:"powered"`
+	DatacenterType        string            `json:"datacenter_type,omitempty" diff:"-"`
+	DatacenterName        string            `json:"datacenter_name,omitempty" diff:"-"`
+	DatacenterRegion      string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID           string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey       string            `json:"aws_secret_access_key" diff:"-"`
+	Service               string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -115,33 +115,13 @@ func (i *Instance) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *Instance) Diff(c graph.Component) bool {
+func (i *Instance) Diff(c graph.Component) (diff.Changelog, error) {
 	ci, ok := c.(*Instance)
 	if ok {
-		if i.Type != ci.Type {
-			return true
-		}
-
-		if i.Powered != ci.Powered {
-			return true
-		}
-
-		for _, v := range i.Volumes {
-			if hasVolume(ci.Volumes, v.Volume) != true {
-				return true
-			}
-		}
-
-		for _, v := range ci.Volumes {
-			if hasVolume(i.Volumes, v.Volume) != true {
-				return true
-			}
-		}
-
-		return !reflect.DeepEqual(i.SecurityGroups, ci.SecurityGroups)
+		return diff.Diff(ci, i)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

@@ -6,11 +6,11 @@ package components
 
 // Base ...
 type Base struct {
-	ProviderType  string       `json:"_provider"`
-	ComponentType string       `json:"_component"`
-	ComponentID   string       `json:"_component_id"`
-	State         string       `json:"_state"`
-	Action        string       `json:"_action"`
-	Credentials   *Credentials `json:"_credentials"`
-	Service       string       `json:"service"`
+	ProviderType  string       `json:"_provider" diff:"-"`
+	ComponentType string       `json:"_component" diff:"-"`
+	ComponentID   string       `json:"_component_id" diff:"component_id,identifier"`
+	State         string       `json:"_state" diff:"-"`
+	Action        string       `json:"_action" diff:"-"`
+	Credentials   *Credentials `json:"_credentials" diff:"-"`
+	Service       string       `json:"service" diff:"-"`
 }

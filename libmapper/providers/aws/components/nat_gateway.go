@@ -6,36 +6,36 @@ package components
 
 import (
 	"errors"
-	"reflect"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // NatGateway : mapping of a nat component
 type NatGateway struct {
-	ProviderType           string            `json:"_provider"`
-	ComponentType          string            `json:"_component"`
-	ComponentID            string            `json:"_component_id"`
-	State                  string            `json:"_state"`
-	Action                 string            `json:"_action"`
-	NatGatewayAWSID        string            `json:"nat_gateway_aws_id"`
-	Name                   string            `json:"name"`
-	PublicNetwork          string            `json:"public_network"`
-	RoutedNetworks         []string          `json:"routed_networks"`
-	RoutedNetworkAWSIDs    []string          `json:"routed_networks_aws_ids"`
-	PublicNetworkAWSID     string            `json:"public_network_aws_id"`
-	NatGatewayAllocationID string            `json:"nat_gateway_allocation_id"`
-	NatGatewayAllocationIP string            `json:"nat_gateway_allocation_ip"`
-	InternetGatewayID      string            `json:"internet_gateway_id"`
-	DatacenterType         string            `json:"datacenter_type"`
-	DatacenterName         string            `json:"datacenter_name"`
-	DatacenterRegion       string            `json:"datacenter_region"`
-	AccessKeyID            string            `json:"aws_access_key_id"`
-	SecretAccessKey        string            `json:"aws_secret_access_key"`
-	VpcID                  string            `json:"vpc_id"`
-	Remove                 bool              `json:"-"`
-	Tags                   map[string]string `json:"tags"`
-	Service                string            `json:"service"`
+	ProviderType           string            `json:"_provider" diff:"-"`
+	ComponentType          string            `json:"_component" diff:"-"`
+	ComponentID            string            `json:"_component_id" diff:"component_id,identifier"`
+	State                  string            `json:"_state" diff:"-"`
+	Action                 string            `json:"_action" diff:"-"`
+	NatGatewayAWSID        string            `json:"nat_gateway_aws_id" diff:"-"`
+	Name                   string            `json:"name" diff:"-"`
+	PublicNetwork          string            `json:"public_network" diff:"-"`
+	RoutedNetworks         []string          `json:"routed_networks" diff:"routed_networks"`
+	RoutedNetworkAWSIDs    []string          `json:"routed_networks_aws_ids" diff:"-"`
+	PublicNetworkAWSID     string            `json:"public_network_aws_id" diff:"-"`
+	NatGatewayAllocationID string            `json:"nat_gateway_allocation_id" diff:"-"`
+	NatGatewayAllocationIP string            `json:"nat_gateway_allocation_ip" diff:"-"`
+	InternetGatewayID      string            `json:"internet_gateway_id" diff:"-"`
+	DatacenterType         string            `json:"datacenter_type" diff:"-"`
+	DatacenterName         string            `json:"datacenter_name" diff:"-"`
+	DatacenterRegion       string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID            string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey        string            `json:"aws_secret_access_key" diff:"-"`
+	VpcID                  string            `json:"vpc_id" diff:"-"`
+	Remove                 bool              `json:"-" diff:"-"`
+	Tags                   map[string]string `json:"tags" diff:"-"`
+	Service                string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -99,13 +99,13 @@ func (n *NatGateway) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (n *NatGateway) Diff(c graph.Component) bool {
+func (n *NatGateway) Diff(c graph.Component) (diff.Changelog, error) {
 	cn, ok := c.(*NatGateway)
 	if ok {
-		return !reflect.DeepEqual(n.RoutedNetworks, cn.RoutedNetworks)
+		return diff.Diff(cn, n)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

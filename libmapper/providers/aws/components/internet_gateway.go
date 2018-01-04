@@ -5,27 +5,28 @@
 package components
 
 import (
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // InternetGateway : Mapping of a network component
 type InternetGateway struct {
-	ProviderType         string            `json:"_provider"`
-	ComponentType        string            `json:"_component"`
-	ComponentID          string            `json:"_component_id"`
-	State                string            `json:"_state"`
-	Action               string            `json:"_action"`
-	InternetGatewayAWSID string            `json:"internet_gateway_aws_id"`
-	Name                 string            `json:"name"`
-	Tags                 map[string]string `json:"tags"`
-	DatacenterType       string            `json:"datacenter_type"`
-	DatacenterName       string            `json:"datacenter_name"`
-	DatacenterRegion     string            `json:"datacenter_region"`
-	AccessKeyID          string            `json:"aws_access_key_id"`
-	SecretAccessKey      string            `json:"aws_secret_access_key"`
-	Vpc                  string            `json:"vpc"`
-	VpcID                string            `json:"vpc_id"`
-	Service              string            `json:"service"`
+	ProviderType         string            `json:"_provider" diff:"-"`
+	ComponentType        string            `json:"_component" diff:"-"`
+	ComponentID          string            `json:"_component_id" diff:"component_id,identifier"`
+	State                string            `json:"_state" diff:"-"`
+	Action               string            `json:"_action" diff:"-"`
+	InternetGatewayAWSID string            `json:"internet_gateway_aws_id" diff:"-"`
+	Name                 string            `json:"name" diff:"-"`
+	Tags                 map[string]string `json:"tags" diff:"-"`
+	DatacenterType       string            `json:"datacenter_type" diff:"-"`
+	DatacenterName       string            `json:"datacenter_name" diff:"-"`
+	DatacenterRegion     string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID          string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey      string            `json:"aws_secret_access_key" diff:"-"`
+	Vpc                  string            `json:"vpc" diff:"-"`
+	VpcID                string            `json:"vpc_id" diff:"-"`
+	Service              string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -89,8 +90,8 @@ func (i *InternetGateway) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *InternetGateway) Diff(c graph.Component) bool {
-	return false
+func (i *InternetGateway) Diff(c graph.Component) (diff.Changelog, error) {
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component
