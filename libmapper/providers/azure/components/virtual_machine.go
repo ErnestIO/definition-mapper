@@ -5,11 +5,11 @@
 package components
 
 import (
-	"reflect"
 	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/virtualmachine"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -81,35 +81,13 @@ func (i *VirtualMachine) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *VirtualMachine) Diff(c graph.Component) bool {
+func (i *VirtualMachine) Diff(c graph.Component) (diff.Changelog, error) {
 	cvm, ok := c.(*VirtualMachine)
 	if ok {
-		if i.VMSize != cvm.VMSize {
-			return true
-		}
-
-		if i.Powered != cvm.Powered {
-			return true
-		}
-
-		if i.StorageDataDisk.Size != nil && cvm.StorageDataDisk.Size != nil {
-			if *i.StorageDataDisk.Size != *cvm.StorageDataDisk.Size {
-				return true
-			}
-		}
-
-		if reflect.DeepEqual(i.NetworkInterfaces, cvm.NetworkInterfaces) != true {
-			return true
-		}
-
-		if len(i.Tags) != 0 && len(cvm.Tags) != 0 {
-			if !reflect.DeepEqual(i.Tags, cvm.Tags) {
-				return true
-			}
-		}
+		return diff.Diff(cvm, i)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

@@ -6,10 +6,10 @@ package components
 
 import (
 	"log"
-	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/securitygroup"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -81,56 +81,13 @@ func (i *SecurityGroup) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *SecurityGroup) Diff(c graph.Component) bool {
+func (i *SecurityGroup) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*SecurityGroup)
 	if ok {
-		if len(i.Tags) != len(cs.Tags) {
-			return true
-		}
-		if len(i.SecurityRules) != len(cs.SecurityRules) {
-			return true
-		}
-		count := 0
-		for j := range cs.SecurityRules {
-			for k := range i.SecurityRules {
-				if i.SecurityRules[k].Name == cs.SecurityRules[j].Name {
-					count = count + 1
-					if i.SecurityRules[k].Description != cs.SecurityRules[j].Description {
-						return true
-					}
-					if strings.EqualFold(i.SecurityRules[k].Protocol, cs.SecurityRules[j].Protocol) == false {
-						return true
-					}
-					if i.SecurityRules[k].SourcePort != cs.SecurityRules[j].SourcePort {
-						return true
-					}
-					if i.SecurityRules[k].DestinationPortRange != cs.SecurityRules[j].DestinationPortRange {
-						return true
-					}
-					if i.SecurityRules[k].SourceAddressPrefix != cs.SecurityRules[j].SourceAddressPrefix {
-						return true
-					}
-					if i.SecurityRules[k].DestinationAddressPrefix != cs.SecurityRules[j].DestinationAddressPrefix {
-						return true
-					}
-					if i.SecurityRules[k].Direction != cs.SecurityRules[j].Direction {
-						return true
-					}
-					if i.SecurityRules[k].Access != cs.SecurityRules[j].Access {
-						return true
-					}
-					for i.SecurityRules[k].Priority != cs.SecurityRules[j].Priority {
-						return true
-					}
-				}
-			}
-		}
-		if count != len(i.SecurityRules) {
-			return true
-		}
+		return diff.Diff(cs, i)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

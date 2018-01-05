@@ -9,6 +9,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/manageddisk"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -80,30 +81,13 @@ func (i *ManagedDisk) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *ManagedDisk) Diff(c graph.Component) bool {
+func (i *ManagedDisk) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*ManagedDisk)
 	if ok {
-		if i.StorageAccountType != cs.StorageAccountType {
-			return true
-		}
-		if i.CreateOption != cs.CreateOption {
-			return true
-		}
-		if i.SourceURI != cs.SourceURI {
-			return true
-		}
-		if i.SourceResourceID != cs.SourceResourceID {
-			return true
-		}
-		if i.OSType != cs.OSType {
-			return true
-		}
-		if i.DiskSizeGB != cs.DiskSizeGB {
-			return true
-		}
+		return diff.Diff(cs, i)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

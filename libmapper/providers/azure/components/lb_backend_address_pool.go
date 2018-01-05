@@ -9,6 +9,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/lbbackendaddresspool"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -80,8 +81,8 @@ func (i *LBBackendAddressPool) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *LBBackendAddressPool) Diff(c graph.Component) bool {
-	return false
+func (i *LBBackendAddressPool) Diff(c graph.Component) (diff.Changelog, error) {
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

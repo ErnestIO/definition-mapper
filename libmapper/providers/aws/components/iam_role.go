@@ -16,7 +16,7 @@ import (
 type IamRole struct {
 	ProviderType         string   `json:"_provider" diff:"-"`
 	ComponentType        string   `json:"_component" diff:"-"`
-	ComponentID          string   `json:"_component_id" diff:"component_id,identifier"`
+	ComponentID          string   `json:"_component_id" diff:"-"`
 	State                string   `json:"_state" diff:"-"`
 	Action               string   `json:"_action" diff:"-"`
 	IAMRoleAWSID         string   `json:"iam_role_aws_id" diff:"-"`

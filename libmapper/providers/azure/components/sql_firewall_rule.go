@@ -9,6 +9,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqlfirewallrule"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -80,20 +81,13 @@ func (i *SQLFirewallRule) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *SQLFirewallRule) Diff(c graph.Component) bool {
+func (i *SQLFirewallRule) Diff(c graph.Component) (diff.Changelog, error) {
 	cv, ok := c.(*SQLFirewallRule)
 	if ok {
-		if i.Name != cv.Name {
-			return true
-		}
-		if i.StartIPAddress != cv.StartIPAddress {
-			return true
-		}
-		if i.EndIPAddress != cv.EndIPAddress {
-			return true
-		}
+		return diff.Diff(cv, i)
 	}
-	return false
+
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

@@ -6,10 +6,10 @@ package components
 
 import (
 	"log"
-	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -81,51 +81,13 @@ func (i *NetworkInterface) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *NetworkInterface) Diff(c graph.Component) bool {
+func (i *NetworkInterface) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*NetworkInterface)
 	if ok {
-		if i.Name != cs.Name {
-			return true
-		}
-		if i.NetworkSecurityGroup != cs.NetworkSecurityGroup {
-			return true
-		}
-		if i.InternalDNSNameLabel != cs.InternalDNSNameLabel {
-			return true
-		}
-		if i.ResourceGroupName != cs.ResourceGroupName {
-			return true
-		}
-		if len(i.Tags) != len(cs.Tags) {
-			return true
-		}
-		if len(i.DNSServers) != len(cs.DNSServers) {
-			return true
-		}
-		for j := range i.DNSServers {
-			if i.DNSServers[j] != cs.DNSServers[j] {
-				return true
-			}
-		}
-		if len(i.IPConfigurations) != len(cs.IPConfigurations) {
-			return true
-		}
-		for j := range i.IPConfigurations {
-			if i.IPConfigurations[j].Name != cs.IPConfigurations[j].Name {
-				return true
-			}
-			if i.IPConfigurations[j].PrivateIPAddress != cs.IPConfigurations[j].PrivateIPAddress && strings.ToLower(i.IPConfigurations[j].PrivateIPAddressAllocation) == "static" {
-				return true
-			}
-			if strings.ToLower(i.IPConfigurations[j].PrivateIPAddressAllocation) != strings.ToLower(cs.IPConfigurations[j].PrivateIPAddressAllocation) {
-				return true
-			}
-			if i.IPConfigurations[j].PublicIPAddress != cs.IPConfigurations[j].PublicIPAddress {
-				return true
-			}
-		}
+		return diff.Diff(cs, i)
 	}
-	return false
+
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

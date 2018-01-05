@@ -6,10 +6,10 @@ package components
 
 import (
 	"log"
-	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/resourcegroup"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -82,20 +82,13 @@ func (i *ResourceGroup) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *ResourceGroup) Diff(c graph.Component) bool {
+func (i *ResourceGroup) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*ResourceGroup)
 	if ok {
-		if i.Location != cs.Location {
-			return true
-		}
-
-		if len(i.Tags) != 0 && len(cs.Tags) != 0 {
-			if !reflect.DeepEqual(i.Tags, cs.Tags) {
-				return true
-			}
-		}
+		return diff.Diff(cs, i)
 	}
-	return false
+
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component
