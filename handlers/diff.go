@@ -31,7 +31,7 @@ func Diff(r *request.Request) (*graph.Graph, error) {
 		return nil, err
 	}
 
-	g, err := tg.Diff(fg)
+	g, err := tg.DiffWithChangelog(fg)
 	if err != nil {
 		return nil, err
 	}
