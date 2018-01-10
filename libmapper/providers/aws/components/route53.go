@@ -23,7 +23,7 @@ var (
 
 // Record stores the entries for a zone
 type Record struct {
-	Entry         string   `json:"entry" diff:"entry,identifier"`
+	Entry         string   `json:"entry" diff:"entry"`
 	Type          string   `json:"type" diff:"type"`
 	Instances     []string `json:"instances,omitempty" diff:"instances"`
 	Loadbalancers []string `json:"loadbalancers,omitempty" diff:"loadbalancers"`

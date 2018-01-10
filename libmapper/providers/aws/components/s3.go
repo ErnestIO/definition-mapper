@@ -24,7 +24,7 @@ var (
 
 // S3Grantee ...
 type S3Grantee struct {
-	ID          string `json:"id" diff:"id,identifier"`
+	ID          string `json:"id" diff:"id"`
 	Type        string `json:"type" diff:"type"`
 	Permissions string `json:"permissions" diff:"permissions"`
 }

@@ -14,7 +14,7 @@ import (
 // InstanceVolume ...
 type InstanceVolume struct {
 	VolumeAWSID string `json:"volume_aws_id" diff:"-"`
-	Volume      string `json:"volume" diff:"volume,identifier"`
+	Volume      string `json:"volume" diff:"volume"`
 	Device      string `json:"device" diff:"device"`
 }
 
