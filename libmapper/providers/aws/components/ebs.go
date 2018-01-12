@@ -19,7 +19,7 @@ type EBSVolume struct {
 	State            string            `json:"_state" diff:"-"`
 	Action           string            `json:"_action" diff:"-"`
 	VolumeAWSID      string            `json:"volume_aws_id" diff:"-"`
-	Name             string            `json:"name" diff:"-"`
+	Name             string            `json:"name" diff:"name,immutable"`
 	AvailabilityZone string            `json:"availability_zone" diff:"-"`
 	VolumeType       string            `json:"volume_type" diff:"-"`
 	Size             *int64            `json:"size" diff:"-"`

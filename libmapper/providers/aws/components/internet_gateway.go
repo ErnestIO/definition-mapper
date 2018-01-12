@@ -17,7 +17,7 @@ type InternetGateway struct {
 	State                string            `json:"_state" diff:"-"`
 	Action               string            `json:"_action" diff:"-"`
 	InternetGatewayAWSID string            `json:"internet_gateway_aws_id" diff:"-"`
-	Name                 string            `json:"name" diff:"-"`
+	Name                 string            `json:"name" diff:"name,immutable"`
 	Tags                 map[string]string `json:"tags" diff:"-"`
 	DatacenterType       string            `json:"datacenter_type" diff:"-"`
 	DatacenterName       string            `json:"datacenter_name" diff:"-"`

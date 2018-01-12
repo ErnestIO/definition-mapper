@@ -21,7 +21,7 @@ type IamRole struct {
 	Action               string   `json:"_action" diff:"-"`
 	IAMRoleAWSID         string   `json:"iam_role_aws_id" diff:"-"`
 	IAMRoleARN           string   `json:"iam_role_arn" diff:"-"`
-	Name                 string   `json:"name" diff:"-"`
+	Name                 string   `json:"name" diff:"name,immutable"`
 	AssumePolicyDocument string   `json:"assume_policy_document" diff:"-"`
 	Policies             []string `json:"policies" diff:"-"`
 	PolicyARNs           []string `json:"policy_arns" diff:"-"`

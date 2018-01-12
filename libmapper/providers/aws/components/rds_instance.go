@@ -31,7 +31,7 @@ type RDSInstance struct {
 	State               string            `json:"_state" diff:"-"`
 	Action              string            `json:"_action" diff:"-"`
 	ARN                 string            `json:"arn" diff:"-"`
-	Name                string            `json:"name" diff:"-"`
+	Name                string            `json:"name" diff:"name,immutable"`
 	Size                string            `json:"size" diff:"size"`
 	Engine              string            `json:"engine" diff:"-"`
 	EngineVersion       string            `json:"engine_version,omitempty" diff:"engine_version"`

@@ -19,7 +19,7 @@ type NatGateway struct {
 	State                  string            `json:"_state" diff:"-"`
 	Action                 string            `json:"_action" diff:"-"`
 	NatGatewayAWSID        string            `json:"nat_gateway_aws_id" diff:"-"`
-	Name                   string            `json:"name" diff:"-"`
+	Name                   string            `json:"name" diff:"name,immutable"`
 	PublicNetwork          string            `json:"public_network" diff:"-"`
 	RoutedNetworks         []string          `json:"routed_networks" diff:"routed_networks"`
 	RoutedNetworkAWSIDs    []string          `json:"routed_networks_aws_ids" diff:"-"`

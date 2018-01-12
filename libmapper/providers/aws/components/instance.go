@@ -26,7 +26,7 @@ type Instance struct {
 	State                 string            `json:"_state" diff:"-"`
 	Action                string            `json:"_action" diff:"-"`
 	InstanceAWSID         string            `json:"instance_aws_id" diff:"-"`
-	Name                  string            `json:"name" diff:"-"`
+	Name                  string            `json:"name" diff:"name,immutable"`
 	Type                  string            `json:"instance_type" diff:"instance_type"`
 	Image                 string            `json:"image" diff:"-"`
 	IP                    string            `json:"ip" diff:"-"`

@@ -22,7 +22,7 @@ type RDSCluster struct {
 	State               string            `json:"_state" diff:"-"`
 	Action              string            `json:"_action" diff:"-"`
 	ARN                 string            `json:"arn" diff:"-"`
-	Name                string            `json:"name" diff:"-"`
+	Name                string            `json:"name" diff:"name,immutable"`
 	Engine              string            `json:"engine" diff:"-"`
 	EngineVersion       string            `json:"engine_version,omitempty" diff:"-"`
 	Port                *int64            `json:"port,omitempty" diff:"port"`

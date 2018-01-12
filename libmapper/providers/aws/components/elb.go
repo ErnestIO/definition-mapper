@@ -28,7 +28,7 @@ type ELB struct {
 	ComponentID         string            `json:"_component_id" diff:"-"`
 	State               string            `json:"_state" diff:"-"`
 	Action              string            `json:"_action" diff:"-"`
-	Name                string            `json:"name" diff:"-"`
+	Name                string            `json:"name" diff:"name,immutable"`
 	IsPrivate           bool              `json:"is_private" diff:"-"`
 	DNSName             string            `json:"dns_name" diff:"-"`
 	Listeners           []ELBListener     `json:"listeners" diff:"listeners"`
