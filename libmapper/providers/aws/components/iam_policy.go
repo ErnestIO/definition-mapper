@@ -21,10 +21,10 @@ type IamPolicy struct {
 	Action           string `json:"_action" diff:"-"`
 	IAMPolicyAWSID   string `json:"iam_policy_aws_id" diff:"-"`
 	IAMPolicyARN     string `json:"iam_policy_arn" diff:"-"`
-	Name             string `json:"name" diff:"name,immutable"`
+	Name             string `json:"name" diff:"-"`
 	PolicyDocument   string `json:"policy_document" diff:"-"`
-	Description      string `json:"description" diff:"-"`
-	Path             string `json:"path" diff:"-"`
+	Description      string `json:"description" diff:"description,immutable"`
+	Path             string `json:"path" diff:"path,immutable"`
 	DatacenterType   string `json:"datacenter_type,omitempty" diff:"-"`
 	DatacenterName   string `json:"datacenter_name,omitempty" diff:"-"`
 	DatacenterRegion string `json:"datacenter_region" diff:"-"`

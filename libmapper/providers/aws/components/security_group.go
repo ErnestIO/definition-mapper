@@ -27,7 +27,7 @@ type SecurityGroup struct {
 	State              string `json:"_state" diff:"-"`
 	Action             string `json:"_action" diff:"-"`
 	SecurityGroupAWSID string `json:"security_group_aws_id" diff:"-"`
-	Name               string `json:"name" diff:"name,immutable"`
+	Name               string `json:"name" diff:"-"`
 	Rules              struct {
 		Ingress []SecurityGroupRule `json:"ingress" diff:"ingress"`
 		Egress  []SecurityGroupRule `json:"egress" diff:"egress"`

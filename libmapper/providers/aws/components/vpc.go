@@ -19,9 +19,9 @@ type Vpc struct {
 	State            string            `json:"_state" diff:"-"`
 	Action           string            `json:"_action" diff:"-"`
 	VpcAWSID         string            `json:"vpc_aws_id" diff:"-"`
-	Subnet           string            `json:"subnet" diff:"-"`
-	Name             string            `json:"name" diff:"name,immutable"`
-	AutoRemove       bool              `json:"auto_remove" diff:"-"`
+	Subnet           string            `json:"subnet" diff:"subnet,immutable"`
+	Name             string            `json:"name" diff:"-"`
+	AutoRemove       bool              `json:"auto_remove" diff:"auto_remove,immutable"`
 	Tags             map[string]string `json:"tags" diff:"-"`
 	DatacenterType   string            `json:"datacenter_type,omitempty" diff:"-"`
 	DatacenterName   string            `json:"datacenter_name,omitempty" diff:"-"`

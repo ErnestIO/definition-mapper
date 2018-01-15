@@ -20,9 +20,9 @@ type Network struct {
 	State                string            `json:"_state" diff:"-"`
 	Action               string            `json:"_action" diff:"-"`
 	NetworkAWSID         string            `json:"network_aws_id" diff:"-"`
-	Name                 string            `json:"name" diff:"name,immutable"`
-	Subnet               string            `json:"range" diff:"-"`
-	IsPublic             bool              `json:"is_public" diff:"-"`
+	Name                 string            `json:"name" diff:"-"`
+	Subnet               string            `json:"range" diff:"subnet,immutable"`
+	IsPublic             bool              `json:"is_public" diff:"is_public,immutable"`
 	InternetGateway      string            `json:"internet_gateway" diff:"-"`
 	InternetGatewayAWSID string            `json:"internet_gateway_aws_id" diff:"-"`
 	Tags                 map[string]string `json:"tags" diff:"-"`

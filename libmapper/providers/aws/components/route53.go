@@ -41,8 +41,8 @@ type Route53Zone struct {
 	State            string            `json:"_state" diff:"-"`
 	Action           string            `json:"_action" diff:"-"`
 	HostedZoneID     string            `json:"hosted_zone_id" diff:"-"`
-	Name             string            `json:"name" diff:"name,immutable"`
-	Private          bool              `json:"private" diff:"-"`
+	Name             string            `json:"name" diff:"-"`
+	Private          bool              `json:"private" diff:"private,immutable"`
 	Records          []Record          `json:"records" diff:"records"`
 	Vpc              string            `json:"vpc" diff:"-"`
 	VpcID            string            `json:"vpc_id" diff:"-"`

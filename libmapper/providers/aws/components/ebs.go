@@ -19,12 +19,12 @@ type EBSVolume struct {
 	State            string            `json:"_state" diff:"-"`
 	Action           string            `json:"_action" diff:"-"`
 	VolumeAWSID      string            `json:"volume_aws_id" diff:"-"`
-	Name             string            `json:"name" diff:"name,immutable"`
-	AvailabilityZone string            `json:"availability_zone" diff:"-"`
-	VolumeType       string            `json:"volume_type" diff:"-"`
-	Size             *int64            `json:"size" diff:"-"`
-	Iops             *int64            `json:"iops" diff:"-"`
-	Encrypted        bool              `json:"encrypted" diff:"-"`
+	Name             string            `json:"name" diff:"-"`
+	AvailabilityZone string            `json:"availability_zone" diff:"availability_zone,immutable"`
+	VolumeType       string            `json:"volume_type" diff:"volume_type,immutable"`
+	Size             *int64            `json:"size" diff:"size,immutable"`
+	Iops             *int64            `json:"iops" diff:"iops,immutable"`
+	Encrypted        bool              `json:"encrypted" diff:"encrypted,immutable"`
 	EncryptionKeyID  *string           `json:"encryption_key_id" diff:"-"`
 	Tags             map[string]string `json:"tags" diff:"-"`
 	DatacenterType   string            `json:"datacenter_type,omitempty" diff:"-"`

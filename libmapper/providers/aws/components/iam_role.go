@@ -21,11 +21,11 @@ type IamRole struct {
 	Action               string   `json:"_action" diff:"-"`
 	IAMRoleAWSID         string   `json:"iam_role_aws_id" diff:"-"`
 	IAMRoleARN           string   `json:"iam_role_arn" diff:"-"`
-	Name                 string   `json:"name" diff:"name,immutable"`
+	Name                 string   `json:"name" diff:"-"`
 	AssumePolicyDocument string   `json:"assume_policy_document" diff:"-"`
-	Policies             []string `json:"policies" diff:"-"`
+	Policies             []string `json:"policies" diff:"policies,immutable"`
 	PolicyARNs           []string `json:"policy_arns" diff:"-"`
-	Description          string   `json:"description" diff:"-"`
+	Description          string   `json:"description" diff:"description,immutable"`
 	Path                 string   `json:"path" diff:"-"`
 	DatacenterType       string   `json:"datacenter_type,omitempty" diff:"-"`
 	DatacenterName       string   `json:"datacenter_name,omitempty" diff:"-"`

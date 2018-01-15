@@ -26,23 +26,23 @@ type Instance struct {
 	State                 string            `json:"_state" diff:"-"`
 	Action                string            `json:"_action" diff:"-"`
 	InstanceAWSID         string            `json:"instance_aws_id" diff:"-"`
-	Name                  string            `json:"name" diff:"name,immutable"`
+	Name                  string            `json:"name" diff:"-"`
 	Type                  string            `json:"instance_type" diff:"instance_type"`
-	Image                 string            `json:"image" diff:"-"`
-	IP                    string            `json:"ip" diff:"-"`
-	PublicIP              string            `json:"public_ip" diff:"-"`
-	ElasticIP             string            `json:"elastic_ip" diff:"-"`
+	Image                 string            `json:"image" diff:"image,immutable"`
+	IP                    string            `json:"ip" diff:"ip,immutable"`
+	PublicIP              string            `json:"public_ip" diff:"public_ip,immutable"`
+	ElasticIP             string            `json:"elastic_ip" diff:"elastic_ip,immutable"`
 	ElasticIPAWSID        *string           `json:"elastic_ip_aws_id,omitempty" diff:"-"`
 	AssignElasticIP       bool              `json:"assign_elastic_ip" diff:"-"`
 	KeyPair               string            `json:"key_pair" diff:"-"`
 	UserData              string            `json:"user_data" diff:"-"`
-	Network               string            `json:"network_name" diff:"-"`
+	Network               string            `json:"network_name" diff:"network,immutable"`
 	NetworkAWSID          string            `json:"network_aws_id" diff:"-"`
 	NetworkIsPublic       bool              `json:"network_is_public" diff:"-"`
 	SecurityGroups        []string          `json:"security_groups" diff:"security_groups"`
-	SecurityGroupAWSIDs   []string          `json:"security_group_aws_ids"`
-	IAMInstanceProfile    *string           `json:"iam_instance_profile"`
-	IAMInstanceProfileARN *string           `json:"iam_instance_profile_arn"`
+	SecurityGroupAWSIDs   []string          `json:"security_group_aws_ids" diff:"-"`
+	IAMInstanceProfile    *string           `json:"iam_instance_profile" diff:"-"`
+	IAMInstanceProfileARN *string           `json:"iam_instance_profile_arn" diff:"-"`
 	Volumes               []InstanceVolume  `json:"volumes" diff:"volumes"`
 	Tags                  map[string]string `json:"tags" diff:"tags"`
 	Powered               bool              `json:"powered" diff:"powered"`

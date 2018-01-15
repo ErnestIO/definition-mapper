@@ -21,9 +21,9 @@ type IamInstanceProfile struct {
 	Action                  string   `json:"_action" diff:"-"`
 	IAMInstanceProfileAWSID string   `json:"iam_instance_profile_aws_id" diff:"-"`
 	IAMInstanceProfileARN   string   `json:"iam_instance_profile_arn" diff:"-"`
-	Name                    string   `json:"name" diff:"name,immutable"`
-	Roles                   []string `json:"roles" diff:"-"`
-	Path                    string   `json:"path" diff:"-"`
+	Name                    string   `json:"name" diff:"-"`
+	Roles                   []string `json:"roles" diff:"roles,immutable"`
+	Path                    string   `json:"path" diff:"path,immutable"`
 	DatacenterType          string   `json:"datacenter_type,omitempty" diff:"-"`
 	DatacenterName          string   `json:"datacenter_name,omitempty" diff:"-"`
 	DatacenterRegion        string   `json:"datacenter_region" diff:"-"`

@@ -36,9 +36,9 @@ type S3Bucket struct {
 	ComponentID      string            `json:"_component_id" diff:"-"`
 	State            string            `json:"_state" diff:"-"`
 	Action           string            `json:"_action" diff:"-"`
-	Name             string            `json:"name" diff:"name,immutable"`
+	Name             string            `json:"name" diff:"-"`
 	ACL              string            `json:"acl" diff:"acl"`
-	BucketLocation   string            `json:"bucket_location" diff:"-"`
+	BucketLocation   string            `json:"bucket_location" diff:"bucket_location,immutable"`
 	BucketURI        string            `json:"bucket_uri" diff:"-"`
 	Grantees         []S3Grantee       `json:"grantees,omitempty" diff:"grantees"`
 	Tags             map[string]string `json:"tags" diff:"-"`

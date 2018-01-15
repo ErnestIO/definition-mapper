@@ -31,12 +31,12 @@ type RDSInstance struct {
 	State               string            `json:"_state" diff:"-"`
 	Action              string            `json:"_action" diff:"-"`
 	ARN                 string            `json:"arn" diff:"-"`
-	Name                string            `json:"name" diff:"name,immutable"`
+	Name                string            `json:"name" diff:"-"`
 	Size                string            `json:"size" diff:"size"`
-	Engine              string            `json:"engine" diff:"-"`
-	EngineVersion       string            `json:"engine_version,omitempty" diff:"engine_version"`
+	Engine              string            `json:"engine" diff:"engine,immutable"`
+	EngineVersion       string            `json:"engine_version,omitempty" diff:"engine_version,immutable"`
 	Port                *int64            `json:"port,omitempty" diff:"port"`
-	Cluster             string            `json:"cluster,omitempty" diff:"-"`
+	Cluster             string            `json:"cluster,omitempty" diff:"cluster,immutable"`
 	Public              bool              `json:"public" diff:"public"`
 	Endpoint            string            `json:"endpoint,omitempty" diff:"-"`
 	MultiAZ             bool              `json:"multi_az" diff:"multi_az"`
@@ -44,22 +44,22 @@ type RDSInstance struct {
 	StorageType         string            `json:"storage_type,omitempty" diff:"storage_type"`
 	StorageSize         *int64            `json:"storage_size,omitempty" diff:"storage_size"`
 	StorageIops         *int64            `json:"storage_iops,omitempty" diff:"storage_iops"`
-	AvailabilityZone    string            `json:"availability_zone,omitempty" diff:"-"`
+	AvailabilityZone    string            `json:"availability_zone,omitempty" diff:"availability_zone,immutable"`
 	SecurityGroups      []string          `json:"security_groups" diff:"security_groups"`
 	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids" diff:"-"`
 	Networks            []string          `json:"networks" diff:"networks"`
 	NetworkAWSIDs       []string          `json:"network_aws_ids" diff:"-"`
-	DatabaseName        string            `json:"database_name,omitempty" diff:"-"`
-	DatabaseUsername    string            `json:"database_username,omitempty" diff:"-"`
+	DatabaseName        string            `json:"database_name,omitempty" diff:"database_name,immutable"`
+	DatabaseUsername    string            `json:"database_username,omitempty" diff:"database_username,immutable"`
 	DatabasePassword    string            `json:"database_password,omitempty" diff:"database_password"`
 	AutoUpgrade         bool              `json:"auto_upgrade" diff:"auto_upgrade"`
 	BackupRetention     *int64            `json:"backup_retention,omitempty" diff:"backup_retention"`
 	BackupWindow        string            `json:"backup_window,omitempty" diff:"backup_window"`
-	MaintenanceWindow   string            `json:"maintenance_window,omitempty" diff:"-"`
-	FinalSnapshot       bool              `json:"final_snapshot" diff:"-"`
-	ReplicationSource   string            `json:"replication_source,omitempty" diff:"-"`
-	License             string            `json:"license,omitempty" diff:"-"`
-	Timezone            string            `json:"timezone,omitempty" diff:"-"`
+	MaintenanceWindow   string            `json:"maintenance_window,omitempty" diff:"maintenance_window,immutable"`
+	FinalSnapshot       bool              `json:"final_snapshot" diff:"final_snapshot,immutable"`
+	ReplicationSource   string            `json:"replication_source,omitempty" diff:"replication_source,immutable"`
+	License             string            `json:"license,omitempty" diff:"license,immutable"`
+	Timezone            string            `json:"timezone,omitempty" diff:"timezone,immutable"`
 	Tags                map[string]string `json:"tags" diff:"-"`
 	DatacenterType      string            `json:"datacenter_type" diff:"-"`
 	DatacenterName      string            `json:"datacenter_name" diff:"-"`

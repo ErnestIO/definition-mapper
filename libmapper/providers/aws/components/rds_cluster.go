@@ -22,24 +22,24 @@ type RDSCluster struct {
 	State               string            `json:"_state" diff:"-"`
 	Action              string            `json:"_action" diff:"-"`
 	ARN                 string            `json:"arn" diff:"-"`
-	Name                string            `json:"name" diff:"name,immutable"`
-	Engine              string            `json:"engine" diff:"-"`
-	EngineVersion       string            `json:"engine_version,omitempty" diff:"-"`
+	Name                string            `json:"name" diff:"-"`
+	Engine              string            `json:"engine" diff:"engine,immutable"`
+	EngineVersion       string            `json:"engine_version,omitempty" diff:"engine_version,immutable"`
 	Port                *int64            `json:"port,omitempty" diff:"port"`
 	Endpoint            string            `json:"endpoint,omitempty" diff:"-"`
-	AvailabilityZones   []string          `json:"availability_zones" diff:"-"`
+	AvailabilityZones   []string          `json:"availability_zones" diff:"availability_zones,immutable"`
 	SecurityGroups      []string          `json:"security_groups" diff:"security_groups"`
 	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids" diff:"-"`
 	Networks            []string          `json:"networks" diff:"networks"`
 	NetworkAWSIDs       []string          `json:"network_aws_ids" diff:"-"`
-	DatabaseName        string            `json:"database_name,omitempty" diff:"-"`
-	DatabaseUsername    string            `json:"database_username,omitempty" diff:"-"`
+	DatabaseName        string            `json:"database_name,omitempty" diff:"database_name,immutable"`
+	DatabaseUsername    string            `json:"database_username,omitempty" diff:"database_username,immutable"`
 	DatabasePassword    string            `json:"database_password,omitempty" diff:"database_password"`
 	BackupRetention     *int64            `json:"backup_retention,omitempty" diff:"backup_retention"`
 	BackupWindow        string            `json:"backup_window,omitempty" diff:"backup_window"`
 	MaintenanceWindow   string            `json:"maintenance_window,omitempty" diff:"maintenance_window"`
-	ReplicationSource   string            `json:"replication_source,omitempty" diff:"-"`
-	FinalSnapshot       bool              `json:"final_snapshot" diff:"-"`
+	ReplicationSource   string            `json:"replication_source,omitempty" diff:"replication_source,immutable"`
+	FinalSnapshot       bool              `json:"final_snapshot" diff:"final_snapshot,immutable"`
 	Tags                map[string]string `json:"tags" diff:"-"`
 	DatacenterType      string            `json:"datacenter_type" diff:"-"`
 	DatacenterName      string            `json:"datacenter_name" diff:"-"`

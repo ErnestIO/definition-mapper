@@ -28,9 +28,9 @@ type ELB struct {
 	ComponentID         string            `json:"_component_id" diff:"-"`
 	State               string            `json:"_state" diff:"-"`
 	Action              string            `json:"_action" diff:"-"`
-	Name                string            `json:"name" diff:"name,immutable"`
-	IsPrivate           bool              `json:"is_private" diff:"-"`
-	DNSName             string            `json:"dns_name" diff:"-"`
+	Name                string            `json:"name" diff:"-"`
+	IsPrivate           bool              `json:"is_private" diff:"is_private,immutable"`
+	DNSName             string            `json:"dns_name" diff:"dns_name,immutable"`
 	Listeners           []ELBListener     `json:"listeners" diff:"listeners"`
 	Networks            []string          `json:"networks" diff:"-"`
 	NetworkAWSIDs       []string          `json:"network_aws_ids" diff:"-"`
