@@ -7,7 +7,7 @@ package components
 // Base : Shared internal component fields
 type Base struct {
 	ProviderType     string `json:"_provider" diff:"-"`
-	ComponentID      string `json:"_component_id" diff:"-"`
+	ComponentID      string `json:"_component_id" diff:"_component_id,immutable"`
 	ComponentType    string `json:"_component" diff:"-"`
 	State            string `json:"_state" diff:"-"`
 	Action           string `json:"_action" diff:"-"`

@@ -17,11 +17,11 @@ type Network struct {
 	Base
 	ID            string   `json:"id" diff:"-"`
 	Name          string   `json:"name" diff:"-"`
-	Subnet        string   `json:"range" diff:"-"`
+	Subnet        string   `json:"range" diff:"subnet,immutable"`
 	Netmask       string   `json:"netmask" diff:"-"`
 	StartAddress  string   `json:"start_address" diff:"-"`
 	EndAddress    string   `json:"end_address" diff:"-"`
-	Gateway       string   `json:"gateway" diff:"-"`
+	Gateway       string   `json:"gateway" diff:"gateway,immutable"`
 	DNS           []string `json:"dns" diff:"dns"`
 	EdgeGateway   string   `json:"edge_gateway" diff:"-"`
 	EdgeGatewayID string   `json:"edge_gateway_id" diff:"-"`

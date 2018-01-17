@@ -25,8 +25,8 @@ type Instance struct {
 	VMID          string            `json:"vm_id" diff:"-"`
 	Name          string            `json:"name" diff:"-"`
 	Hostname      string            `json:"hostname" diff:"hostname"`
-	Catalog       string            `json:"reference_catalog" diff:"-"`
-	Image         string            `json:"reference_image" diff:"-"`
+	Catalog       string            `json:"reference_catalog" diff:"reference_catalog,immutable"`
+	Image         string            `json:"reference_image" diff:"reference_image,immutable"`
 	Cpus          int               `json:"cpus" diff:"cpus"`
 	Memory        int               `json:"ram" diff:"ram"`
 	Network       string            `json:"network" diff:"network"`

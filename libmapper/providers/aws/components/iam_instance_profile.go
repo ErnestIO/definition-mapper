@@ -16,7 +16,7 @@ import (
 type IamInstanceProfile struct {
 	ProviderType            string   `json:"_provider" diff:"-"`
 	ComponentType           string   `json:"_component" diff:"-"`
-	ComponentID             string   `json:"_component_id" diff:"-"`
+	ComponentID             string   `json:"_component_id" diff:"_component_id,immutable"`
 	State                   string   `json:"_state" diff:"-"`
 	Action                  string   `json:"_action" diff:"-"`
 	IAMInstanceProfileAWSID string   `json:"iam_instance_profile_aws_id" diff:"-"`
