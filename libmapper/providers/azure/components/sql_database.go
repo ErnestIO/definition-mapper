@@ -9,6 +9,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqldatabase"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -80,44 +81,13 @@ func (i *SQLDatabase) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *SQLDatabase) Diff(c graph.Component) bool {
+func (i *SQLDatabase) Diff(c graph.Component) (diff.Changelog, error) {
 	cv, ok := c.(*SQLDatabase)
 	if ok {
-		if i.Name != cv.Name {
-			return true
-		}
-		if i.CreateMode != cv.CreateMode {
-			return true
-		}
-		if i.SourceDatabaseID != cv.SourceDatabaseID {
-			return true
-		}
-		if i.RestorePointInTime != cv.RestorePointInTime {
-			return true
-		}
-		if i.Edition != cv.Edition {
-			return true
-		}
-		if i.Collation != cv.Collation {
-			return true
-		}
-		if i.MaxSizeBytes != cv.MaxSizeBytes {
-			return true
-		}
-		if i.RequestedServiceObjectiveID != cv.RequestedServiceObjectiveID {
-			return true
-		}
-		if i.RequestedServiceObjectiveName != cv.RequestedServiceObjectiveName {
-			return true
-		}
-		if i.SourceDatabaseDeletionData != cv.SourceDatabaseDeletionData {
-			return true
-		}
-		if diffTags(i.Tags, cv.Tags) {
-			return true
-		}
+		return diff.Diff(cv, i)
 	}
-	return false
+
+	return diff.Changelog{}, nil
 }
 
 func diffTags(t1, t2 map[string]string) bool {

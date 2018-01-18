@@ -5,27 +5,28 @@
 package components
 
 import (
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // Query : mapping of an query component
 type Query struct {
-	ID                string            `json:"id"`
-	ProviderType      string            `json:"_provider"`
-	ComponentType     string            `json:"_component"`
-	ComponentID       string            `json:"_component_id"`
-	State             string            `json:"_state"`
-	Action            string            `json:"_action"`
-	ResourceGroupName string            `json:"resource_group_name"`
-	Tags              map[string]string `json:"tags"`
-	DatacenterType    string            `json:"datacenter_type,omitempty"`
-	DatacenterName    string            `json:"datacenter_name,omitempty"`
-	DatacenterRegion  string            `json:"datacenter_region"`
-	ClientID          string            `json:"azure_client_id"`
-	ClientSecret      string            `json:"azure_client_secret"`
-	TenantID          string            `json:"azure_tenant_id"`
-	SubscriptionID    string            `json:"azure_subscription_id"`
-	Environment       string            `json:"environment"`
+	ID                string            `json:"id" diff:"-"`
+	ProviderType      string            `json:"_provider" diff:"-"`
+	ComponentType     string            `json:"_component" diff:"-"`
+	ComponentID       string            `json:"_component_id" diff:"-"`
+	State             string            `json:"_state" diff:"-"`
+	Action            string            `json:"_action" diff:"-"`
+	ResourceGroupName string            `json:"resource_group_name" diff:"-"`
+	Tags              map[string]string `json:"tags" diff:"-"`
+	DatacenterType    string            `json:"datacenter_type,omitempty" diff:"-"`
+	DatacenterName    string            `json:"datacenter_name,omitempty" diff:"-"`
+	DatacenterRegion  string            `json:"datacenter_region" diff:"-"`
+	ClientID          string            `json:"azure_client_id" diff:"-"`
+	ClientSecret      string            `json:"azure_client_secret" diff:"-"`
+	TenantID          string            `json:"azure_tenant_id" diff:"-"`
+	SubscriptionID    string            `json:"azure_subscription_id" diff:"-"`
+	Environment       string            `json:"environment" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -89,8 +90,8 @@ func (q *Query) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (q *Query) Diff(c graph.Component) bool {
-	return false
+func (q *Query) Diff(c graph.Component) (diff.Changelog, error) {
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

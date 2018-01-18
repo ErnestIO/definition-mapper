@@ -7,36 +7,37 @@ package components
 import (
 	"errors"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // NatRule ...
 type NatRule struct {
-	Type            string `json:"type"`
-	OriginIP        string `json:"origin_ip"`
-	OriginPort      string `json:"origin_port"`
-	TranslationIP   string `json:"translation_ip"`
-	TranslationPort string `json:"translation_port"`
-	Protocol        string `json:"protocol"`
+	Type            string `json:"type" diff:"type"`
+	OriginIP        string `json:"origin_ip" diff:"origin_ip"`
+	OriginPort      string `json:"origin_port" diff:"origin_port"`
+	TranslationIP   string `json:"translation_ip" diff:"translation_ip"`
+	TranslationPort string `json:"translation_port" diff:"translation_port"`
+	Protocol        string `json:"protocol" diff:"protocol"`
 }
 
 // FirewallRule ...
 type FirewallRule struct {
-	Name            string `json:"name"`
-	SourceIP        string `json:"source_ip"`
-	SourcePort      string `json:"source_port"`
-	DestinationIP   string `json:"destination_ip"`
-	DestinationPort string `json:"destination_port"`
-	Protocol        string `json:"protocol"`
+	Name            string `json:"name" diff:"name,identifier"`
+	SourceIP        string `json:"source_ip" diff:"source_ip"`
+	SourcePort      string `json:"source_port" diff:"source_port"`
+	DestinationIP   string `json:"destination_ip" diff:"destination_ip"`
+	DestinationPort string `json:"destination_port" diff:"destination_port"`
+	Protocol        string `json:"protocol" diff:"protocol"`
 }
 
 // Gateway : mapping of a edge gateway component
 type Gateway struct {
 	Base
-	ID            string         `json:"id"`
-	Name          string         `json:"name"`
-	NatRules      []NatRule      `json:"nat_rules"`
-	FirewallRules []FirewallRule `json:"firewall_rules"`
+	ID            string         `json:"id" diff:"-"`
+	Name          string         `json:"name" diff:"-"`
+	NatRules      []NatRule      `json:"nat_rules" diff:"nat_rules"`
+	FirewallRules []FirewallRule `json:"firewall_rules" diff:"firewall_rules"`
 }
 
 // GetID : returns the component's ID
@@ -100,40 +101,13 @@ func (gw *Gateway) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component cf the same type
-func (gw *Gateway) Diff(c graph.Component) bool {
+func (gw *Gateway) Diff(c graph.Component) (diff.Changelog, error) {
 	cgw, ok := c.(*Gateway)
 	if ok {
-		if len(gw.FirewallRules) != len(cgw.FirewallRules) {
-			return true
-		}
-
-		for i := 0; i < len(gw.FirewallRules); i++ {
-			if gw.FirewallRules[i].DestinationIP != cgw.FirewallRules[i].DestinationIP ||
-				gw.FirewallRules[i].DestinationPort != cgw.FirewallRules[i].DestinationPort ||
-				gw.FirewallRules[i].Protocol != cgw.FirewallRules[i].Protocol ||
-				gw.FirewallRules[i].SourceIP != cgw.FirewallRules[i].SourceIP ||
-				gw.FirewallRules[i].SourcePort != cgw.FirewallRules[i].SourcePort {
-				return true
-			}
-		}
-
-		if len(gw.NatRules) != len(cgw.NatRules) {
-			return true
-		}
-
-		for i := 0; i < len(gw.NatRules); i++ {
-			if gw.NatRules[i].OriginIP != cgw.NatRules[i].OriginIP ||
-				gw.NatRules[i].OriginPort != cgw.NatRules[i].OriginPort ||
-				gw.NatRules[i].TranslationIP != cgw.NatRules[i].TranslationIP ||
-				gw.NatRules[i].TranslationPort != cgw.NatRules[i].TranslationPort ||
-				gw.NatRules[i].Protocol != cgw.NatRules[i].Protocol ||
-				gw.NatRules[i].Type != cgw.NatRules[i].Type {
-				return true
-			}
-		}
+		return diff.Diff(cgw, gw)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values cf a component

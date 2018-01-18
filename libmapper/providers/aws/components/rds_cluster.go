@@ -7,46 +7,46 @@ package components
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"strings"
 	"unicode"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // RDSCluster ...
 type RDSCluster struct {
-	ProviderType        string            `json:"_provider"`
-	ComponentType       string            `json:"_component"`
-	ComponentID         string            `json:"_component_id"`
-	State               string            `json:"_state"`
-	Action              string            `json:"_action"`
-	ARN                 string            `json:"arn"`
-	Name                string            `json:"name"`
-	Engine              string            `json:"engine"`
-	EngineVersion       string            `json:"engine_version,omitempty"`
-	Port                *int64            `json:"port,omitempty"`
-	Endpoint            string            `json:"endpoint,omitempty"`
-	AvailabilityZones   []string          `json:"availability_zones"`
-	SecurityGroups      []string          `json:"security_groups"`
-	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids"`
-	Networks            []string          `json:"networks"`
-	NetworkAWSIDs       []string          `json:"network_aws_ids"`
-	DatabaseName        string            `json:"database_name,omitempty"`
-	DatabaseUsername    string            `json:"database_username,omitempty"`
-	DatabasePassword    string            `json:"database_password,omitempty"`
-	BackupRetention     *int64            `json:"backup_retention,omitempty"`
-	BackupWindow        string            `json:"backup_window,omitempty"`
-	MaintenanceWindow   string            `json:"maintenance_window,omitempty"`
-	ReplicationSource   string            `json:"replication_source,omitempty"`
-	FinalSnapshot       bool              `json:"final_snapshot"`
-	Tags                map[string]string `json:"tags"`
-	DatacenterType      string            `json:"datacenter_type"`
-	DatacenterName      string            `json:"datacenter_name"`
-	DatacenterRegion    string            `json:"datacenter_region"`
-	AccessKeyID         string            `json:"aws_access_key_id"`
-	SecretAccessKey     string            `json:"aws_secret_access_key"`
-	Service             string            `json:"service"`
+	ProviderType        string            `json:"_provider" diff:"-"`
+	ComponentType       string            `json:"_component" diff:"-"`
+	ComponentID         string            `json:"_component_id" diff:"_component_id,immutable"`
+	State               string            `json:"_state" diff:"-"`
+	Action              string            `json:"_action" diff:"-"`
+	ARN                 string            `json:"arn" diff:"-"`
+	Name                string            `json:"name" diff:"-"`
+	Engine              string            `json:"engine" diff:"engine,immutable"`
+	EngineVersion       string            `json:"engine_version,omitempty" diff:"engine_version,immutable"`
+	Port                *int64            `json:"port,omitempty" diff:"port"`
+	Endpoint            string            `json:"endpoint,omitempty" diff:"-"`
+	AvailabilityZones   []string          `json:"availability_zones" diff:"availability_zones,immutable"`
+	SecurityGroups      []string          `json:"security_groups" diff:"security_groups"`
+	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids" diff:"-"`
+	Networks            []string          `json:"networks" diff:"networks"`
+	NetworkAWSIDs       []string          `json:"network_aws_ids" diff:"-"`
+	DatabaseName        string            `json:"database_name,omitempty" diff:"database_name,immutable"`
+	DatabaseUsername    string            `json:"database_username,omitempty" diff:"database_username,immutable"`
+	DatabasePassword    string            `json:"database_password,omitempty" diff:"database_password"`
+	BackupRetention     *int64            `json:"backup_retention,omitempty" diff:"backup_retention"`
+	BackupWindow        string            `json:"backup_window,omitempty" diff:"backup_window"`
+	MaintenanceWindow   string            `json:"maintenance_window,omitempty" diff:"maintenance_window"`
+	ReplicationSource   string            `json:"replication_source,omitempty" diff:"replication_source,immutable"`
+	FinalSnapshot       bool              `json:"final_snapshot" diff:"final_snapshot,immutable"`
+	Tags                map[string]string `json:"tags" diff:"-"`
+	DatacenterType      string            `json:"datacenter_type" diff:"-"`
+	DatacenterName      string            `json:"datacenter_name" diff:"-"`
+	DatacenterRegion    string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID         string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey     string            `json:"aws_secret_access_key" diff:"-"`
+	Service             string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -110,41 +110,13 @@ func (r *RDSCluster) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (r *RDSCluster) Diff(c graph.Component) bool {
+func (r *RDSCluster) Diff(c graph.Component) (diff.Changelog, error) {
 	cr, ok := c.(*RDSCluster)
 	if ok {
-		if r.Port != nil && cr.Port != nil {
-			if *r.Port != *cr.Port {
-				return true
-			}
-		}
-
-		if r.DatabasePassword != cr.DatabasePassword {
-			return true
-		}
-
-		if r.BackupRetention != nil && cr.BackupRetention != nil {
-			if *r.BackupRetention != *cr.BackupRetention {
-				return true
-			}
-		}
-
-		if r.BackupWindow != cr.BackupWindow {
-			return true
-		}
-
-		if r.MaintenanceWindow != cr.MaintenanceWindow {
-			return true
-		}
-
-		if reflect.DeepEqual(r.Networks, cr.Networks) != true {
-			return true
-		}
-
-		return !reflect.DeepEqual(r.SecurityGroups, cr.SecurityGroups)
+		return diff.Diff(cr, r)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

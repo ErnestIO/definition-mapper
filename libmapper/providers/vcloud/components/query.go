@@ -5,6 +5,7 @@
 package components
 
 import (
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -75,8 +76,8 @@ func (q *Query) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (q *Query) Diff(c graph.Component) bool {
-	return false
+func (q *Query) Diff(c graph.Component) (diff.Changelog, error) {
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

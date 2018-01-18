@@ -8,32 +8,33 @@ import (
 	"errors"
 	"net"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // Network : Mapping of a network component
 type Network struct {
-	ProviderType         string            `json:"_provider"`
-	ComponentType        string            `json:"_component"`
-	ComponentID          string            `json:"_component_id"`
-	State                string            `json:"_state"`
-	Action               string            `json:"_action"`
-	NetworkAWSID         string            `json:"network_aws_id"`
-	Name                 string            `json:"name"`
-	Subnet               string            `json:"range"`
-	IsPublic             bool              `json:"is_public"`
-	InternetGateway      string            `json:"internet_gateway"`
-	InternetGatewayAWSID string            `json:"internet_gateway_aws_id"`
-	Tags                 map[string]string `json:"tags"`
-	AvailabilityZone     string            `json:"availability_zone"`
-	DatacenterType       string            `json:"datacenter_type"`
-	DatacenterName       string            `json:"datacenter_name"`
-	DatacenterRegion     string            `json:"datacenter_region"`
-	AccessKeyID          string            `json:"aws_access_key_id"`
-	SecretAccessKey      string            `json:"aws_secret_access_key"`
-	Vpc                  string            `json:"vpc"`
-	VpcID                string            `json:"vpc_id"`
-	Service              string            `json:"service"`
+	ProviderType         string            `json:"_provider" diff:"-"`
+	ComponentType        string            `json:"_component" diff:"-"`
+	ComponentID          string            `json:"_component_id" diff:"_component_id,immutable"`
+	State                string            `json:"_state" diff:"-"`
+	Action               string            `json:"_action" diff:"-"`
+	NetworkAWSID         string            `json:"network_aws_id" diff:"-"`
+	Name                 string            `json:"name" diff:"-"`
+	Subnet               string            `json:"range" diff:"subnet,immutable"`
+	IsPublic             bool              `json:"is_public" diff:"is_public,immutable"`
+	InternetGateway      string            `json:"internet_gateway" diff:"-"`
+	InternetGatewayAWSID string            `json:"internet_gateway_aws_id" diff:"-"`
+	Tags                 map[string]string `json:"tags" diff:"-"`
+	AvailabilityZone     string            `json:"availability_zone" diff:"-"`
+	DatacenterType       string            `json:"datacenter_type" diff:"-"`
+	DatacenterName       string            `json:"datacenter_name" diff:"-"`
+	DatacenterRegion     string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID          string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey      string            `json:"aws_secret_access_key" diff:"-"`
+	Vpc                  string            `json:"vpc" diff:"-"`
+	VpcID                string            `json:"vpc_id" diff:"-"`
+	Service              string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -97,15 +98,8 @@ func (n *Network) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (n *Network) Diff(c graph.Component) bool {
-	/*
-		cn, ok := c.(*Network)
-		if ok {
-			return !reflect.DeepEqual(n.Tags, cn.Tags)
-		}
-	*/
-
-	return false
+func (n *Network) Diff(c graph.Component) (diff.Changelog, error) {
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

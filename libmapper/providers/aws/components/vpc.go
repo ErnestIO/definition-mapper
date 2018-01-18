@@ -7,27 +7,28 @@ package components
 import (
 	"errors"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // Vpc : mapping of an instance component
 type Vpc struct {
-	ProviderType     string            `json:"_provider"`
-	ComponentType    string            `json:"_component"`
-	ComponentID      string            `json:"_component_id"`
-	State            string            `json:"_state"`
-	Action           string            `json:"_action"`
-	VpcAWSID         string            `json:"vpc_aws_id"`
-	Name             string            `json:"name"`
-	Subnet           string            `json:"subnet"`
-	AutoRemove       bool              `json:"auto_remove"`
-	Tags             map[string]string `json:"tags"`
-	DatacenterType   string            `json:"datacenter_type,omitempty"`
-	DatacenterName   string            `json:"datacenter_name,omitempty"`
-	DatacenterRegion string            `json:"datacenter_region"`
-	AccessKeyID      string            `json:"aws_access_key_id"`
-	SecretAccessKey  string            `json:"aws_secret_access_key"`
-	Service          string            `json:"service"`
+	ProviderType     string            `json:"_provider" diff:"-"`
+	ComponentType    string            `json:"_component" diff:"-"`
+	ComponentID      string            `json:"_component_id" diff:"_component_id,immutable"`
+	State            string            `json:"_state" diff:"-"`
+	Action           string            `json:"_action" diff:"-"`
+	VpcAWSID         string            `json:"vpc_aws_id" diff:"-"`
+	Subnet           string            `json:"subnet" diff:"subnet,immutable"`
+	Name             string            `json:"name" diff:"-"`
+	AutoRemove       bool              `json:"auto_remove" diff:"auto_remove,immutable"`
+	Tags             map[string]string `json:"tags" diff:"-"`
+	DatacenterType   string            `json:"datacenter_type,omitempty" diff:"-"`
+	DatacenterName   string            `json:"datacenter_name,omitempty" diff:"-"`
+	DatacenterRegion string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID      string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey  string            `json:"aws_secret_access_key" diff:"-"`
+	Service          string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -91,8 +92,8 @@ func (v *Vpc) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (v *Vpc) Diff(c graph.Component) bool {
-	return false
+func (v *Vpc) Diff(c graph.Component) (diff.Changelog, error) {
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

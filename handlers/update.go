@@ -43,6 +43,9 @@ func Update(r *request.Request) (*graph.Graph, error) {
 		return nil, err
 	}
 
+	creds := m.ProviderCredentials(r.Credentials)
+	g.UpdateComponent(creds)
+
 	for i := range g.Changes {
 		g.Changes[i].SetDefaultVariables()
 	}

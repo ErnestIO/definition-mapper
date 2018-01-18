@@ -6,10 +6,10 @@ package components
 
 import (
 	"log"
-	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/storageaccount"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -81,25 +81,13 @@ func (i *StorageAccount) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *StorageAccount) Diff(c graph.Component) bool {
+func (i *StorageAccount) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*StorageAccount)
 	if ok {
-		if i.AccountKind != cs.AccountKind {
-			return true
-		}
-		if i.AccountType != cs.AccountType {
-			return true
-		}
-		if i.EnableBlobEncryption != cs.EnableBlobEncryption {
-			return true
-		}
-		if len(i.Tags) != 0 && len(cs.Tags) != 0 {
-			if !reflect.DeepEqual(i.Tags, cs.Tags) {
-				return true
-			}
-		}
+		return diff.Diff(cs, i)
 	}
-	return false
+
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

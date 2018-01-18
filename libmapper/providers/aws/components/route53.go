@@ -7,9 +7,9 @@ package components
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"strings"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -23,36 +23,36 @@ var (
 
 // Record stores the entries for a zone
 type Record struct {
-	Entry         string   `json:"entry"`
-	Type          string   `json:"type"`
-	Instances     []string `json:"instances,omitempty"`
-	Loadbalancers []string `json:"loadbalancers,omitempty"`
-	RDSClusters   []string `json:"rds_clusters,omitempty"`
-	RDSInstances  []string `json:"rds_instances,omitempty"`
-	Values        []string `json:"values"`
-	TTL           int64    `json:"ttl"`
+	Entry         string   `json:"entry" diff:"entry"`
+	Type          string   `json:"type" diff:"type"`
+	Instances     []string `json:"instances,omitempty" diff:"instances"`
+	Loadbalancers []string `json:"loadbalancers,omitempty" diff:"loadbalancers"`
+	RDSClusters   []string `json:"rds_clusters,omitempty" diff:"rds_clusters"`
+	RDSInstances  []string `json:"rds_instances,omitempty" diff:"rds_instances"`
+	Values        []string `json:"values" diff:"values"`
+	TTL           int64    `json:"ttl" diff:"ttl"`
 }
 
 // Route53Zone holds all information about a dns zone
 type Route53Zone struct {
-	ProviderType     string            `json:"_provider"`
-	ComponentType    string            `json:"_component"`
-	ComponentID      string            `json:"_component_id"`
-	State            string            `json:"_state"`
-	Action           string            `json:"_action"`
-	HostedZoneID     string            `json:"hosted_zone_id"`
-	Name             string            `json:"name"`
-	Private          bool              `json:"private"`
-	Records          []Record          `json:"records"`
-	Vpc              string            `json:"vpc"`
-	VpcID            string            `json:"vpc_id"`
-	Tags             map[string]string `json:"tags"`
-	DatacenterType   string            `json:"datacenter_type"`
-	DatacenterName   string            `json:"datacenter_name"`
-	DatacenterRegion string            `json:"datacenter_region"`
-	AccessKeyID      string            `json:"aws_access_key_id"`
-	SecretAccessKey  string            `json:"aws_secret_access_key"`
-	Service          string            `json:"service"`
+	ProviderType     string            `json:"_provider" diff:"-"`
+	ComponentType    string            `json:"_component" diff:"-"`
+	ComponentID      string            `json:"_component_id" diff:"_component_id,immutable"`
+	State            string            `json:"_state" diff:"-"`
+	Action           string            `json:"_action" diff:"-"`
+	HostedZoneID     string            `json:"hosted_zone_id" diff:"-"`
+	Name             string            `json:"name" diff:"-"`
+	Private          bool              `json:"private" diff:"private,immutable"`
+	Records          []Record          `json:"records" diff:"records"`
+	Vpc              string            `json:"vpc" diff:"-"`
+	VpcID            string            `json:"vpc_id" diff:"-"`
+	Tags             map[string]string `json:"tags" diff:"-"`
+	DatacenterType   string            `json:"datacenter_type" diff:"-"`
+	DatacenterName   string            `json:"datacenter_name" diff:"-"`
+	DatacenterRegion string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID      string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey  string            `json:"aws_secret_access_key" diff:"-"`
+	Service          string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -116,17 +116,13 @@ func (z *Route53Zone) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (z *Route53Zone) Diff(c graph.Component) bool {
+func (z *Route53Zone) Diff(c graph.Component) (diff.Changelog, error) {
 	cz, ok := c.(*Route53Zone)
 	if ok {
-		if len(z.Records) != len(cz.Records) {
-			return true
-		}
-
-		return !reflect.DeepEqual(z.Records, cz.Records)
+		return diff.Diff(cz, z)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

@@ -7,31 +7,32 @@ package components
 import (
 	"errors"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // EBSVolume ...
 type EBSVolume struct {
-	ProviderType     string            `json:"_provider"`
-	ComponentType    string            `json:"_component"`
-	ComponentID      string            `json:"_component_id"`
-	State            string            `json:"_state"`
-	Action           string            `json:"_action"`
-	VolumeAWSID      string            `json:"volume_aws_id"`
-	Name             string            `json:"name"`
-	AvailabilityZone string            `json:"availability_zone"`
-	VolumeType       string            `json:"volume_type"`
-	Size             *int64            `json:"size"`
-	Iops             *int64            `json:"iops"`
-	Encrypted        bool              `json:"encrypted"`
-	EncryptionKeyID  *string           `json:"encryption_key_id"`
-	Tags             map[string]string `json:"tags"`
-	DatacenterType   string            `json:"datacenter_type,omitempty"`
-	DatacenterName   string            `json:"datacenter_name,omitempty"`
-	DatacenterRegion string            `json:"datacenter_region"`
-	AccessKeyID      string            `json:"aws_access_key_id"`
-	SecretAccessKey  string            `json:"aws_secret_access_key"`
-	Service          string            `json:"service"`
+	ProviderType     string            `json:"_provider" diff:"-"`
+	ComponentType    string            `json:"_component" diff:"-"`
+	ComponentID      string            `json:"_component_id" diff:"_component_id,immutable"`
+	State            string            `json:"_state" diff:"-"`
+	Action           string            `json:"_action" diff:"-"`
+	VolumeAWSID      string            `json:"volume_aws_id" diff:"-"`
+	Name             string            `json:"name" diff:"-"`
+	AvailabilityZone string            `json:"availability_zone" diff:"availability_zone,immutable"`
+	VolumeType       string            `json:"volume_type" diff:"volume_type,immutable"`
+	Size             *int64            `json:"size" diff:"size,immutable"`
+	Iops             *int64            `json:"iops" diff:"iops,immutable"`
+	Encrypted        bool              `json:"encrypted" diff:"encrypted,immutable"`
+	EncryptionKeyID  *string           `json:"encryption_key_id" diff:"-"`
+	Tags             map[string]string `json:"tags" diff:"-"`
+	DatacenterType   string            `json:"datacenter_type,omitempty" diff:"-"`
+	DatacenterName   string            `json:"datacenter_name,omitempty" diff:"-"`
+	DatacenterRegion string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID      string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey  string            `json:"aws_secret_access_key" diff:"-"`
+	Service          string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -95,8 +96,8 @@ func (e *EBSVolume) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (e *EBSVolume) Diff(c graph.Component) bool {
-	return false
+func (e *EBSVolume) Diff(c graph.Component) (diff.Changelog, error) {
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

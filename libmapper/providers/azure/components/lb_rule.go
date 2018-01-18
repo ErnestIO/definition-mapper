@@ -6,10 +6,10 @@ package components
 
 import (
 	"log"
-	"strings"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/lbrule"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -81,39 +81,13 @@ func (i *LBRule) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *LBRule) Diff(c graph.Component) bool {
+func (i *LBRule) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*LBRule)
 	if ok {
-		if i.FrontendIPConfigurationName != cs.FrontendIPConfigurationName {
-			return true
-		}
-		if strings.EqualFold(i.Protocol, cs.Protocol) == false {
-			return true
-		}
-		if i.FrontendPort != cs.FrontendPort {
-			return true
-		}
-		if i.BackendPort != cs.BackendPort {
-			return true
-		}
-		if i.BackendAddressPool != cs.BackendAddressPool {
-			return true
-		}
-		if i.Probe != cs.Probe {
-			return true
-		}
-		if i.EnableFloatingIP != cs.EnableFloatingIP {
-			return true
-		}
-		if i.IdleTimeoutInMinutes != cs.IdleTimeoutInMinutes {
-			return true
-		}
-		if i.LoadDistribution != cs.LoadDistribution {
-			return true
-		}
+		return diff.Diff(cs, i)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

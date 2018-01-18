@@ -7,39 +7,40 @@ package components
 import (
 	"errors"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // SecurityGroupRule ...
 type SecurityGroupRule struct {
-	IP       string `json:"ip"`
-	From     int    `json:"from_port"`
-	To       int    `json:"to_port"`
-	Protocol string `json:"protocol"`
+	IP       string `json:"ip" diff:"ip"`
+	From     int    `json:"from_port" diff:"from"`
+	To       int    `json:"to_port" diff:"to"`
+	Protocol string `json:"protocol" diff:"protocol"`
 }
 
 // SecurityGroup : Mapping of a security group component
 type SecurityGroup struct {
-	ProviderType       string `json:"_provider"`
-	ComponentType      string `json:"_component"`
-	ComponentID        string `json:"_component_id"`
-	State              string `json:"_state"`
-	Action             string `json:"_action"`
-	SecurityGroupAWSID string `json:"security_group_aws_id"`
-	Name               string `json:"name"`
+	ProviderType       string `json:"_provider" diff:"-"`
+	ComponentType      string `json:"_component" diff:"-"`
+	ComponentID        string `json:"_component_id" diff:"_component_id,immutable"`
+	State              string `json:"_state" diff:"-"`
+	Action             string `json:"_action" diff:"-"`
+	SecurityGroupAWSID string `json:"security_group_aws_id" diff:"-"`
+	Name               string `json:"name" diff:"-"`
 	Rules              struct {
-		Ingress []SecurityGroupRule `json:"ingress"`
-		Egress  []SecurityGroupRule `json:"egress"`
-	} `json:"rules"`
-	Tags             map[string]string `json:"tags"`
-	DatacenterType   string            `json:"datacenter_type,omitempty"`
-	DatacenterName   string            `json:"datacenter_name,omitempty"`
-	DatacenterRegion string            `json:"datacenter_region"`
-	AccessKeyID      string            `json:"aws_access_key_id"`
-	SecretAccessKey  string            `json:"aws_secret_access_key"`
-	Vpc              string            `json:"vpc"`
-	VpcID            string            `json:"vpc_id"`
-	Service          string            `json:"service"`
+		Ingress []SecurityGroupRule `json:"ingress" diff:"ingress"`
+		Egress  []SecurityGroupRule `json:"egress" diff:"egress"`
+	} `json:"rules" diff:"rules"`
+	Tags             map[string]string `json:"tags" diff:"tags"`
+	DatacenterType   string            `json:"datacenter_type,omitempty" diff:"-"`
+	DatacenterName   string            `json:"datacenter_name,omitempty" diff:"-"`
+	DatacenterRegion string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID      string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey  string            `json:"aws_secret_access_key" diff:"-"`
+	Vpc              string            `json:"vpc" diff:"-"`
+	VpcID            string            `json:"vpc_id" diff:"-"`
+	Service          string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -103,28 +104,13 @@ func (sg *SecurityGroup) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (sg *SecurityGroup) Diff(c graph.Component) bool {
+func (sg *SecurityGroup) Diff(c graph.Component) (diff.Changelog, error) {
 	csg, ok := c.(*SecurityGroup)
 	if ok {
-		if len(sg.Rules.Ingress) != len(csg.Rules.Ingress) ||
-			len(sg.Rules.Egress) != len(csg.Rules.Egress) {
-			return true
-		}
-
-		for _, rule := range sg.Rules.Ingress {
-			if hasRule(csg.Rules.Ingress, rule) != true {
-				return true
-			}
-		}
-
-		for _, rule := range sg.Rules.Egress {
-			if hasRule(csg.Rules.Egress, rule) != true {
-				return true
-			}
-		}
+		return diff.Diff(csg, sg)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

@@ -9,6 +9,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/lbprobe"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -80,32 +81,18 @@ func (i *LBProbe) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *LBProbe) Diff(c graph.Component) bool {
+func (i *LBProbe) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*LBProbe)
 	if ok {
-		if i.Port != cs.Port {
-			return true
-		}
-		if i.Protocol != cs.Protocol {
-			return true
-		}
-		if i.RequestPath != cs.RequestPath {
-			return true
-		}
-		if i.IntervalInSeconds != cs.IntervalInSeconds {
-			return true
-		}
-		if i.NumberOfProbes != cs.NumberOfProbes {
-			return true
-		}
+		return diff.Diff(cs, i)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component
 func (i *LBProbe) Update(c graph.Component) {
-	cs, ok := c.(*LBRule)
+	cs, ok := c.(*LBProbe)
 	if ok {
 		i.ID = cs.ID
 	}

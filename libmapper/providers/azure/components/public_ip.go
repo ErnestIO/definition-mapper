@@ -9,6 +9,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/publicip"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -81,15 +82,13 @@ func (i *PublicIP) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *PublicIP) Diff(c graph.Component) bool {
+func (i *PublicIP) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*PublicIP)
 	if ok {
-		if i.Location != cs.Location {
-			return true
-		}
+		return diff.Diff(cs, i)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

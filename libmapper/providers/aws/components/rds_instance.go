@@ -7,10 +7,10 @@ package components
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"strings"
 	"unicode"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -25,48 +25,48 @@ var EngineTypeAurora = "aurora"
 
 // RDSInstance ...
 type RDSInstance struct {
-	ProviderType        string            `json:"_provider"`
-	ComponentType       string            `json:"_component"`
-	ComponentID         string            `json:"_component_id"`
-	State               string            `json:"_state"`
-	Action              string            `json:"_action"`
-	ARN                 string            `json:"arn"`
-	Name                string            `json:"name"`
-	Size                string            `json:"size"`
-	Engine              string            `json:"engine"`
-	EngineVersion       string            `json:"engine_version,omitempty"`
-	Port                *int64            `json:"port,omitempty"`
-	Cluster             string            `json:"cluster,omitempty"`
-	Public              bool              `json:"public"`
-	Endpoint            string            `json:"endpoint,omitempty"`
-	MultiAZ             bool              `json:"multi_az"`
-	PromotionTier       *int64            `json:"promotion_tier,omitempty"`
-	StorageType         string            `json:"storage_type,omitempty"`
-	StorageSize         *int64            `json:"storage_size,omitempty"`
-	StorageIops         *int64            `json:"storage_iops,omitempty"`
-	AvailabilityZone    string            `json:"availability_zone,omitempty"`
-	SecurityGroups      []string          `json:"security_groups"`
-	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids"`
-	Networks            []string          `json:"networks"`
-	NetworkAWSIDs       []string          `json:"network_aws_ids"`
-	DatabaseName        string            `json:"database_name,omitempty"`
-	DatabaseUsername    string            `json:"database_username,omitempty"`
-	DatabasePassword    string            `json:"database_password,omitempty"`
-	AutoUpgrade         bool              `json:"auto_upgrade"`
-	BackupRetention     *int64            `json:"backup_retention,omitempty"`
-	BackupWindow        string            `json:"backup_window,omitempty"`
-	MaintenanceWindow   string            `json:"maintenance_window,omitempty"`
-	FinalSnapshot       bool              `json:"final_snapshot"`
-	ReplicationSource   string            `json:"replication_source,omitempty"`
-	License             string            `json:"license,omitempty"`
-	Timezone            string            `json:"timezone,omitempty"`
-	Tags                map[string]string `json:"tags"`
-	DatacenterType      string            `json:"datacenter_type"`
-	DatacenterName      string            `json:"datacenter_name"`
-	DatacenterRegion    string            `json:"datacenter_region"`
-	AccessKeyID         string            `json:"aws_access_key_id"`
-	SecretAccessKey     string            `json:"aws_secret_access_key"`
-	Service             string            `json:"service"`
+	ProviderType        string            `json:"_provider" diff:"-"`
+	ComponentType       string            `json:"_component" diff:"-"`
+	ComponentID         string            `json:"_component_id" diff:"_component_id,immutable"`
+	State               string            `json:"_state" diff:"-"`
+	Action              string            `json:"_action" diff:"-"`
+	ARN                 string            `json:"arn" diff:"-"`
+	Name                string            `json:"name" diff:"-"`
+	Size                string            `json:"size" diff:"size"`
+	Engine              string            `json:"engine" diff:"engine,immutable"`
+	EngineVersion       string            `json:"engine_version,omitempty" diff:"engine_version,immutable"`
+	Port                *int64            `json:"port,omitempty" diff:"port"`
+	Cluster             string            `json:"cluster,omitempty" diff:"cluster,immutable"`
+	Public              bool              `json:"public" diff:"public"`
+	Endpoint            string            `json:"endpoint,omitempty" diff:"-"`
+	MultiAZ             bool              `json:"multi_az" diff:"multi_az"`
+	PromotionTier       *int64            `json:"promotion_tier,omitempty" diff:"promotion_tier"`
+	StorageType         string            `json:"storage_type,omitempty" diff:"storage_type"`
+	StorageSize         *int64            `json:"storage_size,omitempty" diff:"storage_size"`
+	StorageIops         *int64            `json:"storage_iops,omitempty" diff:"storage_iops"`
+	AvailabilityZone    string            `json:"availability_zone,omitempty" diff:"availability_zone,immutable"`
+	SecurityGroups      []string          `json:"security_groups" diff:"security_groups"`
+	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids" diff:"-"`
+	Networks            []string          `json:"networks" diff:"networks"`
+	NetworkAWSIDs       []string          `json:"network_aws_ids" diff:"-"`
+	DatabaseName        string            `json:"database_name,omitempty" diff:"database_name,immutable"`
+	DatabaseUsername    string            `json:"database_username,omitempty" diff:"database_username,immutable"`
+	DatabasePassword    string            `json:"database_password,omitempty" diff:"database_password"`
+	AutoUpgrade         bool              `json:"auto_upgrade" diff:"auto_upgrade"`
+	BackupRetention     *int64            `json:"backup_retention,omitempty" diff:"backup_retention"`
+	BackupWindow        string            `json:"backup_window,omitempty" diff:"backup_window"`
+	MaintenanceWindow   string            `json:"maintenance_window,omitempty" diff:"maintenance_window,immutable"`
+	FinalSnapshot       bool              `json:"final_snapshot" diff:"final_snapshot,immutable"`
+	ReplicationSource   string            `json:"replication_source,omitempty" diff:"replication_source,immutable"`
+	License             string            `json:"license,omitempty" diff:"license,immutable"`
+	Timezone            string            `json:"timezone,omitempty" diff:"timezone,immutable"`
+	Tags                map[string]string `json:"tags" diff:"-"`
+	DatacenterType      string            `json:"datacenter_type" diff:"-"`
+	DatacenterName      string            `json:"datacenter_name" diff:"-"`
+	DatacenterRegion    string            `json:"datacenter_region" diff:"-"`
+	AccessKeyID         string            `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey     string            `json:"aws_secret_access_key" diff:"-"`
+	Service             string            `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -130,79 +130,13 @@ func (r *RDSInstance) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (r *RDSInstance) Diff(c graph.Component) bool {
+func (r *RDSInstance) Diff(c graph.Component) (diff.Changelog, error) {
 	cr, ok := c.(*RDSInstance)
 	if ok {
-		if r.Size != cr.Size {
-			return true
-		}
-
-		if r.EngineVersion != cr.EngineVersion {
-			return true
-		}
-
-		if r.Port != nil && cr.Port != nil {
-			if *r.Port != *cr.Port {
-				return true
-			}
-		}
-
-		if r.StorageSize != nil && cr.StorageSize != nil {
-			if *r.StorageSize != *cr.StorageSize {
-				return true
-			}
-		}
-
-		if r.StorageIops != nil && cr.StorageIops != nil {
-			if *r.StorageIops != *cr.StorageIops {
-				return true
-			}
-		}
-
-		if r.StorageType != cr.StorageType {
-			return true
-		}
-
-		if r.MultiAZ != cr.MultiAZ {
-			return true
-		}
-
-		if r.PromotionTier != nil && cr.PromotionTier != nil {
-			if *r.PromotionTier != *cr.PromotionTier {
-				return true
-			}
-		}
-
-		if r.AutoUpgrade != cr.AutoUpgrade {
-			return true
-		}
-
-		if r.BackupRetention != nil && cr.BackupRetention != nil {
-			if *r.BackupRetention != *cr.BackupRetention {
-				return true
-			}
-		}
-
-		if r.BackupWindow != cr.BackupWindow {
-			return true
-		}
-
-		if r.DatabasePassword != cr.DatabasePassword {
-			return true
-		}
-
-		if r.Public != cr.Public {
-			return true
-		}
-
-		if reflect.DeepEqual(r.SecurityGroups, cr.SecurityGroups) != true {
-			return true
-		}
-
-		return !reflect.DeepEqual(r.Networks, cr.Networks)
+		return diff.Diff(cr, r)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

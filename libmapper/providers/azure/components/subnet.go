@@ -9,6 +9,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/subnet"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -80,15 +81,13 @@ func (s *Subnet) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (s *Subnet) Diff(c graph.Component) bool {
+func (s *Subnet) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*Subnet)
 	if ok {
-		if s.NetworkSecurityGroup != cs.NetworkSecurityGroup {
-			return true
-		}
+		return diff.Diff(cs, s)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

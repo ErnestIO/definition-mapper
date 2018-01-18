@@ -9,6 +9,7 @@ import (
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/sqlserver"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -80,20 +81,13 @@ func (i *SQLServer) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *SQLServer) Diff(c graph.Component) bool {
+func (i *SQLServer) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*SQLServer)
 	if ok {
-		if i.Version != cs.Version {
-			return true
-		}
-		if i.AdministratorLogin != cs.AdministratorLogin {
-			return true
-		}
-		if i.AdministratorLoginPassword != cs.AdministratorLoginPassword {
-			return true
-		}
+		return diff.Diff(cs, i)
 	}
-	return false
+
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

@@ -6,10 +6,10 @@ package components
 
 import (
 	"log"
-	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/lb"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -81,40 +81,13 @@ func (i *LB) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *LB) Diff(c graph.Component) bool {
+func (i *LB) Diff(c graph.Component) (diff.Changelog, error) {
 	cs, ok := c.(*LB)
 	if ok {
-		if len(i.Tags) != 0 && len(cs.Tags) != 0 {
-			if !reflect.DeepEqual(i.Tags, cs.Tags) {
-				return true
-			}
-		}
-		if i.Location != cs.Location {
-			return true
-		}
-		if len(i.FrontendIPConfigurations) != len(cs.FrontendIPConfigurations) {
-			return true
-		}
-		for x, cfg := range i.FrontendIPConfigurations {
-			if cfg.Name != cs.FrontendIPConfigurations[x].Name {
-				return true
-			}
-			if cfg.PrivateIPAddress != cs.FrontendIPConfigurations[x].PrivateIPAddress {
-				return true
-			}
-			if cfg.PrivateIPAddressAllocation != cs.FrontendIPConfigurations[x].PrivateIPAddressAllocation {
-				return true
-			}
-			if cfg.PublicIPAddress != cs.FrontendIPConfigurations[x].PublicIPAddress {
-				return true
-			}
-			if cfg.Subnet != cs.FrontendIPConfigurations[x].Subnet {
-				return true
-			}
-		}
+		return diff.Diff(cs, i)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

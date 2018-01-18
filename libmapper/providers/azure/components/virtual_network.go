@@ -6,10 +6,10 @@ package components
 
 import (
 	"log"
-	"reflect"
 
 	"github.com/ernestio/ernestprovider/event"
 	"github.com/ernestio/ernestprovider/providers/azure/virtualnetwork"
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
@@ -81,21 +81,13 @@ func (vn *VirtualNetwork) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (vn *VirtualNetwork) Diff(c graph.Component) bool {
+func (vn *VirtualNetwork) Diff(c graph.Component) (diff.Changelog, error) {
 	cvn, ok := c.(*VirtualNetwork)
 	if ok {
-		if len(vn.Tags) != 0 && len(cvn.Tags) != 0 {
-			if !reflect.DeepEqual(vn.Tags, cvn.Tags) {
-				return true
-			}
-		}
-
-		if len(vn.DNSServerNames) != 0 && len(cvn.DNSServerNames) != 0 {
-			return !reflect.DeepEqual(vn.DNSServerNames, cvn.DNSServerNames)
-		}
+		return diff.Diff(cvn, vn)
 	}
 
-	return false
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component

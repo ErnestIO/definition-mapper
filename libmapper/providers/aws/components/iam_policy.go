@@ -8,29 +8,30 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
 
 // IamPolicy : mapping of an iam policy component
 type IamPolicy struct {
-	ProviderType     string `json:"_provider"`
-	ComponentType    string `json:"_component"`
-	ComponentID      string `json:"_component_id"`
-	State            string `json:"_state"`
-	Action           string `json:"_action"`
-	IAMPolicyAWSID   string `json:"iam_policy_aws_id"`
-	IAMPolicyARN     string `json:"iam_policy_arn"`
-	Name             string `json:"name"`
-	PolicyDocument   string `json:"policy_document"`
-	Description      string `json:"description"`
-	Path             string `json:"path"`
-	DatacenterType   string `json:"datacenter_type,omitempty"`
-	DatacenterName   string `json:"datacenter_name,omitempty"`
-	DatacenterRegion string `json:"datacenter_region"`
-	AccessKeyID      string `json:"aws_access_key_id"`
-	SecretAccessKey  string `json:"aws_secret_access_key"`
-	Remove           bool   `json:"-"`
-	Service          string `json:"service"`
+	ProviderType     string `json:"_provider" diff:"-"`
+	ComponentType    string `json:"_component" diff:"-"`
+	ComponentID      string `json:"_component_id" diff:"_component_id,immutable"`
+	State            string `json:"_state" diff:"-"`
+	Action           string `json:"_action" diff:"-"`
+	IAMPolicyAWSID   string `json:"iam_policy_aws_id" diff:"-"`
+	IAMPolicyARN     string `json:"iam_policy_arn" diff:"-"`
+	Name             string `json:"name" diff:"-"`
+	PolicyDocument   string `json:"policy_document" diff:"-"`
+	Description      string `json:"description" diff:"description,immutable"`
+	Path             string `json:"path" diff:"path,immutable"`
+	DatacenterType   string `json:"datacenter_type,omitempty" diff:"-"`
+	DatacenterName   string `json:"datacenter_name,omitempty" diff:"-"`
+	DatacenterRegion string `json:"datacenter_region" diff:"-"`
+	AccessKeyID      string `json:"aws_access_key_id" diff:"-"`
+	SecretAccessKey  string `json:"aws_secret_access_key" diff:"-"`
+	Remove           bool   `json:"-" diff:"-"`
+	Service          string `json:"service" diff:"-"`
 }
 
 // GetID : returns the component's ID
@@ -94,8 +95,8 @@ func (i *IamPolicy) GetTag(tag string) string {
 }
 
 // Diff : diff's the component against another component of the same type
-func (i *IamPolicy) Diff(c graph.Component) bool {
-	return false
+func (i *IamPolicy) Diff(c graph.Component) (diff.Changelog, error) {
+	return diff.Changelog{}, nil
 }
 
 // Update : updates the provider returned values of a component
