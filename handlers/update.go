@@ -14,6 +14,8 @@ import (
 
 // Update : handles a update request
 func Update(r *request.Request) (*graph.Graph, error) {
+	var g *graph.Graph
+
 	p := r.Provider()
 
 	m := providers.NewMapper(p)
@@ -38,7 +40,12 @@ func Update(r *request.Request) (*graph.Graph, error) {
 		}
 	}
 
-	g, err := dg.Diff(fg)
+	if r.Changelog {
+		g, err = dg.DiffWithChangelog(fg)
+	} else {
+		g, err = dg.Diff(fg)
+	}
+
 	if err != nil {
 		return nil, err
 	}

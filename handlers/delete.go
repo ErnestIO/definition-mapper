@@ -14,6 +14,8 @@ import (
 
 // Delete : handles a delete request
 func Delete(r *request.Request) (*graph.Graph, error) {
+	var g *graph.Graph
+
 	p := r.Provider()
 
 	m := providers.NewMapper(p)
@@ -33,7 +35,13 @@ func Delete(r *request.Request) (*graph.Graph, error) {
 	}
 
 	empty := graph.New()
-	g, err := empty.Diff(original)
+
+	if r.Changelog {
+		g, err = empty.DiffWithChangelog(original)
+	} else {
+		g, err = empty.Diff(original)
+	}
+
 	if err != nil {
 		return nil, err
 	}

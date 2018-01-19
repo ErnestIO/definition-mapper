@@ -14,6 +14,8 @@ import (
 
 // Create : handles a create request
 func Create(r *request.Request) (*graph.Graph, error) {
+	var g *graph.Graph
+
 	p := r.Provider()
 
 	m := providers.NewMapper(p)
@@ -26,7 +28,12 @@ func Create(r *request.Request) (*graph.Graph, error) {
 		return nil, err
 	}
 
-	g, err := dg.Diff(graph.New())
+	if r.Changelog {
+		g, err = dg.DiffWithChangelog(graph.New())
+	} else {
+		g, err = dg.Diff(graph.New())
+	}
+
 	if err != nil {
 		return nil, err
 	}
