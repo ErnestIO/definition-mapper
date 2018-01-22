@@ -52,12 +52,18 @@ func MapDefinitionSecurityGroups(g *graph.Graph) []definition.SecurityGroup {
 			Vpc:  sg.Vpc,
 		}
 
-		for _, rule := range sg.Rules.Ingress {
-			s.Ingress = append(s.Ingress, BuildDefinitionRule(rule))
+		for i := 0; i < len(sg.Rules.Ingress); i++ {
+			if sg.Rules.Ingress[i].To == 0 {
+				sg.Rules.Ingress[i].To = 65535
+			}
+			s.Ingress = append(s.Ingress, BuildDefinitionRule(sg.Rules.Ingress[i]))
 		}
 
-		for _, rule := range sg.Rules.Egress {
-			s.Egress = append(s.Egress, BuildDefinitionRule(rule))
+		for i := 0; i < len(sg.Rules.Egress); i++ {
+			if sg.Rules.Egress[i].To == 0 {
+				sg.Rules.Egress[i].To = 65535
+			}
+			s.Egress = append(s.Egress, BuildDefinitionRule(sg.Rules.Egress[i]))
 		}
 
 		sgs = append(sgs, s)
