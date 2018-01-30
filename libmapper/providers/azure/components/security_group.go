@@ -7,8 +7,8 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/securitygroup"
+	"github.com/ernestio/ernestprovider/validator"
+	"github.com/ernestio/ernestprovider/types/azure/securitygroup"
 	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
@@ -117,7 +117,7 @@ func (i *SecurityGroup) SequentialDependencies() []string {
 // Validate : validates the components values
 func (i *SecurityGroup) Validate() error {
 	log.Println("Validating security groups")
-	val := event.NewValidator()
+	val := validator.NewValidator()
 	return val.Validate(i)
 }
 

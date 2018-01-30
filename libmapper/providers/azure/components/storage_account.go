@@ -7,8 +7,8 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/storageaccount"
+	"github.com/ernestio/ernestprovider/validator"
+	"github.com/ernestio/ernestprovider/types/azure/storageaccount"
 	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
@@ -132,7 +132,7 @@ func (i *StorageAccount) SequentialDependencies() []string {
 // Validate : validates the components values
 func (i *StorageAccount) Validate() error {
 	log.Println("Validating storage accounts")
-	val := event.NewValidator()
+	val := validator.NewValidator()
 	return val.Validate(i)
 }
 

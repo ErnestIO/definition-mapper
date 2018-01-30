@@ -7,8 +7,8 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/networkinterface"
+	"github.com/ernestio/ernestprovider/validator"
+	"github.com/ernestio/ernestprovider/types/azure/networkinterface"
 	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
@@ -189,7 +189,7 @@ func (i *NetworkInterface) SequentialDependencies() []string {
 // Validate : validates the components values
 func (i *NetworkInterface) Validate() error {
 	log.Println("Validating azure network interfaces")
-	val := event.NewValidator()
+	val := validator.NewValidator()
 	return val.Validate(i)
 }
 

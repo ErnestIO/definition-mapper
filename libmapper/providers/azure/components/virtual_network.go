@@ -7,8 +7,8 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/virtualnetwork"
+	"github.com/ernestio/ernestprovider/validator"
+	"github.com/ernestio/ernestprovider/types/azure/virtualnetwork"
 	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
@@ -147,7 +147,7 @@ func (vn *VirtualNetwork) SequentialDependencies() []string {
 // Validate : validates the components values
 func (vn *VirtualNetwork) Validate() error {
 	log.Println("Validating Virtual network")
-	val := event.NewValidator()
+	val := validator.NewValidator()
 	return val.Validate(vn)
 }
 

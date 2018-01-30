@@ -7,8 +7,8 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/sqldatabase"
+	"github.com/ernestio/ernestprovider/validator"
+	"github.com/ernestio/ernestprovider/types/azure/sqldatabase"
 	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
@@ -168,7 +168,7 @@ func (i *SQLDatabase) SequentialDependencies() []string {
 // Validate : validates the components values
 func (i *SQLDatabase) Validate() error {
 	log.Println("Validating SQL databases")
-	val := event.NewValidator()
+	val := validator.NewValidator()
 	return val.Validate(i)
 }
 

@@ -7,8 +7,8 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/resourcegroup"
+	"github.com/ernestio/ernestprovider/validator"
+	"github.com/ernestio/ernestprovider/types/azure/resourcegroup"
 	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
@@ -119,7 +119,7 @@ func (i *ResourceGroup) SequentialDependencies() []string {
 func (i *ResourceGroup) Validate() error {
 	log.Println("Validating resource groups")
 
-	val := event.NewValidator()
+	val := validator.NewValidator()
 	return val.Validate(i)
 }
 
