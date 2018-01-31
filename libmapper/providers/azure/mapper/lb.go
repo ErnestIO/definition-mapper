@@ -7,7 +7,7 @@ package mapper
 import (
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/components"
 	"github.com/ernestio/definition-mapper/libmapper/providers/azure/definition"
-	lb "github.com/ernestio/ernestprovider/providers/azure/lb"
+	lb "github.com/ernestio/ernestprovider/types/azure/lb"
 	"github.com/r3labs/graph"
 )
 

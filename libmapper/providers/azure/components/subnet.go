@@ -7,8 +7,8 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/subnet"
+	"github.com/ernestio/ernestprovider/validator"
+	"github.com/ernestio/ernestprovider/types/azure/subnet"
 	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
@@ -134,7 +134,7 @@ func (s *Subnet) SequentialDependencies() []string {
 // Validate : validates the components values
 func (s *Subnet) Validate() error {
 	log.Println("Validating subnets")
-	val := event.NewValidator()
+	val := validator.NewValidator()
 	return val.Validate(s)
 }
 

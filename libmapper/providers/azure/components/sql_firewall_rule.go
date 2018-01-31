@@ -7,8 +7,8 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/sqlfirewallrule"
+	"github.com/ernestio/ernestprovider/validator"
+	"github.com/ernestio/ernestprovider/types/azure/sqlfirewallrule"
 	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
@@ -117,7 +117,7 @@ func (i *SQLFirewallRule) SequentialDependencies() []string {
 // Validate : validates the components values
 func (i *SQLFirewallRule) Validate() error {
 	log.Println("Validating SQL firewall rules")
-	val := event.NewValidator()
+	val := validator.NewValidator()
 	return val.Validate(i)
 }
 

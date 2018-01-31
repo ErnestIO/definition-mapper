@@ -7,8 +7,8 @@ package components
 import (
 	"log"
 
-	"github.com/ernestio/ernestprovider/event"
-	"github.com/ernestio/ernestprovider/providers/azure/lbprobe"
+	"github.com/ernestio/ernestprovider/validator"
+	"github.com/ernestio/ernestprovider/types/azure/lbprobe"
 	"github.com/r3labs/diff"
 	"github.com/r3labs/graph"
 )
@@ -128,7 +128,7 @@ func (i *LBProbe) SequentialDependencies() []string {
 // Validate : validates the components values
 func (i *LBProbe) Validate() error {
 	log.Println("Validating LB")
-	val := event.NewValidator()
+	val := validator.NewValidator()
 	return val.Validate(i)
 }
 
