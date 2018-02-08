@@ -15,7 +15,7 @@ cover:
 
 deps:
 	go get -u github.com/golang/dep/cmd/dep
-	dep ensure -v
+	dep ensure
 
 dev-deps: deps
 	go get github.com/alecthomas/gometalinter
