@@ -29,6 +29,7 @@ type FirewallRule struct {
 	DestinationIP   string `json:"destination_ip" diff:"destination_ip"`
 	DestinationPort string `json:"destination_port" diff:"destination_port"`
 	Protocol        string `json:"protocol" diff:"protocol"`
+	Action          string `json:"action" diff:"action"`
 }
 
 // Gateway : mapping of a edge gateway component
@@ -169,6 +170,13 @@ func (gw *Gateway) Validate() error {
 		// Validate Protocol
 		// Must be one of: tcp | udp | icmp | any | tcp & udp
 		err = validateProtocol(rule.Protocol)
+		if err != nil {
+			return err
+		}
+
+		// Validate Action
+		// Must be: allow | drop
+		err = validateAction(rule.Action)
 		if err != nil {
 			return err
 		}

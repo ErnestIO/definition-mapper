@@ -43,6 +43,7 @@ func MapGateways(d *definition.Definition) []*components.Gateway {
 				DestinationIP:   rule.Destination,
 				DestinationPort: rule.ToPort,
 				Protocol:        rule.Protocol,
+				Action:          rule.Action,
 			})
 		}
 
@@ -107,6 +108,7 @@ func MapDefinitionGateways(g *graph.Graph) []definition.Gateway {
 				Destination: rule.DestinationIP,
 				ToPort:      rule.DestinationPort,
 				Protocol:    rule.Protocol,
+				Action:      rule.Action,
 			})
 		}
 
