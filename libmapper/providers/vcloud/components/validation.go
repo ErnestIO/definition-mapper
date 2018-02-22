@@ -22,12 +22,22 @@ const (
 	TARGETANY      = "any"
 )
 
+// validateProtocol checks if a string is a valid protocol value.
 func validateProtocol(p string) error {
 	switch p {
 	case PROTOCOLTCP, PROTOCOLUDP, PROTOCOLICMP, PROTOCOLANY, PROTOCOLTCPUDP:
 		return nil
 	}
 	return errors.New("Protocol is invalid")
+}
+
+// validateAction checks if a string is a valid action value.
+func validateAction(s string) error {
+	switch s {
+	case "allow", "drop":
+		return nil
+	}
+	return errors.New("Action is invalid")
 }
 
 // ValidateIP checks if an string is a valid source/destionation
