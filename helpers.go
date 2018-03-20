@@ -11,7 +11,7 @@ import (
 
 // Error : default error message
 type Error struct {
-	Error string `json:"error"`
+	Error string `json:"_error"`
 }
 
 func response(reply string, data *[]byte, err *error) {
