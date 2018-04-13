@@ -37,5 +37,5 @@ type FirewallRule struct {
 	Protocol    string `json:"protocol" yaml:"protocol"`
 	FromPort    string `json:"from_port" yaml:"from_port"`
 	ToPort      string `json:"to_port" yaml:"to_port"`
-	Action      string `json:"action,omitempty" yaml:"action.omitempty"`
+	Action      string `json:"action,omitempty" yaml:"action,omitempty"`
 }
