@@ -35,7 +35,7 @@ type ELB struct {
 	Networks            []string          `json:"networks" diff:"-"`
 	NetworkAWSIDs       []string          `json:"network_aws_ids" diff:"-"`
 	Instances           []string          `json:"instances" diff:"instances"`
-	InstanceNames       sort.StringSlice  `json:"instance_names" diff:"-"`
+	InstanceNames       sort.StringSlice  `json:"instance_names" diff:"instance_names"`
 	InstanceAWSIDs      []string          `json:"instance_aws_ids" diff:"-"`
 	SecurityGroups      sort.StringSlice  `json:"security_groups" diff:"security_groups"`
 	SecurityGroupAWSIDs []string          `json:"security_group_aws_ids" diff:"-"`
