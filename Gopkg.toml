@@ -57,7 +57,7 @@ ignored = [
   name = "github.com/mitchellh/mapstructure"
 
 [[constraint]]
-  name = "github.com/nats-io/nats"
+  name = "github.com/nats-io/go-nats"
   version = "1.4.0"
 
 [[constraint]]

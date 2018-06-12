@@ -15,7 +15,7 @@ import (
 	"github.com/ernestio/definition-mapper/handlers"
 	"github.com/ernestio/definition-mapper/request"
 	ecc "github.com/ernestio/ernest-config-client"
-	"github.com/nats-io/nats"
+	"github.com/nats-io/go-nats"
 	"github.com/r3labs/akira"
 	"github.com/r3labs/graph"
 )
