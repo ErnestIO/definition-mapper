@@ -2,19 +2,24 @@
 
 
 [[projects]]
+  digest = "1:a2c1d0e43bd3baaa071d1b9ed72c27d78169b2b269f71c105ac4ba34b1be4a39"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
+  pruneopts = "UT"
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
   version = "v1.1.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:6078f921de2a68b6afbc31dfa1684d600966f4c332063e8daef61758b6a6094e"
   name = "github.com/ernestio/ernest-config-client"
   packages = ["."]
-  revision = "3ae64ad7b8e5b19b31ff8a8e0bedcf807989e42e"
+  pruneopts = "UT"
+  revision = "9588aab91bdf53d2fa430f9505b33457d3fcb3bc"
 
 [[projects]]
   branch = "isolate_entities"
+  digest = "1:b70360d8300e5018a35d53183246e603c3f9bd79e722a173c04f73b1a020f057"
   name = "github.com/ernestio/ernestprovider"
   packages = [
     "types",
@@ -36,149 +41,215 @@
     "types/azure/subnet",
     "types/azure/virtualmachine",
     "types/azure/virtualnetwork",
-    "validator"
+    "validator",
   ]
+  pruneopts = "UT"
   revision = "a472ec48415a98ac1a90ad30c8eae59cec2f74c2"
 
 [[projects]]
+  digest = "1:b44581751c0694dd011186c07b2305600dacdfc45f96262fbe13b93ddb4b05ff"
   name = "github.com/go-playground/locales"
   packages = [
     ".",
     "currency",
-    "en"
+    "en",
   ]
+  pruneopts = "UT"
   revision = "e4cbcb5d0652150d40ad0646651076b6bd2be4f6"
   version = "v0.11.2"
 
 [[projects]]
+  digest = "1:e022cf244bcac1b6ef933f1a2e0adcf6a6dfd7b872d8d41e4d4179bb09a87cbc"
   name = "github.com/go-playground/universal-translator"
   packages = ["."]
+  pruneopts = "UT"
   revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
   version = "v0.16.0"
 
 [[projects]]
+  digest = "1:510a2b056950ed12b4f3ac704ee1b34fd1920cb5b26f60f98d069de89c60adb7"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
-    "dialects/postgres"
+    "dialects/postgres",
   ]
+  pruneopts = "UT"
   revision = "5174cc5c242a728b435ea2be8a2f7f998e15429b"
   version = "v1.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:2cf1e05311b662e68d938f6655c6c5a44ae0e6b3995e390c75fcd8224afa48df"
   name = "github.com/jinzhu/inflection"
   packages = ["."]
+  pruneopts = "UT"
   revision = "1c35d901db3da928c72a72d8458480cc9ade058f"
 
 [[projects]]
   branch = "master"
+  digest = "1:1ddb648444316aa62b91f6cad83a18b6368957fb6b5b380a30cfadc018bb0cd4"
   name = "github.com/lib/pq"
   packages = [
     ".",
     "hstore",
-    "oid"
+    "oid",
   ]
+  pruneopts = "UT"
   revision = "19c8e9ad00952ce0c64489b60e8df88bb16dd514"
 
 [[projects]]
   branch = "master"
+  digest = "1:8abbe3953d396fad8a4106b77e0fc89c6ee6d308a78f739be31a20fb8c9b4ed0"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
+  pruneopts = "UT"
   revision = "b4575eea38cca1123ec2dc90c26529b5c5acfcff"
 
 [[projects]]
+  digest = "1:0923946dc9acc1aeb0cdee47c1bf85cb7662562ecb2ddae1f73bbd34c322ecfe"
   name = "github.com/nats-io/go-nats"
   packages = [
     ".",
     "encoders/builtin",
-    "util"
+    "util",
   ]
+  pruneopts = "UT"
   revision = "d66cb54e6b7bdd93f0b28afc8450d84c780dfb68"
   version = "v1.4.0"
 
 [[projects]]
+  digest = "1:c3cd663f2f30b92536b9f290ac85c6310dae36a14cb8961553ae9ccf0d85ae41"
   name = "github.com/nats-io/nuid"
   packages = ["."]
+  pruneopts = "UT"
   revision = "289cccf02c178dc782430d534e3c1f5b72af807f"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
+  pruneopts = "UT"
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:b6f319f04391f5e3d1c9b81640c3b1dcb8a78e0a824e7e2f952ce2a67bae48d6"
   name = "github.com/r3labs/akira"
   packages = ["."]
+  pruneopts = "UT"
   revision = "8754167cb7b314671eb1e2abf2e9465f2e3d5ad4"
 
 [[projects]]
+  digest = "1:2d33408286cdc20d783240b3bfa10a1596ee4c39b1442761002fbee25e148cc9"
   name = "github.com/r3labs/binary-prefix"
   packages = ["."]
+  pruneopts = "UT"
   revision = "a1bfbeadf16091ea61877c994c47f65aa97cd747"
   version = "1.0.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:39ebf28a2d908c2e02441299a9c5d943b4bda95360befa82d9abe4d60b834500"
   name = "github.com/r3labs/diff"
   packages = ["."]
+  pruneopts = "UT"
   revision = "94f6e3434299a8466b500bbf08ee11228d3a3986"
 
 [[projects]]
   branch = "master"
+  digest = "1:531cd9cad0fee0f16bbffad6edfc71fc53b21db31c04251718377c77743a945f"
   name = "github.com/r3labs/graph"
   packages = ["."]
+  pruneopts = "UT"
   revision = "1cf5f05c50b469fecdaf52697f11c3d1a320b90c"
 
 [[projects]]
+  digest = "1:994df93785d966f82180e17a0857fa53f7155cddca3898ad00b27e8d4481e4ae"
   name = "github.com/stretchr/testify"
   packages = [
     "assert",
     "require",
-    "suite"
+    "suite",
   ]
+  pruneopts = "UT"
   revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
   version = "v1.2.0"
 
 [[projects]]
   branch = "v1"
+  digest = "1:3443b1423511a78a2108f907e8ab347e3e16db19b2ab6d3219d75d88839757c1"
   name = "gopkg.in/bsm/ratelimit.v1"
   packages = ["."]
+  pruneopts = "UT"
   revision = "db14e161995a5177acef654cb0dd785e8ee8bc22"
 
 [[projects]]
+  digest = "1:5a2e881487c2a6731aac2b79095c82ccf6aa6ebf4f81e282959eb4d95f3e3343"
   name = "gopkg.in/go-playground/validator.v9"
   packages = [
     ".",
-    "translations/en"
+    "translations/en",
   ]
+  pruneopts = "UT"
   revision = "48a433ba4bcadc5be9aa16d4bdcb383d3f57a741"
   version = "v9.9.3"
 
 [[projects]]
+  digest = "1:cac778da79c136e5de51b654d377cdaab15be93cfd1f98fab4866dbb7441d445"
   name = "gopkg.in/redis.v3"
   packages = [
     ".",
     "internal",
     "internal/consistenthash",
     "internal/hashtag",
-    "internal/pool"
+    "internal/pool",
   ]
+  pruneopts = "UT"
   revision = "b5e368500d0a508ef8f16e9c2d4025a8a46bcc29"
   version = "v3.6.4"
 
 [[projects]]
   branch = "v2"
+  digest = "1:73e6fda93622790d2371344759df06ff5ff2fac64a6b6e8832b792e7402956e7"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
+  pruneopts = "UT"
   revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e70951389f29886102c219339d7ad58c48c34e8a40e7fd4278997630532e53e6"
+  input-imports = [
+    "github.com/ernestio/ernest-config-client",
+    "github.com/ernestio/ernestprovider/types/azure/availabilityset",
+    "github.com/ernestio/ernestprovider/types/azure/lb",
+    "github.com/ernestio/ernestprovider/types/azure/lbbackendaddresspool",
+    "github.com/ernestio/ernestprovider/types/azure/lbprobe",
+    "github.com/ernestio/ernestprovider/types/azure/lbrule",
+    "github.com/ernestio/ernestprovider/types/azure/manageddisk",
+    "github.com/ernestio/ernestprovider/types/azure/networkinterface",
+    "github.com/ernestio/ernestprovider/types/azure/publicip",
+    "github.com/ernestio/ernestprovider/types/azure/resourcegroup",
+    "github.com/ernestio/ernestprovider/types/azure/securitygroup",
+    "github.com/ernestio/ernestprovider/types/azure/sqldatabase",
+    "github.com/ernestio/ernestprovider/types/azure/sqlfirewallrule",
+    "github.com/ernestio/ernestprovider/types/azure/sqlserver",
+    "github.com/ernestio/ernestprovider/types/azure/storageaccount",
+    "github.com/ernestio/ernestprovider/types/azure/storagecontainer",
+    "github.com/ernestio/ernestprovider/types/azure/subnet",
+    "github.com/ernestio/ernestprovider/types/azure/virtualmachine",
+    "github.com/ernestio/ernestprovider/types/azure/virtualnetwork",
+    "github.com/ernestio/ernestprovider/validator",
+    "github.com/mitchellh/mapstructure",
+    "github.com/nats-io/go-nats",
+    "github.com/r3labs/akira",
+    "github.com/r3labs/binary-prefix",
+    "github.com/r3labs/diff",
+    "github.com/r3labs/graph",
+    "github.com/stretchr/testify/suite",
+    "gopkg.in/yaml.v2",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
